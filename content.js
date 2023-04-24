@@ -11,28 +11,21 @@ var markerDestino;
 
 var markers=[];
 
-// Verificar si el navegador admite la API de geolocalización
 if (navigator.geolocation) {
-  // Solicitar permiso al usuario para obtener su ubicación
   navigator.geolocation.getCurrentPosition(
     function (position) {
-      // Obtener la ubicación del usuario
       var latitud = position.coords.latitude;
       var longitud = position.coords.longitude;
       ubicacionActual = { lat: latitud, lng: longitud };
-      // Imprimir la ubicación en la consola del navegador
 
-      // Aquí puedes utilizar la variable "ubicacion" para mostrar la ubicación en la página web
       initMap();
     },
     function (error) {
-      // Ha ocurrido un error al obtener la ubicación del usuario
       console.log("Ha ocurrido un error al obtener la ubicación del usuario");
       initMap();
     }
   );
 } else {
-  // El navegador no admite la API de geolocalización
   console.log("El navegador no admite la API de geolocalización");
   initMap();
 }
@@ -101,7 +94,6 @@ function initMap() {
     directionsService.route(solicitud, function (resultado, estado) {
       if (estado === "OK") {
         directionsDisplay.setDirections(resultado);
-        // Cambiar el ícono del marker del destino
         var marker = new google.maps.Marker({
           position: solicitud.destination,
           map: map,
@@ -127,12 +119,10 @@ function buscarRuta() {
     return;
   }
 
-  // Obtener la ubicación del destino
   var destino = lugar.geometry.location;
 
-  // Crear la solicitud de ruta
   solicitud = {
-    origin: ubicacionActual, // Usar la ubicación actual como origen
+    origin: ubicacionActual, 
     destination: destino,
     travelMode: "DRIVING",
   };
@@ -145,7 +135,6 @@ function buscarRuta() {
     directionsService.route(solicitud, function (resultado, estado) {
       if (estado === "OK") {
         directionsDisplay.setDirections(resultado);
-        // Cambiar el ícono del marker del destino
         if (markerDestino) {
           markerDestino.setMap(null);
         }
@@ -169,10 +158,8 @@ function buscarRuta() {
 }
 
 function limpiarRuta() {
-  // Limpiar el campo de entrada del destino
   document.getElementById("input-lugar").value = "";
 
-  // Eliminar la ruta y el marcador de destino del mapa
   directionsDisplay.setDirections({ routes: [] });
   if (markerDestino) {
     markerDestino.setMap(null);
