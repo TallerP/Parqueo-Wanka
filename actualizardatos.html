@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<html lang="es">
+
+<head>
+    <title>ParqueoWanka</title>
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+    <link rel="imagen" href="imagen.css">
+    <script src="https://kit.fontawesome.com/4dd069025c.js" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-database.js"></script>
+    <script src="app.js"></script>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="https://www.google.com/maps/@-12.0713668,-75.215459,14z"> ParqueoWanka </a>
+            </div>
+        </nav>
+    </header>
+    <div class="main-content">
+        <div class="crud-container">
+            <div class="crud-header">
+                <h1>
+                    <i class="fa-solid fa-user"></i>
+                    Actualizar Parqueos
+                </h1>
+                <div class="crud-header2">
+                    <input type="number" id="idestaciona" name="idestaciona" placeholder="Ingrese ID del estacionamiento">
+                    <input type="button" value="Buscar" onclick="buscarDato()">
+                </div>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th for="Nombre" >Nombre Establecimiento:</th>
+                        <th for="Direccion">Dirección:</th>
+                        <th for="Codigo">Codigo Identificacion:</th>
+                    </tr>
+                <tbody>
+                    <tr>
+                        <th><input type="text" id="nombreesta" name="nombreesta"><br></th>
+                        <td><input type="text" id="direccion" name="direccion"><br></td>
+                        <td><input type="number" id="idestacionamiento" name="idestacionamiento"><br></td>
+                    </tr>
+                </tbody>
+                <tr>
+                    <th for="Celular">Celular:</th>
+                    <th id="desc" for="Descripcion">Descripción:</th>
+                </tr>
+                <tbody>
+                    <tr>
+                        <td><input type="tel" id="celular" name="celular"><br></td>
+                        <td><input type="text" id="descripcion" name="descripcion"><br></td>
+                    </tr>
+                </tbody>
+                </thead>
+            </table>
+            <div>
+                <th><input type="button" value="Guardar" onclick="guardarDato()"></th>
+                <th><input type="button" value="Actualizar" onclick="actualizarDato()"></th>
+                <th><input type="button" value="Limpiar" onclick="limpiarDato()"></th>
+                <th><input type="button" value="Eliminar" onclick="eliminarDato()"></th>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
+
+</script>
+
+</html>
