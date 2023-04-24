@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parqueo Wanka</title>
+    <link rel="stylesheet" href="style.css" />
+    <script
+      async
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmn7dgBjGCRulPapD4gPqSE6XQAQ7iCTg&libraries=places&map_ids=ab9ec8e84265fcee&callback=initMap"
+    ></script>
+  </head>
+  <style></style>
+
+  <body>
+    <div class="c-explorar">
+      <div class="c-explorar-search">
+        <div class="c-explorar-search-content">
+          <input
+            type="search"
+            id="input-lugar"
+            placeholder="Buscar un destino..."
+          />
+          <div class="btns">
+            <button type="button" id="btn-buscar" class="btn-search">
+              <img
+                src="https://icongr.am/jam/search.svg?size=20&color=ffffff"
+                alt=""
+                class="icon-search"
+                title="Buscar"
+              />
+            </button>
+            <button
+              type="button"
+              id="btn-limpiar"
+              class="btn-close"
+              title="Borrar busqueda"
+            >
+              <img
+                src="https://icongr.am/jam/close.svg?size=22&color=222222"
+                alt=""
+                class="icon-close"
+              />
+            </button>
+          </div>
+        </div>
+        <button type="button" class="btn-micro" title="Búsqueda por voz">
+          <img
+            src="https://icongr.am/jam/mic-alt.svg?size=20&color=222222"
+            alt=""
+            class="icon-micro"
+          />
+        </button>
+      </div>
+      <div class="c-explorar-filter">
+        <!-- <div class="select-cont">
+          <label class="select-label">Filtrar por:</label>
+          <select>
+            <option value="">Tipo de estacionamiento</option>
+            <option value="value2">Techado</option>
+            <option value="value3">Sin techar</option>
+          </select>
+        </div> -->
+        <div class="select">
+          <div class="selected-option">
+            <img
+              src="https://icongr.am/jam/coin.svg?size=22&color=515151"
+              alt=""
+              class=""
+            />
+            <span class="select-value">Estacionamiento</span>
+            <img
+              src="https://icongr.am/jam/chevron-down.svg?size=22&color=848484"
+              alt=""
+              class=""
+            />
+          </div>
+          <div data-toggle="collapsed" class="options">
+            <div class="option">Techado</div>
+            <div class="option">Sin techar</div>
+          </div>
+        </div>
+        <div class="select">
+          <div class="selected-option">
+            <img
+              src="https://icongr.am/jam/coin.svg?size=22&color=515151"
+              alt=""
+              class=""
+            />
+            <span class="select-value">Precio</span>
+            <img
+              src="https://icongr.am/jam/chevron-down.svg?size=22&color=9F9F9F"
+              alt=""
+              class=""
+            />
+          </div>
+          <div data-toggle="collapsed" class="options">
+            <div class="option">Techado</div>
+            <div class="option">Sin techar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="c-explorar-list">
+      <div class="list-item">
+        <div>
+          <img
+            src="https://a0.muscache.com/im/pictures/miso/Hosting-14979866/original/75595cfc-37d6-42d8-95dd-0ea3c966ef88.jpeg?im_w=720"
+            alt=""
+            class="list-item-img"
+          />
+        </div>
+        <h1>Centro Huancayo</h1>
+        <h2>Calle Arequipa 504, a media cuadra del colegio breña</h2>
+        <h3> <strong>S/15 x hora</strong></h3>
+        <h4>946373273</h4>
+        <img
+          src="https://icongr.am/jam/star-f.svg?size=20&color=f09800"
+          alt=""
+        />
+      </div>
+    </div> -->
+    <!-- <div class="c-explorar-fond"></div> -->
+    <div id="map" class="map"></div>
+  </body>
+  <script src="content.js"></script>
+  <script src="datos.js"></script>
+</html>
