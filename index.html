@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -7,8 +7,7 @@
     <title>Parqueo Wanka</title>
     <link rel="stylesheet" href="style.css" />
     <script
-      async
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmn7dgBjGCRulPapD4gPqSE6XQAQ7iCTg&libraries=places&map_ids=ab9ec8e84265fcee&callback=initMap"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmn7dgBjGCRulPapD4gPqSE6XQAQ7iCTg&libraries=geometry&map_ids=ab9ec8e84265fcee&callback=initMap&style=feature:all|element:labels|visibility:off"
     ></script>
   </head>
   <style></style>
@@ -16,8 +15,84 @@
   <body>
     <section>
       <div class="c-explorar">
+        <div class="c-explorar-filter">
+          <!-- <div class="select">
+            <div class="selected-option">
+              <img
+                src="https://icongr.am/jam/coin.svg?size=22&color=515151"
+                alt=""
+                class=""
+              />
+              <span class="select-value">Estacionamiento</span>
+              <img
+                src="https://icongr.am/jam/chevron-down.svg?size=22&color=848484"
+                alt=""
+                class=""
+              />
+            </div>
+            <div data-toggle="collapsed" class="options">
+              <div class="option">Todos</div>
+              <div class="option">Techado</div>
+              <div class="option">Sin techar</div>
+            </div>
+          </div> -->
+          <!-- <div class="select">
+            <div class="selected-option">
+              <img
+                src="https://icongr.am/jam/coin.svg?size=22&color=515151"
+                alt=""
+                class=""
+              />
+              <span class="select-value">Precio</span>
+              <img
+                src="https://icongr.am/jam/chevron-down.svg?size=22&color=9F9F9F"
+                alt=""
+                class=""
+              />
+            </div>
+            <div data-toggle="collapsed" class="options">
+              <div class="option">Techado</div>
+              <div class="option">Sin techar</div>
+            </div>
+          </div> -->
+          <!-- <div class="select">
+            <div class="selected-option">
+              <img
+                src="https://icongr.am/jam/coin.svg?size=22&color=515151"
+                alt=""
+                class=""
+              />
+              <span class="select-value">Radio</span>
+              <img
+                src="https://icongr.am/jam/chevron-down.svg?size=22&color=9F9F9F"
+                alt=""
+                class=""
+              />
+            </div>
+            <div data-toggle="collapsed" class="options">
+              <div class="option">4km</div>
+              <div class="option">5km</div>
+            </div>
+          </div> -->
+          <div>
+            <select id="tipo">
+              <option value="todos">Todos</option>
+              <option value="techado">Techado</option>
+              <option value="abierto">Abierto</option>
+              <option value="subterraneo">Subterráneo</option>
+              <option value="descubierto">Descubierto</option>
+            </select>
+          </div>
+          <div>
+            <select id="rango">
+              <option value="2">2 km</option>
+              <option value="4">4 km</option>
+              <option value="8">8 km</option>
+            </select>
+          </div>
+        </div>
         <div class="c-explorar-search">
-          <div class="c-explorar-search-content">
+          <!-- <div class="c-explorar-search-content">
             <input
               type="search"
               id="input-lugar"
@@ -45,7 +120,7 @@
                 />
               </button>
             </div>
-          </div>
+          </div> -->
           <button type="button" class="btn-micro" title="Búsqueda por voz">
             <img
               src="https://icongr.am/jam/mic-alt.svg?size=20&color=222222"
@@ -54,75 +129,110 @@
             />
           </button>
         </div>
-        <div class="c-explorar-filter">
-          <!-- <div class="select-cont">
-          <label class="select-label">Filtrar por:</label>
-          <select>
-            <option value="">Tipo de estacionamiento</option>
-            <option value="value2">Techado</option>
-            <option value="value3">Sin techar</option>
-          </select>
-        </div> -->
-          <div class="select">
-            <div class="selected-option">
-              <img
-                src="https://icongr.am/jam/coin.svg?size=22&color=515151"
-                alt=""
-                class=""
-              />
-              <span class="select-value">Estacionamiento</span>
-              <img
-                src="https://icongr.am/jam/chevron-down.svg?size=22&color=848484"
-                alt=""
-                class=""
-              />
-            </div>
-            <div data-toggle="collapsed" class="options">
-              <div class="option">Todos</div>
-              <div class="option">Techado</div>
-              <div class="option">Sin techar</div>
-            </div>
-          </div>
-          <div class="select">
-            <div class="selected-option">
-              <img
-                src="https://icongr.am/jam/coin.svg?size=22&color=515151"
-                alt=""
-                class=""
-              />
-              <span class="select-value">Precio</span>
-              <img
-                src="https://icongr.am/jam/chevron-down.svg?size=22&color=9F9F9F"
-                alt=""
-                class=""
-              />
-            </div>
-            <div data-toggle="collapsed" class="options">
-              <div class="option">Techado</div>
-              <div class="option">Sin techar</div>
-            </div>
-          </div>
+        <div class="c-explorar-user">
+          <button class="btn-menu">
+            <img
+              src="https://icongr.am/fontawesome/th.svg?size=25&color=ffffff"
+              alt=""
+            />
+          </button>
+          <button class="btn-user">C</button>
         </div>
       </div>
-      <div class="c-explorar-list">
-        <div class="list-item">
-          <div>
-            <img
-              src="https://a0.muscache.com/im/pictures/miso/Hosting-14979866/original/75595cfc-37d6-42d8-95dd-0ea3c966ef88.jpeg?im_w=720"
-              alt=""
-              class="list-item-img"
-            />
-          </div>
-          <h1>Centro Huancayo- imperial</h1>
-          <h2>Calle Arequipa 504, a media cuadra del colegio breña</h2>
-          <h3>
-            <strong> <sup>s/</sup>15 x hora</strong>
-          </h3>
-          <h4>946373273</h4>
+      <div id="info-container" class="c-explorar-list">
+        <div>
           <img
-            src="https://icongr.am/jam/star-f.svg?size=20&color=f09800"
+            src="https://a0.muscache.com/im/pictures/miso/Hosting-14979866/original/75595cfc-37d6-42d8-95dd-0ea3c966ef88.jpeg?im_w=720"
             alt=""
+            class="list-item-img"
           />
+        </div>
+        <div class="c-explorar-list-title">
+          <h1 id="ubicacion-nombre"></h1>
+          <span>
+            4,7 -
+            <img
+              src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+              alt=""
+            />
+            <img
+              src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+              alt=""
+            />
+            <img
+              src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+              alt=""
+            />
+            <img
+              src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+              alt=""
+            />
+            <img
+              src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+              alt=""
+            />
+            (11.116)</span
+          >
+          <span>Playa de estacionamiento</span>
+        </div>
+        <div class="c-explorar-list-title">
+          <span class="content-precio-title">Tarifa</span>
+          <div class="content-precio">
+            <div class="content-precio-det">
+              <img
+                src="https://icongr.am/entypo/credit.svg?size=20&color=fb3447"
+                alt=""
+              />
+              <h2>Precio x hora</h2>
+            </div>
+            <h2 id="ubicacion-precio"></h2>
+          </div>
+        </div>
+        <div class="c-explorar-list-detall">
+          <div class="c-explorar-list-detall-item">
+            <img
+              src="https://icongr.am/entypo/location-pin.svg?size=22&color=14bbf0"
+              alt=""
+            />
+            <h3 id="ubicacion-direccion"></h3>
+          </div>
+          <div class="c-explorar-list-detall-item">
+            <img
+              src="https://icongr.am/entypo/stopwatch.svg?size=22&color=14bbf0"
+              alt=""
+            />
+            <h3 id="ubicacion-horario"></h3>
+          </div>
+          <div class="c-explorar-list-detall-item">
+            <img
+              src="https://icongr.am/entypo/phone.svg?size=22&color=14bbf0"
+              alt=""
+            />
+            <h3 id="ubicacion-numcontact"></h3>
+          </div>
+          <div class="c-explorar-list-detall-item">
+            <img
+              src="https://icongr.am/entypo/text.svg?size=22&color=14bbf0"
+              alt=""
+            />
+            <h3 id="ubicacion-descripcion"></h3>
+          </div>
+          <div class="c-explorar-list-detall-item">
+            <img
+              src="https://icongr.am/entypo/text.svg?size=22&color=14bbf0"
+              alt=""
+            />
+            <h3 id="ubicacion-tipo"></h3>
+          </div>
+        </div>
+        <div class="c-explorar-list-btn">
+          <button class="btn-rese">
+            <img
+              src="https://icongr.am/feather/edit.svg?size=20&color=14bbf0"
+              alt=""
+            />
+            Escribir una reseña
+          </button>
         </div>
       </div>
       <!-- <div class="c-explorar-fond"></div> -->
