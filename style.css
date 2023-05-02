@@ -20,7 +20,7 @@ html {
   font-weight: 100;
 }
 
-body,
+body
 h1,
 h2,
 h3,
@@ -473,6 +473,7 @@ img {
     height: 90vh;
     display: flex;
     justify-content: center;
+    background-color: #064264;
     align-items: center;
 }
 
