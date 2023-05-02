@@ -7,8 +7,7 @@
     <title>Parqueo Wanka</title>
     <link rel="stylesheet" href="style.css" />
     <script
-      async
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmn7dgBjGCRulPapD4gPqSE6XQAQ7iCTg&libraries=places&map_ids=ab9ec8e84265fcee&callback=initMap&style=feature:all|element:labels|visibility:off"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmn7dgBjGCRulPapD4gPqSE6XQAQ7iCTg&libraries=geometry&map_ids=ab9ec8e84265fcee&callback=initMap&style=feature:all|element:labels|visibility:off"
     ></script>
   </head>
   <style></style>
@@ -81,6 +80,14 @@
               <option value="techado">Techado</option>
               <option value="abierto">Abierto</option>
               <option value="subterraneo">Subterráneo</option>
+              <option value="descubierto">Descubierto</option>
+            </select>
+          </div>
+          <div>
+            <select id="rango">
+              <option value="2">2 km</option>
+              <option value="4">4 km</option>
+              <option value="8">8 km</option>
             </select>
           </div>
         </div>
