@@ -9,6 +9,7 @@ const ubicaciones = [
       horario: "De lunes a viernes de 07:30 a 20:00 horas Sábados de 08:00 a 13:00 horas",
       numcontact: "973 633 341",
       precio: "S/5.00",
+      tipo: "techado",
       disponibilidad: false,
     },
     {
@@ -21,6 +22,7 @@ const ubicaciones = [
       horario: "De lunes a viernes de 07:30 a 20:00 horas Sábados de 08:00 a 13:00 horas",
       numcontact: "952 344 222",
       precio: "S/9.00",
+      tipo: "techado",
       disponibilidad: true,
     },
     {
@@ -33,6 +35,7 @@ const ubicaciones = [
       horario: "De lunes a viernes de 07:30 a 20:00 horas Sábados de 08:00 a 13:00 horas",
       numcontact: "923 456 444",
       precio: "S/7.00",
+      tipo: "descubierto",
       disponibilidad: true,
     },
     {
@@ -44,6 +47,7 @@ const ubicaciones = [
       horario: "De lunes a viernes de 07:30 a 20:00 horas Sábados de 08:00 a 13:00 horas",
       numcontact: "945 234 555",
       precio: "S/5.50",
+      tipo: "descubierto",
       disponibilidad: false,
     },
     {
@@ -56,6 +60,7 @@ const ubicaciones = [
       horario: "De lunes a viernes de 07:30 a 20:00 horas Sábados de 08:00 a 13:00 horas",
       numcontact: "995 675 645",
       precio: "S/6.00",
+      tipo: "subterraneo",
       disponibilidad: true,
     }
   ];

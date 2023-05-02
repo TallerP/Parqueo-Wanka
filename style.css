@@ -100,8 +100,8 @@ a {
   right: 0;
   background: var(--black);
   opacity: 0.5;
-  width: 4px;
-  border-radius: 10px;
+  width: 5px;
+  border-radius: 15px;
   margin: 2px;
   cursor: -webkit-grab;
   cursor: grab;
@@ -113,8 +113,8 @@ a {
 }
 
 ::-webkit-scrollbar {
-  width: 4px !important;
-  height: 4px !important;
+  width: 5px !important;
+  height: 5px !important;
 }
 
 html[dir] .dark ::-webkit-scrollbar-thumb {
@@ -122,7 +122,7 @@ html[dir] .dark ::-webkit-scrollbar-thumb {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(95, 95, 95, 0.2);
+  background-color: rgb(67, 67, 67);
 }
 
 html[dir] .dark ::-webkit-scrollbar-track {
@@ -130,7 +130,7 @@ html[dir] .dark ::-webkit-scrollbar-track {
 }
 
 ::-webkit-scrollbar-track {
-  background-color: rgb(0, 0, 0);
+  background-color: rgba(213, 213, 213, 0.173);
 }
 
 /*//////////////////////////////////////////////////////////////////
@@ -256,7 +256,7 @@ section {
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  padding: .5rem 2rem;
+  padding: 1rem 2rem;
   flex-wrap: wrap;
 }
 
@@ -395,12 +395,13 @@ img {
   flex-direction: column;
   position: absolute;
   max-width: 400px;
-  min-height: calc(100% - 85px);
-  top: 4rem;
+  height: 680px;
+  overflow-x: hidden;
+  top: 5rem;
   left:2rem;
   z-index: 4;
   background-color: var(--white);
-  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3),
+  box-shadow: 0 1px 2px rgba(18, 19, 19, 0.3),
     0 2px 6px 2px rgba(60, 64, 67, 0.15);
   transition: 0.35s ease-in-out;
   border-radius: 15px;

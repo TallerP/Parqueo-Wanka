@@ -32,7 +32,7 @@ function initMap() {
     mapTypeControl: false,
     mapId: "ab9ec8e84265fcee",
     streetViewControl: false,
-    zoomControl: false, 
+    zoomControl: false,
   });
 
   marker = new google.maps.Marker({
@@ -58,11 +58,22 @@ function initMap() {
   });
   directionsDisplay.setMap(map);
 
+  filterMarkers();
   createLocationMarkers();
 }
 
-const createMarker = (coord, precio, map, ubicacionNombre, ubicacionDireccion, ubicacionNumcontact, ubicacionHorario, ubicacionDescripcion, disponibilidad) => {
-  
+const createMarker = (
+  coord,
+  precio,
+  map,
+  nombre,
+  direccion,
+  numcontact,
+  ubicacionHorario,
+  descripcion,
+  tipo,
+  disponibilidad
+) => {
   const markerIcon = {
     url: disponibilidad
       ? "https://icongr.am/material/alert.svg?size=35&color=00ff08"
@@ -87,27 +98,81 @@ const createMarker = (coord, precio, map, ubicacionNombre, ubicacionDireccion, u
   // Abre el infoWindow cuando se carga el mapa
   infoWindow.open(map, marker);
 
-  marker.addListener("click", function () { 
-    crearRuta(coord);
+  marker.addListener("click", function () {
     
-    document.getElementById("ubicacion-nombre").textContent = ubicacionNombre;
-    document.getElementById("ubicacion-precio").textContent = precio;
-    document.getElementById("ubicacion-direccion").textContent = ubicacionDireccion;
-    document.getElementById("ubicacion-horario").textContent = ubicacionHorario;
-    document.getElementById("ubicacion-numcontact").textContent = ubicacionNumcontact;
-    document.getElementById("ubicacion-descripcion").textContent = ubicacionDescripcion;
+    crearRuta(coord);
 
+    document.getElementById("ubicacion-nombre").textContent = nombre;
+    document.getElementById("ubicacion-precio").textContent = precio;
+    document.getElementById("ubicacion-direccion").textContent = direccion;
+    document.getElementById("ubicacion-horario").textContent = ubicacionHorario;
+    document.getElementById("ubicacion-numcontact").textContent = numcontact;
+    document.getElementById("ubicacion-descripcion").textContent = descripcion;
+    document.getElementById("ubicacion-tipo").textContent = tipo;
     // Muestra el div en la pantalla
     document.getElementById("info-container").classList.add("show");
     document.getElementById("info-box").style.display = "block";
   });
-  return marker;
+
+  markers.push(marker);
 };
 
 const createLocationMarkers = () => {
+  // Obtiene los filtros seleccionados
+  const tipoEstacionamiento = document.getElementById("tipo").value;
+  const precio = document.getElementById("precio").value;
+
+  // Elimina todos los marcadores existentes
+  deleteMarkers();
+
   ubicaciones.forEach((ubicacion) => {
     const coord = new google.maps.LatLng(ubicacion.lat, ubicacion.lng);
     const disponibilidad = ubicacion.disponibilidad;
+
+    // Configura las opciones de filtrado para la ubicación actual
+    const options = {
+      tipoEstacionamiento: ubicacion.tipo,
+      precio: ubicacion.precio,
+    };
+
+    // Comprueba si la ubicación coincide con los filtros seleccionados
+    if (filterMarkers(options, tipoEstacionamiento, precio)) {
+      createMarker(
+        coord,
+        ubicacion.precio,
+        map,
+        ubicacion.nombre,
+        ubicacion.direccion,
+        ubicacion.numcontact,
+        ubicacion.horario,
+        ubicacion.descripcion,
+        disponibilidad
+      );
+    }
+  });
+};
+
+function filterMarkers(tipoSeleccionado = "todos") {
+  let ubicacionesFiltradas;
+
+  if (tipoSeleccionado === "todos") {
+    ubicacionesFiltradas = ubicaciones;
+  } else {
+    ubicacionesFiltradas = ubicaciones.filter(
+      (ubicacion) => ubicacion.tipo === tipoSeleccionado
+      
+    );
+  }
+
+  // Borra todos los marcadores del mapa
+  markers.forEach((marker) => marker.setMap(null));
+  markers = [];
+
+  // Crea marcadores solo para las ubicaciones filtradas
+  ubicacionesFiltradas.forEach((ubicacion) => {
+    const coord = new google.maps.LatLng(ubicacion.lat, ubicacion.lng);
+    const disponibilidad = ubicacion.disponibilidad;
+
     createMarker(
       coord,
       ubicacion.precio,
@@ -117,10 +182,16 @@ const createLocationMarkers = () => {
       ubicacion.numcontact,
       ubicacion.horario,
       ubicacion.descripcion,
+      ubicacion.tipo,
       disponibilidad
     );
   });
-};
+}
+
+document.getElementById("tipo").addEventListener("change", (event) => {
+  const tipoSeleccionado = event.target.value;
+  filterMarkers(tipoSeleccionado);
+});
 
 function crearRuta(destino) {
   if (destinoMarker && destinoMarker.getPosition().equals(destino)) {
