@@ -51,8 +51,8 @@ function initMap() {
   directionsDisplay = new google.maps.DirectionsRenderer({
     suppressMarkers: true, // Elimina marcadores y las letras "A" y "B"
     polylineOptions: {
-      strokeColor: "#ffc107", // Cambiar el color de la ruta
-      strokeWeight: 8, // Grosor de la ruta
+      strokeColor: "#0A67F9", // Cambiar el color de la ruta
+      strokeWeight: 5, // Grosor de la ruta
     },
     map: map,
   });

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap");
 /*//////////////////////////////////////////////////////////////////
 [ RESTYLE TAG ]*/
 
@@ -157,7 +157,7 @@ h3 {
   font-size: clamp(6.5px, 8vw, 13px) !important;
   letter-spacing: 0.03em !important;
   line-height: 1rem !important;
-  font-weight: normal !important;
+  font-weight: bold !important;
   margin: 0 !important;
 }
 
@@ -369,11 +369,6 @@ img {
   transition: ease-out 0.35s;
   display: grid;
   place-items: center;
-  box-shadow: 0 1px 2px rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
-}
-
-.btn-menu:hover {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
 }
 
 .btn-user {
@@ -580,7 +575,7 @@ span {
   background-color: white;
   color: black;
   font-size: 16px;
-  padding: 10px;
+  padding: 7px 10px;
   border-radius: 15px;
   box-shadow: 0 2px 7px 1px rgba(0, 0, 0, 0.3);
   border: 1px solid #dadce0;
