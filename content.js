@@ -39,8 +39,8 @@ function initMap() {
     position: ubicacionActual,
     map: map,
     icon: {
-      url: "https://icongr.am/material/car.svg?size=32&color=ff0000",
-      scaledSize: new google.maps.Size(32, 32),
+      url: "imgs/carro.png",
+      scaledSize: new google.maps.Size(53, 40),
       origin: new google.maps.Point(0, 0),
       anchor: new google.maps.Point(12, 12),
     },
@@ -76,9 +76,9 @@ const createMarker = (
 ) => {
   const markerIcon = {
     url: disponibilidad
-      ? "https://icongr.am/material/alert.svg?size=35&color=00ff08"
-      : "https://icongr.am/material/alert.svg?size=35&color=ff0000",
-    scaledSize: new google.maps.Size(35, 35),
+      ? "imgs/libre.png"
+      : "imgs/ocupado.png",
+    scaledSize: new google.maps.Size(43, 65),
   };
 
   const marker = new google.maps.Marker({
