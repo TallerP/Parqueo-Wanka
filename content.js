@@ -99,7 +99,6 @@ const createMarker = (
   infoWindow.open(map, marker);
 
   marker.addListener("click", function () {
-    
     crearRuta(coord);
 
     document.getElementById("ubicacion-nombre").textContent = nombre;
@@ -111,7 +110,6 @@ const createMarker = (
     document.getElementById("ubicacion-tipo").textContent = tipo;
     // Muestra el div en la pantalla
     document.getElementById("info-container").classList.add("show");
-    document.getElementById("info-box").style.display = "block";
   });
 
   markers.push(marker);
@@ -120,10 +118,6 @@ const createMarker = (
 const createLocationMarkers = () => {
   // Obtiene los filtros seleccionados
   const tipoEstacionamiento = document.getElementById("tipo").value;
-  const precio = document.getElementById("precio").value;
-
-  // Elimina todos los marcadores existentes
-  deleteMarkers();
 
   ubicaciones.forEach((ubicacion) => {
     const coord = new google.maps.LatLng(ubicacion.lat, ubicacion.lng);
@@ -132,7 +126,6 @@ const createLocationMarkers = () => {
     // Configura las opciones de filtrado para la ubicación actual
     const options = {
       tipoEstacionamiento: ubicacion.tipo,
-      precio: ubicacion.precio,
     };
 
     // Comprueba si la ubicación coincide con los filtros seleccionados
@@ -152,24 +145,94 @@ const createLocationMarkers = () => {
   });
 };
 
+/*//////////////////////////////////////////////////////////////////
+[ FILTER TIPO]*/
+
+const tipoSelector = document.getElementById("tipo");
+
+document.addEventListener("DOMContentLoaded", () => {
+  const tipoSelector = document.getElementById("tipo");
+  tipoSelector.addEventListener("change", (event) => {
+    const tipoSeleccionado = event.target.value;
+    filterMarkers(tipoSeleccionado);
+  });
+});
+
+/*//////////////////////////////////////////////////////////////////
+[ FILTER RANGO ]*/
+
+const rangoSelector = document.getElementById("rango");
+
+function getDistance(coord1, coord2) {
+  const R = 6371; // radio de la Tierra en km
+  const dLat = toRadians(coord2.lat - coord1.lat);
+  const dLon = toRadians(coord2.lng - coord1.lng);
+  const lat1 = toRadians(coord1.lat);
+  const lat2 = toRadians(coord2.lat);
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  const distance = R * c;
+  return distance;
+}
+
+function toRadians(degrees) {
+  return degrees * (Math.PI / 180);
+}
+
+let lastTipoSeleccionado = "todos";
+
+rangoSelector.addEventListener("change", () => {
+  filterMarkers(lastTipoSeleccionado);
+});
+
+tipoSelector.addEventListener("change", (event) => {
+  lastTipoSeleccionado = event.target.value;
+  filterMarkers(lastTipoSeleccionado);
+});
+
+/*//////////////////////////////////////////////////////////////////
+[ FILTRAR ]*/
+
 function filterMarkers(tipoSeleccionado = "todos") {
+  const rangoSelector = document.getElementById("rango");
+  const rangoSeleccionado = Number(rangoSelector.value);
+
   let ubicacionesFiltradas;
 
   if (tipoSeleccionado === "todos") {
     ubicacionesFiltradas = ubicaciones;
+    document.getElementById("info-container").classList.remove("show");
   } else {
     ubicacionesFiltradas = ubicaciones.filter(
       (ubicacion) => ubicacion.tipo === tipoSeleccionado
-      
     );
+    document.getElementById("info-container").classList.remove("show");
   }
+
+  const ubicacionesCercanas = ubicacionesFiltradas.filter((ubicacion) => {
+    const ubicacionCoord = new google.maps.LatLng(ubicacion.lat, ubicacion.lng);
+    const distancia =
+      google.maps.geometry.spherical.computeDistanceBetween(
+        ubicacionCoord,
+        ubicacionActual
+      ) / 1000; // convertimos a kilómetros
+
+    return distancia <= rangoSeleccionado;
+  });
 
   // Borra todos los marcadores del mapa
   markers.forEach((marker) => marker.setMap(null));
   markers = [];
 
+  // Al seleccionar otro filtro elimina la ruta que se estableció anteriormente
+  directionsDisplay.setDirections({ routes: [] });
+
   // Crea marcadores solo para las ubicaciones filtradas
-  ubicacionesFiltradas.forEach((ubicacion) => {
+  ubicacionesCercanas.forEach((ubicacion) => {
     const coord = new google.maps.LatLng(ubicacion.lat, ubicacion.lng);
     const disponibilidad = ubicacion.disponibilidad;
 
@@ -188,10 +251,8 @@ function filterMarkers(tipoSeleccionado = "todos") {
   });
 }
 
-document.getElementById("tipo").addEventListener("change", (event) => {
-  const tipoSeleccionado = event.target.value;
-  filterMarkers(tipoSeleccionado);
-});
+/*//////////////////////////////////////////////////////////////////
+[ CREAR RUTA ]*/
 
 function crearRuta(destino) {
   if (destinoMarker && destinoMarker.getPosition().equals(destino)) {
@@ -224,31 +285,31 @@ function crearRuta(destino) {
 
 /** Toggle function */
 
-const selectedOption = document.querySelector(".selected-option");
-const selectValue = document.querySelector(".select-value");
-const optionContainer = document.querySelector(".options");
-const optionList = document.querySelectorAll(".option");
+// const selectedOption = document.querySelector(".selected-option");
+// const selectValue = document.querySelector(".select-value");
+// const optionContainer = document.querySelector(".options");
+// const optionList = document.querySelectorAll(".option");
 
-/** Toggle function */
-const selectToggle = () => {
-  if (optionContainer.dataset.toggle == "collapsed") {
-    optionContainer.dataset.toggle = "";
-  } else {
-    optionContainer.dataset.toggle = "collapsed";
-  }
-};
+// /** Toggle function */
+// const selectToggle = () => {
+//   if (optionContainer.dataset.toggle == "collapsed") {
+//     optionContainer.dataset.toggle = "";
+//   } else {
+//     optionContainer.dataset.toggle = "collapsed";
+//   }
+// };
 
-/** When click on selected-option */
-selectedOption.addEventListener("click", selectToggle);
+// /** When click on selected-option */
+// selectedOption.addEventListener("click", selectToggle);
 
-/** This function update select value */
-const updateSelectValue = (option) => {
-  selectValue.innerText = option.innerText;
-};
+// /** This function update select value */
+// const updateSelectValue = (option) => {
+//   selectValue.innerText = option.innerText;
+// };
 
-optionList.forEach((option) => {
-  option.addEventListener("click", (e) => {
-    updateSelectValue(option);
-    selectToggle();
-  });
-});
+// optionList.forEach((option) => {
+//   option.addEventListener("click", (e) => {
+//     updateSelectValue(option);
+//     selectToggle();
+//   });
+// });

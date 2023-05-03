@@ -20,7 +20,7 @@ html {
   font-weight: 100;
 }
 
-body,
+body
 h1,
 h2,
 h3,
@@ -562,8 +562,11 @@ span {
   border: none;
 }
 
-.gm-style-iw-c:before {
-  display: none !important;
+.main-content{
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .gm-style-iw-d {

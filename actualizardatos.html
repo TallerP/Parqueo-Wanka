@@ -4,12 +4,12 @@
 
 <head>
     <title>ParqueoWanka</title>
-    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="imagen" href="imagen.css">
     <script src="https://kit.fontawesome.com/4dd069025c.js" crossorigin="anonymous"></script>
     <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-database.js"></script>
-    <script src="actualizardatos.js"></script>
+    <script src="app.js"></script>
 </head>
 
 <body>
@@ -28,36 +28,79 @@
                     Actualizar Parqueos
                 </h1>
                 <div class="crud-header2">
-                    <input type="number" id="idestaciona" name="idestaciona" placeholder="Ingrese ID del estacionamiento">
+                    <input type="number" id="idestaciona" name="idestaciona"
+                        placeholder="Ingrese ID del estacionamiento">
                     <input type="button" value="Buscar" onclick="buscarDato()">
                 </div>
             </div>
             <table class="table">
                 <thead>
                     <tr>
-                        <th for="Nombre" >Nombre Establecimiento:</th>
-                        <th for="Direccion">Dirección:</th>
-                        <th for="Codigo">Codigo Identificacion:</th>
+                        <th for="Latitud">Latitud:</th>
+                        <th for="Longitud">Longitud:</th>
                     </tr>
+                </thead>
                 <tbody>
                     <tr>
-                        <th><input type="text" id="nombreesta" name="nombreesta"><br></th>
-                        <td><input type="text" id="direccion" name="direccion"><br></td>
-                        <td><input type="number" id="idestacionamiento" name="idestacionamiento"><br></td>
+                        <td><input type="number" id="Latitud" name="Latitud"><br></td>
+                        <td><input type="number" id="Longitud" name="Longitud"><br></td>
                     </tr>
                 </tbody>
+
                 <tr>
+                    <th for="Codigo">Codigo Identificacion:</th>
                     <th for="Celular">Celular:</th>
                     <th id="desc" for="Descripcion">Descripción:</th>
                 </tr>
                 <tbody>
                     <tr>
+                        <td><input type="number" id="idestacionamiento" name="idestacionamiento"><br></td>
                         <td><input type="tel" id="celular" name="celular"><br></td>
                         <td><input type="text" id="descripcion" name="descripcion"><br></td>
                     </tr>
                 </tbody>
                 </thead>
             </table>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="mapa" style="width: 80%; height: 300px"></div>
+                </div>
+            </div>
+
+            <script>
+                function iniciarMapa() {
+                    var latitud = -12.069342;
+                    var longitud = -75.211912;
+
+                    coordenadas = {
+                        lng: longitud,
+                        lat: latitud
+                    }
+
+                    generarMapa(coordenadas);
+
+                    function generarMapa(coordenadas) {
+                        var mapa = new google.maps.Map(document.getElementById('mapa'),
+                            {
+                                zoom: 12,
+                                center: new google.maps.LatLng(coordenadas.lat, coordenadas.lng)
+                            }
+                        );
+
+                        marcador = new google.maps.Marker({
+                            map: mapa,
+                            draggable: true,
+                            position: new google.maps.LatLng(coordenadas.lat, coordenadas.lng)
+                        });
+
+                        marcador.addListener('dragend', function (event) {
+                            document.getElementById("Latitud").value = this.getPosition().lat();
+                            document.getElementById("Longitud").value = this.getPosition().lng();
+                        })
+                    }
+                }
+            </script>
+            <div></div>
             <div>
                 <th><input type="button" value="Guardar" onclick="guardarDato()"></th>
                 <th><input type="button" value="Actualizar" onclick="actualizarDato()"></th>
@@ -67,6 +110,10 @@
         </div>
     </div>
     </div>
+
+
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmn7dgBjGCRulPapD4gPqSE6XQAQ7iCTg&callback=iniciarMapa"></script>
 </body>
 <script type="module">
     // Import the functions you need from the SDKs you need
