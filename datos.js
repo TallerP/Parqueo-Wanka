@@ -12,7 +12,7 @@ const ubicaciones = [
       "De lunes a viernes de 07:30 a 20:00 horas Sábados de 08:00 a 13:00 horas",
     numcontact: "973 633 341",
     precio: "S/5.00",
-    tipo: "techado",
+    tipo: "Techado",
     disponibilidad: false,
   },
   {
@@ -27,7 +27,7 @@ const ubicaciones = [
       "De lunes a viernes de 07:30 a 20:00 horas Sábados de 08:00 a 13:00 horas",
     numcontact: "952 344 222",
     precio: "S/9.00",
-    tipo: "techado",
+    tipo: "Techado",
     disponibilidad: true,
   },
   {
@@ -42,7 +42,7 @@ const ubicaciones = [
       "De lunes a viernes de 07:30 a 20:00 horas Sábados de 08:00 a 13:00 horas",
     numcontact: "923 456 444",
     precio: "S/7.00",
-    tipo: "descubierto",
+    tipo: "Descubierto",
     disponibilidad: true,
   },
   {
@@ -56,7 +56,7 @@ const ubicaciones = [
       "De lunes a viernes de 07:30 a 20:00 horas Sábados de 08:00 a 13:00 horas",
     numcontact: "945 234 555",
     precio: "S/5.50",
-    tipo: "descubierto",
+    tipo: "Descubierto",
     disponibilidad: false,
   },
   {
@@ -70,7 +70,7 @@ const ubicaciones = [
       "De lunes a viernes de 07:30 a 20:00 horas Sábados de 08:00 a 13:00 horas",
     numcontact: "995 675 645",
     precio: "S/6.00",
-    tipo: "subterraneo",
+    tipo: "Subterraneo",
     disponibilidad: true,
   },
   {
@@ -84,7 +84,7 @@ const ubicaciones = [
       "De lunes a viernes de 07:30 a 20:00 horas Sábados de 08:00 a 13:00 horas",
     numcontact: "995 675 645",
     precio: "S/10.00",
-    tipo: "abierto",
+    tipo: "Abierto",
     disponibilidad: true,
   },
   {
@@ -98,7 +98,7 @@ const ubicaciones = [
       "De lunes a viernes de 07:30 a 20:00 horas Sábados de 08:00 a 13:00 horas",
     numcontact: "995 675 645",
     precio: "S/10.00",
-    tipo: "abierto",
+    tipo: "Abierto",
     disponibilidad: true,
   },
   {
@@ -112,7 +112,7 @@ const ubicaciones = [
       "De lunes a viernes de 07:30 a 20:00 horas Sábados de 08:00 a 13:00 horas",
     numcontact: "995 675 645",
     precio: "S/5.50",
-    tipo: "abierto",
+    tipo: "Abierto",
     disponibilidad: true,
   },
   {
@@ -126,7 +126,7 @@ const ubicaciones = [
       "De lunes a viernes de 07:30 a 20:00 horas Sábados de 08:00 a 13:00 horas",
     numcontact: "995 675 645",
     precio: "S/6.00",
-    tipo: "techado",
+    tipo: "Techado",
     disponibilidad: true,
   },
   {
@@ -140,7 +140,7 @@ const ubicaciones = [
       "De lunes a viernes de 07:30 a 20:00 horas Sábados de 08:00 a 13:00 horas",
     numcontact: "995 675 645",
     precio: "S/8.00",
-    tipo: "techado",
+    tipo: "Techado",
     disponibilidad: true,
   },
   {
@@ -154,7 +154,7 @@ const ubicaciones = [
       "De lunes a viernes de 07:30 a 20:00 horas Sábados de 08:00 a 13:00 horas",
     numcontact: "995 675 645",
     precio: "S/2.00",
-    tipo: "abierto",
+    tipo: "Abierto",
     disponibilidad: true,
   },
   {
@@ -166,8 +166,8 @@ const ubicaciones = [
     descripcion: "Costado del parque de la Identidad Wanka",
     horario: "De lunes a viernes de 08:30 a 19:00 horas",
     numcontact: "942003634",
-    precio: "S/3.00 por hora",
-    tipo: "techado",
+    precio: "S/3.00",
+    tipo: "Techado",
     disponibilidad: true,
   },
   {
@@ -179,8 +179,8 @@ const ubicaciones = [
     descripcion: "A espaldas de la Iglesia La Inmaculada",
     horario: "De lunes a viernes de 09:00 a 18:30 horas",
     numcontact: "988228819",
-    precio: "S/5.00 por hora",
-    tipo: "descubierto",
+    precio: "S/5.00",
+    tipo: "Descubierto",
     disponibilidad: true,
   },
   {
@@ -192,8 +192,8 @@ const ubicaciones = [
     descripcion: "Costado de la Empresa Turismo Internacional",
     horario: "De lunes a viernes de 06:00 a 22:30 horas",
     numcontact: "064224235",
-    precio: "S/6.00 por hora",
-    tipo: "techado",
+    precio: "S/6.00",
+    tipo: "Techado",
     disponibilidad: false,
   },
   {
@@ -205,8 +205,8 @@ const ubicaciones = [
     descripcion: "Al frente de la I.E. Sebastian Lorente",
     horario: "24 horas",
     numcontact: "995080054",
-    precio: "S/5.00 por hora (dia), S/7.00 noche",
-    tipo: "abierto",
+    precio: "S/5.00 (dia), S/7.00 noche",
+    tipo: "Abierto",
     disponibilidad: true,
   },
   {
@@ -218,8 +218,8 @@ const ubicaciones = [
     descripcion: "a 20 metros de la catedral de Huancayo",
     horario: "De lunes a viernes de 09:00 a 19:00 horas",
     numcontact: "942003634",
-    precio: "S/6.00 por hora",
-    tipo: "abierto",
+    precio: "S/6.00",
+    tipo: "Abierto",
     disponibilidad: false,
   },
   {
@@ -233,7 +233,7 @@ const ubicaciones = [
     horario: "De lunes a viernes de 09:00 a 19:00 horas",
     numcontact: "942003634",
     precio: "S/6.00",
-    tipo: "descubierto",
+    tipo: "Descubierto",
     disponibilidad: true,
   },
   {
@@ -247,7 +247,7 @@ const ubicaciones = [
     horario: "De lunes a viernes de 09:00 a 19:00 horas",
     numcontact: "942003634",
     precio: "S/6.00",
-    tipo: "abierto",
+    tipo: "Abierto",
     disponibilidad: false,
   },
   {
@@ -261,7 +261,7 @@ const ubicaciones = [
     horario: "De lunes a viernes de 09:00 a 19:00 horas",
     numcontact: "942003634",
     precio: "S/6.00",
-    tipo: "subterraneo",
+    tipo: "Subterraneo",
     disponibilidad: true,
   },
   {
@@ -269,13 +269,13 @@ const ubicaciones = [
     lat: -12.049705,
     lng: -75.195731,
     nombre: "Cochera Los Sauces",
-    dirección: "Jr. Lima 450",
+    direccion: "Jr. Lima 450",
     descripcion:
       "Cochera ubicada de forma céntrica con amplio espacio con acceso y salida por 2 lugares Jr. Lima y Calle Arequipa",
     horario: "De lunes a viernes de 09:00 a 19:00 horas",
     numcontact: "942003634",
     precio: "S/6.00",
-    tipo: "abierto",
+    tipo: "Abierto",
     disponibilidad: false,
   },
   {
@@ -283,13 +283,13 @@ const ubicaciones = [
     lat: -12.070465,
     lng: -75.210257,
     Nombre: "Cochera Arequipa",
-    dirección: "Calle Arequipa 679",
+    direccion: "Calle Arequipa 679",
     descripcion:
       "Cochera ubicada de forma céntrica con espacios para autos camionetas cerca al centro de la ciudad",
     horario: "De lunes a viernes de 09:00 a 19:00 horas",
     numcontact: "942003634",
     precio: "S/6.00",
-    tipo: "techado",
+    tipo: "Techado",
     disponibilidad: false,
   },
 ];

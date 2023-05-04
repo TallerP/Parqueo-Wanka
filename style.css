@@ -185,7 +185,7 @@ p {
 
 span {
   color: var(--black);
-  font-size: clamp(6px, 8vw, 13px);
+  font-size: clamp(6px, 8vw, 12px);
   letter-spacing: 0.03em;
   line-height: 1rem;
   font-weight: normal;
@@ -416,10 +416,9 @@ img {
 
 .c-explorar-list-title {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 0.1rem;
   padding: 1rem 2rem;
-  border-bottom: 1px solid #dadce0;
 }
 
 .c-explorar-list-detall {
@@ -427,6 +426,35 @@ img {
   flex-direction: column;
   gap: 1rem;
   padding: 1rem 2rem;
+}
+
+.c-explorar-list-import{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  border-top: 1px solid #dadce0;
+  border-bottom: 1px solid #dadce0;
+}
+
+.content-precio-title {
+  color: var(--grey-black);
+  padding-bottom: 0.2rem;
+}
+.content-precio {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.content-precio-det {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.content-precio-det-text{
+  font-size: 1.1rem !important;
 }
 
 .c-explorar-list-detall-item {
@@ -459,21 +487,7 @@ img {
   background-color: var(--grey);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
 }
-.content-precio-title {
-  color: var(--black);
-  padding-bottom: 0.2rem;
-}
-.content-precio {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-}
-.content-precio-det {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
+
 
 /*---------------- Estilos Filter ----------------*/
 .c-explorar-filter {
