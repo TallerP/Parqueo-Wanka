@@ -8,11 +8,18 @@
     <link rel="stylesheet" href="style.css" />
 
     <!-- BOOSTRAP CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300&display=swap"
+      rel="stylesheet"
+    />
 
-    <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmn7dgBjGCRulPapD4gPqSE6XQAQ7iCTg&libraries=geometry&map_ids=ab9ec8e84265fcee&callback=initMap&style=feature:all|element:labels|visibility:off"
-    ></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmn7dgBjGCRulPapD4gPqSE6XQAQ7iCTg&libraries=geometry&map_ids=ab9ec8e84265fcee&callback=initMap&style=feature:all|element:labels|visibility:off"></script>
   </head>
   <style></style>
 
@@ -89,7 +96,7 @@
           </div>
           <div>
             <select id="rango">
-              <option value="2">2 km</option>
+              <option value="2000">2 km</option>
               <option value="4">4 km</option>
               <option value="8">8 km</option>
             </select>
@@ -180,16 +187,25 @@
           <span>Playa de estacionamiento</span>
         </div>
         <div class="c-explorar-list-title">
-          <span class="content-precio-title">Tarifa</span>
           <div class="content-precio">
+            <span class="content-precio-title">Tarifa</span>
             <div class="content-precio-det">
               <img
                 src="https://icongr.am/entypo/credit.svg?size=20&color=fb3447"
                 alt=""
               />
-              <h2>Precio x hora</h2>
+              <h2><span id="ubicacion-precio"></span> x hora</h2>
             </div>
-            <h2 id="ubicacion-precio"></h2>
+          </div>
+          <div class="content-precio">
+            <span class="content-precio-title">Disponibles</span>
+            <div class="content-precio-det">
+              <img
+                src="https://icongr.am/entypo/credit.svg?size=20&color=fb3447"
+                alt=""
+              />
+              <span>2</span><h2> espacios</h2>
+            </div>
           </div>
         </div>
         <div class="c-explorar-list-detall">
@@ -243,98 +259,188 @@
       <div id="map" class="map"></div>
     </section>
 
-      <!-- Toastify CSS -->
-  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-   <!-- Custom CSS --> 
-  <link rel="stylesheet" href="./main.css">
-  <!-- Main -->
-  <script src="./main.js" type="module"></script>
+    <!-- Toastify CSS -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./main.css" />
+    <!-- Main -->
+    <script src="./main.js" type="module"></script>
     <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg bg-white navbar-white">
-    <div class="container">
-      <a class="navbar-brand" href="/">ParqueoWanka</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav ms-auto">
-        <li class="nav-item logged-out">
-          <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#signinModal">Iniciar Sesión</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link logged-out" href="#" data-bs-toggle="modal" data-bs-target="#signupModal">Regístrate</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link logged-in" href="#" id="logout">Cerrar Sesión</a>
-        </li>
+    <nav class="navbar navbar-expand-lg bg-white navbar-white">
+      <div class="container">
+        <a class="navbar-brand" href="/">ParqueoWanka</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNavAltMarkup"
+          aria-controls="navbarNavAltMarkup"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav ms-auto">
+            <li class="nav-item logged-out">
+              <a
+                class="nav-link"
+                href="#"
+                data-bs-toggle="modal"
+                data-bs-target="#signinModal"
+                >Iniciar Sesión</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link logged-out"
+                href="#"
+                data-bs-toggle="modal"
+                data-bs-target="#signupModal"
+                >Regístrate</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link logged-in" href="#" id="logout"
+                >Cerrar Sesión</a
+              >
+            </li>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!--Signup Modal -->
+    <div
+      class="modal fade"
+      id="signupModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content bg-white">
+          <div class="modal-header">
+            <h3>Registrar</h3>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body p-10">
+            <form id="signup-form">
+              <label for="nombre">Nombre:</label>
+              <input
+                type="text"
+                id="signup-nombre"
+                class="form-control mb-3"
+                placeholder="Ingrese su nombre"
+                required
+              />
+
+              <label for="telefono">Teléfono:</label>
+              <input
+                type="text"
+                id="signup-telefono"
+                class="form-control mb-3"
+                placeholder="Ingrese su teléfono"
+                required
+              />
+
+              <label for="email">Email:</label>
+              <input
+                type="email"
+                id="signup-email"
+                class="form-control mb-3"
+                placeholder="Ingrese su correo"
+                required
+              />
+
+              <label for="password">Contraseña:</label>
+              <input
+                type="password"
+                id="signup-password"
+                class="form-control mb-3"
+                placeholder="Ingrese su contraseña"
+                required
+              />
+
+              <button type="submit" class="btn btn-primary">Guardar</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-  </nav>
+    <!-- signin Modal -->
+    <div
+      class="modal fade"
+      id="signinModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalSignin"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content bg-white">
+          <div class="modal-header">
+            <h3>Iniciar Sesión</h3>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body p-10">
+            <form id="login-form">
+              <label for="email">Email:</label>
+              <input
+                type="email"
+                id="login-email"
+                class="form-control mb-3"
+                placeholder="Ingrese su Correo"
+                required
+              />
+              <label for="password">Contraseña:</label>
+              <input
+                type="password"
+                id="login-password"
+                class="form-control mb-3"
+                placeholder="Ingrese su contraseña"
+                required
+              />
 
-  <!--Signup Modal -->
-  <div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content bg-white">
-        <div class="modal-header">
-          <h3>Registrar</h3>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body p-10">
-          <form id="signup-form">
-            <label for="nombre">Nombre:</label>
-            <input type="text" id="signup-nombre" class="form-control mb-3" placeholder="Ingrese su nombre" required>
+              <button type="submit" class="btn btn-success w-100 mb-4">
+                Iniciar Sesión
+              </button>
 
-            <label for="telefono">Teléfono:</label>
-            <input type="text" id="signup-telefono" class="form-control mb-3" placeholder="Ingrese su teléfono" required>
-            
-            <label for="email">Email:</label>
-            <input type="email" id="signup-email" class="form-control mb-3" placeholder="Ingrese su correo" required>
-
-            <label for="password">Contraseña:</label>
-            <input type="password" id="signup-password" class="form-control mb-3" placeholder="Ingrese su contraseña" required>
-
-            <button type="submit" class="btn btn-primary">Guardar</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-<!-- signin Modal -->
-  <div class="modal fade" id="signinModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalSignin"
-    aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content bg-white">
-        <div class="modal-header">
-          <h3>Iniciar Sesión</h3>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body p-10">
-          <form id="login-form">
-            <label for="email">Email:</label>
-            <input type="email" id="login-email" class="form-control mb-3" placeholder="Ingrese su Correo" required>
-            <label for="password">Contraseña:</label>
-            <input type="password" id="login-password" class="form-control mb-3" placeholder="Ingrese su contraseña" required>
-
-            <button type="submit" class="btn btn-success w-100 mb-4">Iniciar Sesión</button>
-
-            <button type="button" class="btn btn-info" id="googleLogin">Iniciar sesión con Google</button>
-            <button type="button" class="btn btn-primary" id="facebookLogin">Iniciar sesión con Facebook</button>
-            
-          </form>
+              <button type="button" class="btn btn-info" id="googleLogin">
+                Iniciar sesión con Google
+              </button>
+              <button type="button" class="btn btn-primary" id="facebookLogin">
+                Iniciar sesión con Facebook
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- SCRIPTS Bootstrap-->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Toastify js -->
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-  <script src="./main.js" type="module"></script>
-
+    <!-- SCRIPTS Bootstrap-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Toastify js -->
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
+    <script src="./main.js" type="module"></script>
   </body>
   <script src="content.js"></script>
   <script src="datos.js"></script>

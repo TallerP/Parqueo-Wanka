@@ -33,6 +33,7 @@ function initMap() {
     mapId: "ab9ec8e84265fcee",
     streetViewControl: false,
     zoomControl: false,
+    fontFamily: "'Space Grotesk', sans-serif"
   });
 
   marker = new google.maps.Marker({
@@ -88,7 +89,7 @@ const createMarker = (
   });
 
   const contentString =
-    '<div class="info-window">' + "<h3>" + precio + "</h3>" + "</div>";
+    '<div class="info-window">' + '<span class="info-price">' + precio + "</span>" + "</div>";
 
   const infoWindow = new google.maps.InfoWindow({
     content: contentString,

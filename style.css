@@ -1,11 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400&display=swap');
 /*//////////////////////////////////////////////////////////////////
 [ RESTYLE TAG ]*/
 
 * {
   text-decoration: none;
   box-sizing: inherit;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
 }
 
 /*//////////////////////////////////////////////////////////////////
@@ -141,7 +141,6 @@ h1 {
   font-size: 1.375rem !important;
   line-height: 1.75rem;
   font-weight: 400;
-  letter-spacing: 0.03em;
 }
 
 h2 {
@@ -150,6 +149,7 @@ h2 {
   letter-spacing: 0.03em;
   line-height: 1rem;
   font-weight: 600;
+  margin: 0 !important;
 }
 
 h3 {
@@ -157,7 +157,6 @@ h3 {
   font-size: clamp(6.5px, 8vw, 13px) !important;
   letter-spacing: 0.03em !important;
   line-height: 1rem !important;
-  font-weight: bold !important;
   margin: 0 !important;
 }
 
@@ -189,7 +188,7 @@ span {
   font-size: clamp(6px, 8vw, 13px);
   letter-spacing: 0.03em;
   line-height: 1rem;
-  font-weight: 100;
+  font-weight: normal;
 }
 
 a {
@@ -417,13 +416,10 @@ img {
 
 .c-explorar-list-title {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   gap: 0.1rem;
   padding: 1rem 2rem;
   border-bottom: 1px solid #dadce0;
-}
-span {
-  color: #70757a;
 }
 
 .c-explorar-list-detall {
@@ -456,6 +452,7 @@ span {
   align-items: center;
   gap: 0.5rem;
   transition: ease-out 0.35s;
+  font-size: 13px;
 }
 
 .btn-rese:hover {
@@ -468,7 +465,8 @@ span {
 }
 .content-precio {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   justify-content: space-between;
 }
 .content-precio-det {
@@ -573,13 +571,16 @@ span {
 
 .info-window {
   background-color: white;
-  color: black;
-  font-size: 16px;
   padding: 7px 10px;
   border-radius: 15px;
   box-shadow: 0 2px 7px 1px rgba(0, 0, 0, 0.3);
   border: 1px solid #dadce0;
   cursor: pointer;
+  transition: ease-out 0.35s;
+}
+
+.info-price{
+  font-weight: 600;
   transition: ease-out 0.35s;
 }
 
@@ -589,7 +590,9 @@ span {
 
 .info-window:hover {
   background-color: var(--black);
-  color: var(--white);
   transform: scale(1.2);
+}
+.info-window:hover > .info-price{
+  color: var(--white);
 }
 
