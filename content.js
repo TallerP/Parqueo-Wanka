@@ -314,3 +314,13 @@ function crearRuta(destino) {
 //     selectToggle();
 //   });
 // });
+
+document.addEventListener('DOMContentLoaded', function() {
+  new Splide('.splide', {
+    type: 'slide',
+    perPage: 1,
+    focus: 'center',
+    pagination: true,
+    arrows: true,
+  }).mount();
+});

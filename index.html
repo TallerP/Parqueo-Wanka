@@ -7,6 +7,12 @@
     <title>Parqueo Wanka</title>
     <link rel="stylesheet" href="style.css" />
 
+    <!-- Estilos CSS de SplideJS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@splidejs/splide@3.0.9/dist/css/splide.min.css"
+    />
+
     <!-- BOOSTRAP CSS -->
     <link
       rel="stylesheet"
@@ -85,7 +91,7 @@
               <div class="option">5km</div>
             </div>
           </div> -->
-          <div>
+          <div class="custom-select">
             <select id="tipo">
               <option value="todos">Todos</option>
               <option value="Techado">Techado</option>
@@ -151,13 +157,41 @@
         </div>
       </div>
       <div id="info-container" class="c-explorar-list">
-        <div>
-          <img
-            src="https://a0.muscache.com/im/pictures/miso/Hosting-14979866/original/75595cfc-37d6-42d8-95dd-0ea3c966ef88.jpeg?im_w=720"
-            alt=""
-            class="list-item-img"
-          />
+        <div class="splide">
+          <div class="splide__track">
+            <ul class="splide__list">
+              <li class="splide__slide">
+                <img
+                  src="https://a0.muscache.com/im/pictures/miso/Hosting-14979866/original/75595cfc-37d6-42d8-95dd-0ea3c966ef88.jpeg?im_w=720"
+                  alt="Image 1"
+                  class="list-item-img"
+                />
+              </li>
+              <li class="splide__slide">
+                <img
+                  src="https://a0.muscache.com/im/pictures/miso/Hosting-576599054777073307/original/53e611cc-b827-4cec-850e-c1db1274de43.jpeg?im_w=720"
+                  alt="Image 2"
+                  class="list-item-img"
+                />
+              </li>
+              <li class="splide__slide">
+                <img
+                  src="https://a0.muscache.com/im/pictures/miso/Hosting-576599054777073307/original/f288503b-fdad-4113-85f1-513697bd2698.jpeg?im_w=720"
+                  alt="Image 3"
+                  class="list-item-img"
+                />
+              </li>
+              <li class="splide__slide">
+                <img
+                  src="https://a0.muscache.com/im/pictures/miso/Hosting-576599054777073307/original/f288503b-fdad-4113-85f1-513697bd2698.jpeg?im_w=720"
+                  alt="Image "
+                  class="list-item-img"
+                />
+              </li>
+            </ul>
+          </div>
         </div>
+
         <div class="c-explorar-list-title">
           <h1 id="ubicacion-nombre"></h1>
           <span>
@@ -194,7 +228,13 @@
                 src="https://icongr.am/jam/pin-alt-f.svg?size=20&color=fb3447"
                 alt=""
               />
-              <h2><span id="ubicacion-precio" class="content-precio-det-text"></span> x hora</h2>
+              <h2>
+                <span
+                  id="ubicacion-precio"
+                  class="content-precio-det-text"
+                ></span>
+                x hora
+              </h2>
             </div>
           </div>
           <div class="content-precio">
@@ -205,7 +245,6 @@
                 alt=""
               />
               <h2><span class="content-precio-det-text">2</span> espacios</h2>
-              
             </div>
           </div>
           <div class="content-precio">
@@ -215,7 +254,11 @@
                 src="https://icongr.am/jam/home-f.svg?size=18&color=fb3447"
                 alt=""
               />
-              <h2><span id="ubicacion-tipo" class="content-precio-det-text">2</span> </h2>
+              <h2>
+                <span id="ubicacion-tipo" class="content-precio-det-text"
+                  >2</span
+                >
+              </h2>
             </div>
           </div>
         </div>
@@ -252,7 +295,7 @@
         <div class="c-explorar-list-btn">
           <button class="btn-rese">
             <img
-              src="https://icongr.am/feather/edit.svg?size=20&color=14bbf0"
+              src="https://icongr.am/jam/write-f.svg?size=15&color=14bbf0"
               alt=""
             />
             Escribir una reseña
@@ -445,7 +488,8 @@
       src="https://cdn.jsdelivr.net/npm/toastify-js"
     ></script>
     <script src="./main.js" type="module"></script>
+    <script src="content.js"></script>
+    <script src="datos.js"></script>
+    <script src="https://unpkg.com/@splidejs/splide@3.0.9/dist/js/splide.min.js"></script>
   </body>
-  <script src="content.js"></script>
-  <script src="datos.js"></script>
 </html>
