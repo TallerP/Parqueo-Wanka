@@ -142,3 +142,9 @@ datosRef.update({
 });
 
 alert("Dato actualizado correctamente");
+
+
+<div class="crud-header2">
+    <input type="text" id="idnombre" name="nombre" placeholder="Ingrese ID del estacionamiento">
+    <button class="boton" onclick="buscarDato()">Buscar</button>
+</div>*/
