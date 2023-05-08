@@ -27,10 +27,7 @@
                     <i class="fa-solid fa-user"></i>
                     Actualizar Parqueos
                 </h1>
-                <div class="crud-header2">
-                    <input type="text" id="idnombre" name="nombre" placeholder="Ingrese ID del estacionamiento">
-                    <button class="boton" onclick="buscarDato()">Buscar</button>
-                </div>
+
             </div>
             <table class="table">
                 <thead>
@@ -43,8 +40,8 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input type="number" id="Latitud" name="Latitud"><br></td>
-                        <td><input type="number" id="Longitud" name="Longitud"><br></td>
+                        <td><input type="number" id="Latitud" name="Latitud" readonly><br></td>
+                        <td><input type="number" id="Longitud" name="Longitud" readonly><br></td>
                         <td><input type="text" id="nombre" name="nombre"><br></td>
                         <td><input type="text" id="direccion" name="direccion"><br></td>
                     </tr>
@@ -59,8 +56,13 @@
                 <tbody>
                     <tr>
                         <td><input type="tel" id="celular" name="celular"><br></td>
-                        <td><input type="text" id="tipo" name="tipo" placeholder="Techado o sin Techar"><br></td>
-                        <td><input type="text" id="precio" name="precio"><br></td>
+                        <td><select id="tipo">
+                                <option value="seleccionar">-- Seleccionar</option>
+                                <option value="techado">Techado</option>
+                                <option value="sin-techo">Sin techo</option>
+                                <option value="techado">Subterraneo</option>
+                            </select></td>
+                        <td><input type="text" id="precio" name="precio" value="S/."><br></td>
                         <td><input type="text" id="horario" name="horario"><br></td>
                     </tr>
 
@@ -71,8 +73,15 @@
             </table>
             <th for="descripcion">Descripcion:</th>
             <td><input type="text" id="descripcion" name="descripcion"><br></td>
+            <th for="descripcion">Cantidad de Espacios:</th>
+            <td><input type="number" id="cantespacios" name="cantespacios"><br></td>
             <th for="descripcion">Disponibilidad:</th>
-            <td><input type="text" id="disponibilidad" name="disponibilidad" placeholder="Activo o Inactivo"><br></td>
+            <td><select id="disponibilidad">
+                    <option value="seleccionar">-- Seleccionar</option>
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                </select></td>
+            
             <div class="row">
                 <div class="col-md-12">
                     <div id="mapa" style="width: 100%; height: 250px"></div>
@@ -94,7 +103,7 @@
                     function generarMapa(coordenadas) {
                         var mapa = new google.maps.Map(document.getElementById('mapa'),
                             {
-                                zoom: 12,
+                                zoom: 13.5,
                                 center: new google.maps.LatLng(coordenadas.lat, coordenadas.lng)
                             }
                         );

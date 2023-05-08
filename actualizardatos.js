@@ -19,6 +19,7 @@ function guardarDato() {
   var precio = document.getElementById("precio").value;
   var horario = document.getElementById("horario").value;
   var descripcion = document.getElementById("descripcion").value;
+  var cantespacios = document.getElementById("cantespacios").value;
   var disponibilidad = document.getElementById("disponibilidad").value;
 
 
@@ -32,7 +33,9 @@ function guardarDato() {
     precio: precio,
     horario: horario,
     descripcion: descripcion,
+    cantespacios: cantespacios,
     disponibilidad: disponibilidad
+
   });
   alert("Datos guardado correctamente");
 }
@@ -47,6 +50,7 @@ function limpiarDato() {
   const horario = document.getElementById("horario");
   const descripcion = document.getElementById("descripcion");
   const celular = document.getElementById("celular");
+  const cantespacios = document.getElementById("cantespacios");
   const disponibilidad = document.getElementById("disponibilidad");
 
 
@@ -60,6 +64,7 @@ function limpiarDato() {
   descripcion.value = "";
   celular.value = "";
   disponibilidad.value = "";
+  cantespacios.value= "";
 }
 
 function buscarDato() {
@@ -77,6 +82,7 @@ function buscarDato() {
       document.getElementById("tipo").value = data.tipo;
       document.getElementById("precio").value = data.precio;
       document.getElementById("horario").value = data.horario;
+      document.getElementById("cantespacios").value = data.cantespacios;
       document.getElementById("descripcion").value = data.descripcion;
       document.getElementById("disponibilidad").value = data.disponibilidad;
     });
@@ -93,6 +99,7 @@ function actualizarDato(nombre) {
   var tipo = document.getElementById("tipo").value;
   var precio = document.getElementById("precio").value;
   var horario = document.getElementById("horario").value;
+  var cantespacios = document.getElementById("cantespacios").value;
   var descripcion = document.getElementById("descripcion").value;
   var disponibilidad = document.getElementById("disponibilidad").value;
   
@@ -107,6 +114,7 @@ function actualizarDato(nombre) {
         celular: celular,
         tipo: tipo,
         precio: precio,
+        cantespacios: cantespacios,
         horario: horario,
         descripcion: descripcion,
         disponibilidad: disponibilidad
@@ -133,4 +141,10 @@ datosRef.update({
   disponibilidad: disponibilidad
 });
 
-alert("Dato actualizado correctamente");*/
+alert("Dato actualizado correctamente");
+
+
+<div class="crud-header2">
+    <input type="text" id="idnombre" name="nombre" placeholder="Ingrese ID del estacionamiento">
+    <button class="boton" onclick="buscarDato()">Buscar</button>
+</div>*/
