@@ -124,21 +124,3 @@ function actualizarDato(nombre) {
 
   alert("Dato actualizado correctamente");
 }
-
-/*
-var datosId = '-NUouJKzcOkxAjNnLT5u'; // ID del estudiante a editar
-var datosRef = firebase.database().ref('datos/' + datosId);
-datosRef.update({
-  Latitud: Latitud,
-  Longitud: Longitud,
-  nombre: nombre,
-  direccion: direccion,
-  celular: celular,
-  tipo: tipo,
-  precio: precio,
-  horario: horario,
-  descripcion: descripcion,
-  disponibilidad: disponibilidad
-});
-
-alert("Dato actualizado correctamente");
