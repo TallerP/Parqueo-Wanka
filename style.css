@@ -144,19 +144,20 @@ h1 {
 
 h2 {
   color: var(--black);
-  font-size: 1.1rem !important;
+  font-size: 1.1rem ;
   letter-spacing: 0.03em;
   line-height: 1rem;
-  font-weight: 600;
-  margin: 0 !important;
+  font-weight: normal;
+  margin: 0 ;
 }
 
 h3 {
   color: var(--red-light);
-  font-size: clamp(6.5px, 8vw, 13px) !important;
-  letter-spacing: 0.03em !important;
-  line-height: 1rem !important;
-  margin: 0 !important;
+  font-size: clamp(6.5px, 8vw, 13px) ;
+  letter-spacing: 0.03em ;
+  line-height: 1rem ;
+  margin: 0;
+  font-weight: normal;
 }
 
 h4 {
@@ -230,15 +231,16 @@ button {
 
 section {
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
 }
 
 /*//////////////////////////////////////////////////////////////////
 [ CONTENT]*/
 
 .map {
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
+  overflow:hidden !important;
 }
 
 .c-explorar {
@@ -387,8 +389,8 @@ img {
 }
 
 /*---------------- Detalle de estacionamiento ----------------*/
-.c-explorar-list {
-  display: flex;
+.c-explorar-list { 
+  display: none;
   flex-direction: column;
   position: absolute;
   max-width: 400px;
@@ -403,12 +405,11 @@ img {
   transition: 0.35s ease-in-out;
   border-radius: 15px;
   opacity: 0;
-  visibility: hidden;
 }
 
 #info-container.show {
+  display: block;
   opacity: 1;
-  visibility: visible;
 }
 
 .list-item-img {

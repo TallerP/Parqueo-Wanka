@@ -1,3 +1,22 @@
+// Configuración de Firebase
+var firebaseConfig = {
+  apiKey: "AIzaSyDtpOfIff-7_ZKPcKzojiW8Q4lldvV8iwc",
+  authDomain: "tallerproyectos2023-d32b7.firebaseapp.com",
+  databaseURL: "https://tallerproyectos2023-d32b7-default-rtdb.firebaseio.com",
+  projectId: "tallerproyectos2023-d32b7",
+  storageBucket: "tallerproyectos2023-d32b7.appspot.com",
+  messagingSenderId: "52196951713",
+  appId: "1:52196951713:web:806d3df12faa67f673d2e0",
+};
+
+// Inicializar la aplicación de Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+const markersRef = database.ref("datos");
+
+/*//////////////////////////////////////////////////////////////////
+[ INICIALIZACIÓN DEL MAPA]*/
+
 let ubicacionActual;
 let map;
 let marker;
@@ -33,7 +52,6 @@ function initMap() {
     mapId: "ab9ec8e84265fcee",
     streetViewControl: false,
     zoomControl: false,
-    fontFamily: "'Space Grotesk', sans-serif"
   });
 
   marker = new google.maps.Marker({
@@ -73,12 +91,11 @@ const createMarker = (
   ubicacionHorario,
   descripcion,
   tipo,
+  espacio,
   disponibilidad
 ) => {
   const markerIcon = {
-    url: disponibilidad
-      ? "imgs/libre.png"
-      : "imgs/ocupado.png",
+    url: disponibilidad ? "imgs/libre.png" : "imgs/ocupado.png",
     scaledSize: new google.maps.Size(43, 65),
   };
 
@@ -89,7 +106,11 @@ const createMarker = (
   });
 
   const contentString =
-    '<div class="info-window">' + '<span class="info-price">' + precio + "</span>" + "</div>";
+    '<div class="info-window">' +
+    '<span class="info-price">' +
+    precio +
+    "</span>" +
+    "</div>";
 
   const infoWindow = new google.maps.InfoWindow({
     content: contentString,
@@ -109,148 +130,13 @@ const createMarker = (
     document.getElementById("ubicacion-numcontact").textContent = numcontact;
     document.getElementById("ubicacion-descripcion").textContent = descripcion;
     document.getElementById("ubicacion-tipo").textContent = tipo;
+    document.getElementById("ubicacion-espacio").textContent = espacio;
     // Muestra el div en la pantalla
     document.getElementById("info-container").classList.add("show");
   });
 
   markers.push(marker);
 };
-
-const createLocationMarkers = () => {
-  // Obtiene los filtros seleccionados
-  const tipoEstacionamiento = document.getElementById("tipo").value;
-
-  ubicaciones.forEach((ubicacion) => {
-    const coord = new google.maps.LatLng(ubicacion.lat, ubicacion.lng);
-    const disponibilidad = ubicacion.disponibilidad;
-
-    // Configura las opciones de filtrado para la ubicación actual
-    const options = {
-      tipoEstacionamiento: ubicacion.tipo,
-    };
-
-    // Comprueba si la ubicación coincide con los filtros seleccionados
-    if (filterMarkers(options, tipoEstacionamiento, precio)) {
-      createMarker(
-        coord,
-        ubicacion.precio,
-        map,
-        ubicacion.nombre,
-        ubicacion.direccion,
-        ubicacion.numcontact,
-        ubicacion.horario,
-        ubicacion.descripcion,
-        disponibilidad
-      );
-    }
-  });
-};
-
-/*//////////////////////////////////////////////////////////////////
-[ FILTER TIPO]*/
-
-const tipoSelector = document.getElementById("tipo");
-
-document.addEventListener("DOMContentLoaded", () => {
-  const tipoSelector = document.getElementById("tipo");
-  tipoSelector.addEventListener("change", (event) => {
-    const tipoSeleccionado = event.target.value;
-    filterMarkers(tipoSeleccionado);
-  });
-});
-
-/*//////////////////////////////////////////////////////////////////
-[ FILTER RANGO ]*/
-
-const rangoSelector = document.getElementById("rango");
-
-function getDistance(coord1, coord2) {
-  const R = 6371; // radio de la Tierra en km
-  const dLat = toRadians(coord2.lat - coord1.lat);
-  const dLon = toRadians(coord2.lng - coord1.lng);
-  const lat1 = toRadians(coord1.lat);
-  const lat2 = toRadians(coord2.lat);
-
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-  const distance = R * c;
-  return distance;
-}
-
-function toRadians(degrees) {
-  return degrees * (Math.PI / 180);
-}
-
-let lastTipoSeleccionado = "todos";
-
-rangoSelector.addEventListener("change", () => {
-  filterMarkers(lastTipoSeleccionado);
-});
-
-tipoSelector.addEventListener("change", (event) => {
-  lastTipoSeleccionado = event.target.value;
-  filterMarkers(lastTipoSeleccionado);
-});
-
-/*//////////////////////////////////////////////////////////////////
-[ FILTRAR ]*/
-
-function filterMarkers(tipoSeleccionado = "todos") {
-  const rangoSelector = document.getElementById("rango");
-  const rangoSeleccionado = Number(rangoSelector.value);
-
-  let ubicacionesFiltradas;
-
-  if (tipoSeleccionado === "todos") {
-    ubicacionesFiltradas = ubicaciones;
-    document.getElementById("info-container").classList.remove("show");
-  } else {
-    ubicacionesFiltradas = ubicaciones.filter(
-      (ubicacion) => ubicacion.tipo === tipoSeleccionado
-    );
-    document.getElementById("info-container").classList.remove("show");
-  }
-
-  const ubicacionesCercanas = ubicacionesFiltradas.filter((ubicacion) => {
-    const ubicacionCoord = new google.maps.LatLng(ubicacion.lat, ubicacion.lng);
-    const distancia =
-      google.maps.geometry.spherical.computeDistanceBetween(
-        ubicacionCoord,
-        ubicacionActual
-      ) / 1000; // convertimos a kilómetros
-
-    return distancia <= rangoSeleccionado;
-  });
-
-  // Borra todos los marcadores del mapa
-  markers.forEach((marker) => marker.setMap(null));
-  markers = [];
-
-  // Al seleccionar otro filtro elimina la ruta que se estableció anteriormente
-  directionsDisplay.setDirections({ routes: [] });
-
-  // Crea marcadores solo para las ubicaciones filtradas
-  ubicacionesCercanas.forEach((ubicacion) => {
-    const coord = new google.maps.LatLng(ubicacion.lat, ubicacion.lng);
-    const disponibilidad = ubicacion.disponibilidad;
-
-    createMarker(
-      coord,
-      ubicacion.precio,
-      map,
-      ubicacion.nombre,
-      ubicacion.direccion,
-      ubicacion.numcontact,
-      ubicacion.horario,
-      ubicacion.descripcion,
-      ubicacion.tipo,
-      disponibilidad
-    );
-  });
-}
 
 /*//////////////////////////////////////////////////////////////////
 [ CREAR RUTA ]*/
@@ -284,42 +170,158 @@ function crearRuta(destino) {
   });
 }
 
-/** Toggle function */
+/*//////////////////////////////////////////////////////////////////
+[ OPTION RANGO ]*/
+const rangoSelector = document.getElementById("rango");
+function getDistance(coord1, coord2) {
+  const R = 6371; // radio de la Tierra en km
+  const dLat = toRadians(coord2.lat() - coord1.lat());
+  const dLon = toRadians(coord2.lng() - coord1.lng());
+  const lat1 = toRadians(coord1.lat());
+  const lat2 = toRadians(coord2.lat());
 
-// const selectedOption = document.querySelector(".selected-option");
-// const selectValue = document.querySelector(".select-value");
-// const optionContainer = document.querySelector(".options");
-// const optionList = document.querySelectorAll(".option");
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-// /** Toggle function */
-// const selectToggle = () => {
-//   if (optionContainer.dataset.toggle == "collapsed") {
-//     optionContainer.dataset.toggle = "";
-//   } else {
-//     optionContainer.dataset.toggle = "collapsed";
-//   }
-// };
+  const distance = R * c;
+  return distance;
+}
 
-// /** When click on selected-option */
-// selectedOption.addEventListener("click", selectToggle);
+function toRadians(degrees) {
+  return degrees * (Math.PI / 180);
+}
 
-// /** This function update select value */
-// const updateSelectValue = (option) => {
-//   selectValue.innerText = option.innerText;
-// };
+/*//////////////////////////////////////////////////////////////////
+[ OPTION RANGO ]*/
 
-// optionList.forEach((option) => {
-//   option.addEventListener("click", (e) => {
-//     updateSelectValue(option);
-//     selectToggle();
-//   });
-// });
+const tipoSelector = document.getElementById("tipo");
 
-document.addEventListener('DOMContentLoaded', function() {
-  new Splide('.splide', {
-    type: 'slide',
+document.addEventListener("DOMContentLoaded", () => {
+  const tipoSelector = document.getElementById("tipo");
+  tipoSelector.addEventListener("change", (event) => {
+    const tipoSeleccionado = event.target.value;
+    filterMarkers(tipoSeleccionado);
+  });
+});
+
+let lastTipoSeleccionado = "todos";
+let ubicacionesCercanas = []; // Variable para almacenar las ubicaciones filtradas
+
+rangoSelector.addEventListener("change", () => {
+  filterMarkers(lastTipoSeleccionado);
+});
+
+tipoSelector.addEventListener("change", (event) => {
+  lastTipoSeleccionado = event.target.value;
+  filterMarkers(lastTipoSeleccionado);
+});
+
+/*//////////////////////////////////////////////////////////////////
+[ FILTER  ]*/
+
+function filterMarkers(tipoSeleccionado = "todos") {
+  const rangoSeleccionado = Number(rangoSelector.value);
+
+  if (tipoSeleccionado === "todos") {
+    document.getElementById("info-container").classList.remove("show");
+  } else {
+    document.getElementById("info-container").classList.remove("show");
+  }
+
+  // Borra todos los marcadores del mapa
+  markers.forEach((marker) => marker.setMap(null));
+  markers = [];
+
+  // Al seleccionar otro filtro elimina la ruta que se estableció anteriormente
+  directionsDisplay.setDirections({ routes: [] });
+
+    // Obtén los datos de ubicaciones desde Firebase Realtime Database
+    const firebaseRef = firebase.database().ref("datos");
+    firebaseRef.once("value", (snapshot) => {
+      snapshot.forEach((childSnapshot) => {
+        const ubicacion = childSnapshot.val();
+        const coord = new google.maps.LatLng(
+          ubicacion.Latitud,
+          ubicacion.Longitud
+        );
+        const ubicacionActual = map.getCenter(); // Obtén las coordenadas actuales del mapa
+
+        if (
+          tipoSeleccionado === "todos" ||
+          ubicacion.tipo === tipoSeleccionado
+        ) {
+          const distancia = getDistance(coord, ubicacionActual);
+
+          if (distancia <= rangoSeleccionado) {
+            createMarker(
+              coord,
+              ubicacion.precio,
+              map,
+              ubicacion.nombre,
+              ubicacion.direccion,
+              ubicacion.celular,
+              ubicacion.horario,
+              ubicacion.descripcion,
+              ubicacion.tipo,
+              ubicacion.cantespacios,
+              ubicacion.disponibilidad
+            );
+          }
+        }
+      });
+    });
+  
+}
+
+const createLocationMarkers = () => {
+  // Obtiene los filtros seleccionados
+  const tipoEstacionamiento = document.getElementById("tipo").value;
+
+  // Obtén los datos de ubicaciones desde Firebase Realtime Database
+  const firebaseRef = firebase.database().ref("datos");
+  firebaseRef.on("value", (snapshot) => {
+    snapshot.forEach((childSnapshot) => {
+      const ubicacion = childSnapshot.val();
+      const coord = new google.maps.LatLng(
+        ubicacion.Latitud,
+        ubicacion.Longitud
+      );
+      const disponibilidad = ubicacion.disponibilidad;
+
+      // Configura las opciones de filtrado para la ubicación actual
+      const options = {
+        tipoEstacionamiento: ubicacion.tipo,
+      };
+
+      // Comprueba si la ubicación coincide con los filtros seleccionados
+      if (filterMarkers(options, tipoEstacionamiento, precio)) {
+        createMarker(
+          coord,
+          ubicacion.precio,
+          map,
+          ubicacion.nombre,
+          ubicacion.direccion,
+          ubicacion.celular,
+          ubicacion.horario,
+          ubicacion.descripcion,
+          ubicacion.tipo,
+          ubicacion.cantespacios,
+          disponibilidad
+        );
+      }
+    });
+  });
+};
+/*//////////////////////////////////////////////////////////////////
+[ SLIDERJS ]*/
+
+document.addEventListener("DOMContentLoaded", function () {
+  new Splide(".splide", {
+    type: "slide",
     perPage: 1,
-    focus: 'center',
+    focus: "center",
     pagination: true,
     arrows: true,
   }).mount();
