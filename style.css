@@ -68,9 +68,12 @@ a {
 :root {
   --swiper-navigation-size: 20px;
 }
-
+body{
+overflow: hidden;
+}
 /*//////////////////////////////////////////////////////////////////
 [ SCROLLBAR ]*/
+
 
 .c-scrollbar {
   position: absolute;
@@ -121,7 +124,7 @@ html[dir] .dark ::-webkit-scrollbar-thumb {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgb(67, 67, 67);
+  background-color: rgb(141, 141, 141);
 }
 
 html[dir] .dark ::-webkit-scrollbar-track {
@@ -137,25 +140,25 @@ html[dir] .dark ::-webkit-scrollbar-track {
 
 h1 {
   color: var(--black);
-  font-size: 1.375rem !important;
+  font-size: 1.375rem;
   line-height: 1.75rem;
   font-weight: 400;
 }
 
 h2 {
   color: var(--black);
-  font-size: 1.1rem ;
+  font-size: 1.1rem;
   letter-spacing: 0.03em;
   line-height: 1rem;
   font-weight: normal;
-  margin: 0 ;
+  margin: 0;
 }
 
 h3 {
   color: var(--red-light);
-  font-size: clamp(6.5px, 8vw, 13px) ;
-  letter-spacing: 0.03em ;
-  line-height: 1rem ;
+  font-size: clamp(6.5px, 8vw, 13px);
+  letter-spacing: 0.03em;
+  line-height: 1rem;
   margin: 0;
   font-weight: normal;
 }
@@ -230,17 +233,21 @@ button {
 }
 
 section {
-  width: 100%;
-  height: 100vh;
+  min-height: 100vh;
+}
+
+select {
+  padding: .3rem .8rem;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
 }
 
 /*//////////////////////////////////////////////////////////////////
 [ CONTENT]*/
 
 .map {
-  height: 100vh;
-  width: 100%;
-  overflow:hidden !important;
+  min-height: 100vh;
 }
 
 .c-explorar {
@@ -366,18 +373,23 @@ img {
 }
 
 .btn-menu {
-  color: var(--black);
+  color: var(--white);
   cursor: pointer;
   transition: ease-out 0.35s;
-  display: grid;
-  place-items: center;
+  background-color: #0A67F9;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+}
+
+.btn-menu:hover{
+  background-color: #0851c6;
 }
 
 .btn-user {
   color: var(--black);
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
   cursor: pointer;
   display: grid;
   place-items: center;
@@ -389,15 +401,15 @@ img {
 }
 
 /*---------------- Detalle de estacionamiento ----------------*/
-.c-explorar-list { 
+.c-explorar-list {
   display: none;
   flex-direction: column;
   position: absolute;
-  max-width: 400px;
-  height: 680px;
-  overflow-x: hidden;
   top: 5rem;
   left: 2rem;
+  max-width: 400px;
+  height: 80vh;
+  overflow-x: hidden;
   z-index: 4;
   background-color: var(--white);
   box-shadow: 0 1px 2px rgba(18, 19, 19, 0.3),
@@ -472,7 +484,7 @@ img {
   gap: 0.5rem;
 }
 .content-precio-det-text {
-  font-size: 1.1rem !important;
+  font-size: 1.1rem;
 }
 
 .c-explorar-list-detall-item {
@@ -510,7 +522,6 @@ img {
 .c-explorar-filter {
   display: flex;
   gap: 1rem;
-  height: 100%;
 }
 
 .select-value {

@@ -46,11 +46,12 @@ if (navigator.geolocation) {
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
     center: ubicacionActual,
-    zoom: 15,
+    zoom: 14.5,
     mapTypeControl: false,
     mapId: "ab9ec8e84265fcee",
     streetViewControl: false,
     zoomControl: false,
+    fullscreenControl: false
   });
 
   marker = new google.maps.Marker({
@@ -79,6 +80,7 @@ function initMap() {
   filterMarkers();
   createLocationMarkers();
 }
+
 
 const createMarker = (
   coord,
@@ -170,9 +172,21 @@ function crearRuta(destino) {
 }
 
 /*//////////////////////////////////////////////////////////////////
+[ OPTION TIPO ]*/
+
+const tipoSelector = document.getElementById("tipo");
+
+document.addEventListener("DOMContentLoaded", () => {
+  const tipoSelector = document.getElementById("tipo");
+  tipoSelector.addEventListener("change", (event) => {
+    const tipoSeleccionado = event.target.value;
+    filterMarkers(tipoSeleccionado);
+  });
+});
+
+/*//////////////////////////////////////////////////////////////////
 [ OPTION RANGO ]*/
 const rangoSelector = document.getElementById("rango");
-
 function getDistance(coord1, coord2) {
   const R = 6371; // radio de la Tierra en km
   const dLat = toRadians(coord2.lat() - coord1.lat());
@@ -193,19 +207,8 @@ function toRadians(degrees) {
   return degrees * (Math.PI / 180);
 }
 
-/*//////////////////////////////////////////////////////////////////
-[ OPTION TIPO ]*/
-const tipoSelector = document.getElementById("tipo");
-
-document.addEventListener("DOMContentLoaded", () => {
-  tipoSelector.addEventListener("change", (event) => {
-    const tipoSeleccionado = event.target.value;
-    filterMarkers(tipoSeleccionado);
-  });
-});
-
 let lastTipoSeleccionado = "todos";
-let ubicacionesFiltradas = []; // Variable para almacenar las ubicaciones filtradas
+let ubicacionesCercanas = []; // Variable para almacenar las ubicaciones filtradas
 
 rangoSelector.addEventListener("change", () => {
   filterMarkers(lastTipoSeleccionado);
@@ -217,33 +220,15 @@ tipoSelector.addEventListener("change", (event) => {
 });
 
 /*//////////////////////////////////////////////////////////////////
-[ FILTRAR ]*/
-// Definir la variable ubicaciones
-let ubicaciones = [];
-
-// Obtener los datos de ubicaciones desde Firebase Realtime Database
-firebaseRef.once("value", (snapshot) => {
-  snapshot.forEach((childSnapshot) => {
-    const ubicacion = childSnapshot.val();
-    ubicaciones.push(ubicacion);
-  });
-
-  // Una vez cargados los datos, puedes llamar a la función para crear los marcadores
-  createLocationMarkers();
-});
+[ FILTER  ]*/
+let rangeCircle = null;
 
 function filterMarkers(tipoSeleccionado = "todos") {
   const rangoSeleccionado = Number(rangoSelector.value);
 
-  let ubicacionesFiltradas;
-
   if (tipoSeleccionado === "todos") {
-    ubicacionesFiltradas = ubicaciones;
     document.getElementById("info-container").classList.remove("show");
   } else {
-    ubicacionesFiltradas = ubicaciones.filter(
-      (ubicacion) => ubicacion.tipo === tipoSeleccionado
-    );
     document.getElementById("info-container").classList.remove("show");
   }
 
@@ -254,62 +239,127 @@ function filterMarkers(tipoSeleccionado = "todos") {
   // Al seleccionar otro filtro elimina la ruta que se estableció anteriormente
   directionsDisplay.setDirections({ routes: [] });
 
-  // Crea marcadores para las ubicaciones filtradas
-  ubicacionesFiltradas.forEach((ubicacion) => {
-    const coord = new google.maps.LatLng(ubicacion.Latitud, ubicacion.Longitud);
-    const ubicacionActual = map.getCenter(); // Obtén las coordenadas actuales del mapa
-    const distancia = getDistance(coord, ubicacionActual);
-
-    if (distancia <= rangoSeleccionado) {
-      const disponibilidad = ubicacion.disponibilidad;
-
-      createMarker(
-        coord,
-        ubicacion.precio,
-        map,
-        ubicacion.nombre,
-        ubicacion.direccion,
-        ubicacion.numcontact,
-        ubicacion.horario,
-        ubicacion.descripcion,
-        ubicacion.tipo,
-        ubicacion.cantespacios,
-        disponibilidad
+  // Obtén la ubicación actual de la geolocalización
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const ubicacionActual = new google.maps.LatLng(
+        position.coords.latitude,
+        position.coords.longitude
       );
+
+      // Eliminar el círculo existente si hay uno
+      if (rangeCircle) {
+        rangeCircle.setMap(null);
+        rangeCircle = null;
+      }
+
+      // Crea el círculo con el patrón de relleno
+      rangeCircle = new google.maps.Circle({
+        strokeColor: "#ff0000", // Color del borde
+        strokeOpacity: 0.8, // Opacidad del borde
+        strokeWeight: 1, // Grosor del borde
+        fillColor: "transparent", // Color de relleno
+        fillOpacity: 0.05, // Opacidad del relleno
+        map: map, // Mapa al que se agrega el círculo
+        center: ubicacionActual,
+        radius: rangoSeleccionado * 1000,
+      });
+
+      // Función para actualizar el círculo de rango
+      function updateRangeCircle(center, radius) {
+        rangeCircle.setCenter(center); // Establecer la posición del círculo
+        rangeCircle.setRadius(radius); // Establecer el radio del círculo
+      }
+
+      // Centrar el mapa en la ubicación actual
+      map.setCenter(ubicacionActual);
+      map.setZoom(14);
+
+      // Obtén los datos de ubicaciones desde Firebase Realtime Database
+      const firebaseRef = firebase.database().ref("datos");
+      firebaseRef.on("value", (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          const ubicacion = childSnapshot.val();
+          const coord = new google.maps.LatLng(
+            ubicacion.Latitud,
+            ubicacion.Longitud
+          );
+
+          if (tipoSeleccionado === "todos" || ubicacion.tipo === tipoSeleccionado) {
+            const distancia = getDistance(coord, ubicacionActual);
+
+            if (distancia <= rangoSeleccionado && !markers.includes(coord)) {
+              createMarker(
+                coord,
+                ubicacion.precio,
+                map,
+                ubicacion.nombre,
+                ubicacion.direccion,
+                ubicacion.celular,
+                ubicacion.horario,
+                ubicacion.descripcion,
+                ubicacion.tipo,
+                ubicacion.cantespacios,
+                ubicacion.disponibilidad
+              );
+            }
+          }
+        });
+      });
+
+      // Llamar a la función de actualización del círculo en el evento de cambio de rango
+      rangoSelector.addEventListener("change", function () {
+        const rangoSeleccionado = Number(rangoSelector.value);
+        const radioEnMetros = rangoSeleccionado * 1000; // Convertir el rango a metros
+
+        updateRangeCircle(ubicacionActual, radioEnMetros);
+      });
+    },
+    (error) => {
+      console.log("Error en la geolocalización:", error);
     }
-  });
+  );
 }
 
 const createLocationMarkers = () => {
   // Obtiene los filtros seleccionados
   const tipoEstacionamiento = document.getElementById("tipo").value;
 
-  // Crea marcadores para todas las ubicaciones
-  ubicaciones.forEach((ubicacion) => {
-    const coord = new google.maps.LatLng(ubicacion.Latitud, ubicacion.Longitud);
-    const ubicacionActual = map.getCenter(); // Obtén las coordenadas actuales del mapa
-    const distancia = getDistance(coord, ubicacionActual);
-
-    if (tipoEstacionamiento === "todos" || ubicacion.tipo === tipoEstacionamiento) {
+  // Obtén los datos de ubicaciones desde Firebase Realtime Database
+  const firebaseRef = firebase.database().ref("datos");
+  firebaseRef.on("value", (snapshot) => {
+    snapshot.forEach((childSnapshot) => {
+      const ubicacion = childSnapshot.val();
+      const coord = new google.maps.LatLng(
+        ubicacion.Latitud,
+        ubicacion.Longitud
+      );
       const disponibilidad = ubicacion.disponibilidad;
 
-      createMarker(
-        coord,
-        ubicacion.precio,
-        map,
-        ubicacion.nombre,
-        ubicacion.direccion,
-        ubicacion.numcontact,
-        ubicacion.horario,
-        ubicacion.descripcion,
-        ubicacion.tipo,
-        ubicacion.cantespacios,
-        disponibilidad
-      );
-    }
-  });
-}
+      // Configura las opciones de filtrado para la ubicación actual
+      const options = {
+        tipoEstacionamiento: ubicacion.tipo,
+      };
 
+      // Comprueba si la ubicación coincide con los filtros seleccionados
+      if (filterMarkers(options, tipoEstacionamiento)) {
+        createMarker(
+          coord,
+          ubicacion.precio,
+          map,
+          ubicacion.nombre,
+          ubicacion.direccion,
+          ubicacion.celular,
+          ubicacion.horario,
+          ubicacion.descripcion,
+          ubicacion.tipo,
+          ubicacion.cantespacios,
+          disponibilidad
+        );
+      }
+    });
+  });
+};
 /*//////////////////////////////////////////////////////////////////
 [ SLIDERJS ]*/
 
