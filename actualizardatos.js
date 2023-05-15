@@ -20,8 +20,12 @@ function guardarDato() {
   var horario = document.getElementById("horario").value;
   var descripcion = document.getElementById("descripcion").value;
   var cantespacios = document.getElementById("cantespacios").value;
-  var disponibilidad = document.getElementById("disponibilidad").value;
+  var disponibilidad = false
 
+  // Actualiza la disponibilidad basado en la cantidad de espacios disponibles
+  if (cantespacios > 0) {
+    disponibilidad = true; // Asigna true si hay espacios disponibles
+  }
 
   firebase.database().ref('datos').push({
     Latitud: Latitud,
@@ -35,10 +39,11 @@ function guardarDato() {
     descripcion: descripcion,
     cantespacios: cantespacios,
     disponibilidad: disponibilidad
-
   });
+
   alert("Datos guardado correctamente");
 }
+
 
 function limpiarDato() {
   const Latitud = document.getElementById("Latitud");
@@ -51,42 +56,20 @@ function limpiarDato() {
   const descripcion = document.getElementById("descripcion");
   const celular = document.getElementById("celular");
   const cantespacios = document.getElementById("cantespacios");
-  const disponibilidad = document.getElementById("disponibilidad");
+  const disponibilidadDiv = document.getElementById("disponibilidad");
 
 
   Latitud.value = "";
-  Longitud.value= "";
+  Longitud.value = "";
   nombre.value = "";
   direccion.value = "";
   tipo.value = "";
   precio.value = "";
-  horario.value= "";
+  horario.value = "";
   descripcion.value = "";
   celular.value = "";
-  disponibilidad.value = "";
-  cantespacios.value= "";
-}
-
-function buscarDato() {
-  var id = document.getElementById("idnombre").value;
-
-  firebase.database().ref('datos').orderByChild("nombre").equalTo(id).once("value", function (snapshot) {
-    snapshot.forEach(function (childSnapshot) {
-      var data = childSnapshot.val();
-      alert('El estacionamiento con ID que busca se encontro con Exito.');
-      document.getElementById("Latitud").value = data.Latitud;
-      document.getElementById("Longitud").value = data.Longitud;
-      document.getElementById("nombre").value = data.nombre;
-      document.getElementById("direccion").value = data.direccion;
-      document.getElementById("celular").value = data.celular;
-      document.getElementById("tipo").value = data.tipo;
-      document.getElementById("precio").value = data.precio;
-      document.getElementById("horario").value = data.horario;
-      document.getElementById("cantespacios").value = data.cantespacios;
-      document.getElementById("descripcion").value = data.descripcion;
-      document.getElementById("disponibilidad").value = data.disponibilidad;
-    });
-  });
+  cantespacios.value = "";
+  disponibilidadDiv.textContent = "";
 }
 
 
@@ -101,28 +84,75 @@ function actualizarDato(nombre) {
   var horario = document.getElementById("horario").value;
   var cantespacios = document.getElementById("cantespacios").value;
   var descripcion = document.getElementById("descripcion").value;
-  var disponibilidad = document.getElementById("disponibilidad").value;
-  
-  var datosRef = firebase.database().ref('datos/');
-  datosRef.orderByChild("nombre").equalTo(nombre).once("value", function(snapshot) {
-    snapshot.forEach(function(child) {
-      child.ref.update({
-        Latitud: Latitud,
-        Longitud: Longitud,
-        nombre: nombre,
-        direccion: direccion,
-        celular: celular,
-        tipo: tipo,
-        precio: precio,
-        cantespacios: cantespacios,
-        horario: horario,
-        descripcion: descripcion,
-        disponibilidad: disponibilidad
-      });
-    });
-  });
 
-  alert("Dato actualizado correctamente");
+  // Actualiza la disponibilidad basado en la cantidad de espacios disponibles
+  var disponibilidad;
+  if (cantespacios > 0) {
+    disponibilidad = true;
+  } else {
+    disponibilidad = false;
+  }
+
+  firebase.database().ref('datos/')
+    .orderByChild("nombre").equalTo(nombre)
+    .once("value", function (snapshot) {
+      if (snapshot.exists()) {
+        snapshot.forEach(function (child) {
+          child.ref.update({
+            Latitud: Latitud,
+            Longitud: Longitud,
+            nombre: nombre,
+            direccion: direccion,
+            celular: celular,
+            tipo: tipo,
+            precio: precio,
+            cantespacios: cantespacios,
+            horario: horario,
+            descripcion: descripcion,
+            disponibilidad: disponibilidad // aquí usamos la variable booleana directamente
+          });
+        });
+      } else {
+        alert("No se encontró ningún dato con ese nombre");
+      }
+    });
+}
+
+function buscarDato() {
+  var id = document.getElementById("buscnom").value;
+
+  firebase.database().ref('datos').orderByChild("nombre").equalTo(id).once("value", function (snapshot) {
+    if (snapshot.exists()) {
+      snapshot.forEach(function (childSnapshot) {
+        var data = childSnapshot.val();
+        alert('El estacionamiento con ID que busca se encontró con éxito.');
+
+        document.getElementById("Latitud").value = data.Latitud;
+        document.getElementById("Longitud").value = data.Longitud;
+        document.getElementById("nombre").value = data.nombre;
+        document.getElementById("direccion").value = data.direccion;
+        document.getElementById("celular").value = data.celular;
+        document.getElementById("tipo").value = data.tipo;
+        document.getElementById("precio").value = data.precio;
+        document.getElementById("horario").value = data.horario;
+        document.getElementById("cantespacios").value = data.cantespacios;
+        document.getElementById("descripcion").value = data.descripcion;
+
+        var disponibilidadDiv = document.getElementById('disponibilidad');
+        if (data.disponibilidad) {
+          disponibilidadDiv.textContent = 'Disponible';
+          disponibilidadDiv.classList.remove('inactivo');
+          disponibilidadDiv.classList.add('activo');
+        } else {
+          disponibilidadDiv.textContent = 'No disponible';
+          disponibilidadDiv.classList.remove('activo');
+          disponibilidadDiv.classList.add('inactivo');
+        }
+      });
+    } else {
+      alert('El estacionamiento con el ID especificado no se encontró.');
+    }
+  });
 }
 
 /*
