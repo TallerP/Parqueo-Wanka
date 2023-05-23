@@ -6,7 +6,6 @@ const signInForm = document.querySelector("#login-form");
 
 signInForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const email = signInForm["login-email"].value;
   const password = signInForm["login-password"].value;
 
@@ -14,22 +13,23 @@ signInForm.addEventListener("submit", async (e) => {
     const userCredentials = await signInWithEmailAndPassword(auth, email, password)
     console.log(userCredentials)
 
-    // cerrar el login modal
+    // Close the login modal
     const modal = bootstrap.Modal.getInstance(signInForm.closest('.modal'));
     modal.hide();
 
-    // resetear el form
+    // reset the form
     signInForm.reset();
 
-    // mostrar mensaje de Bienbenida
-    showMessage("Welcome: " + userCredentials.user.email);
+    window.location.href = "./actualizardatos.html";
+    // show welcome message
+    showMessage("Welcome" + userCredentials.user.email);
   } catch (error) {
     if (error.code === 'auth/wrong-password') {
-      showMessage("Contraseña Incorrecta", "error")
+      showMessage("Wrong password", "error")
     } else if (error.code === 'auth/user-not-found') {
-      showMessage("Usuario no Encontrado", "error")
+      showMessage("User not found", "error")
     } else {
-      showMessage("Algo salio mal", "error")
+      showMessage("Something went wrong", "error")
     }
   }
 });
