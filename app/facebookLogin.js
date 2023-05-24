@@ -14,12 +14,12 @@ facebookButton.addEventListener('click', async e => {
     console.log(credentials);
     console.log("facebook sign in");
     
-    // cerrar el login modal
+    // Close the login modal
     const modal = bootstrap.Modal.getInstance(facebookButton.closest('.modal'));
     modal.hide();
 
-    // mostrar mensaje de bienvenida
-    showMessage("Welcome: " + credentials.user.email);
+    // show welcome message
+    showMessage("Welcome" + credentials.user.email);
   } catch (error) {
     console.log(error);
   }

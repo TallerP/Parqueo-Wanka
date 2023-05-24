@@ -1,17 +1,4 @@
-// Configuración de Firebase
-var firebaseConfig = {
-  apiKey: "AIzaSyDtpOfIff-7_ZKPcKzojiW8Q4lldvV8iwc",
-  authDomain: "tallerproyectos2023-d32b7.firebaseapp.com",
-  databaseURL: "https://tallerproyectos2023-d32b7-default-rtdb.firebaseio.com",
-  projectId: "tallerproyectos2023-d32b7",
-  storageBucket: "tallerproyectos2023-d32b7.appspot.com",
-  messagingSenderId: "52196951713",
-  appId: "1:52196951713:web:806d3df12faa67f673d2e0",
-};
 
-// Inicializar la aplicación de Firebase
-firebase.initializeApp(firebaseConfig);
-const firebaseRef = firebase.database().ref("datos");
 
 /*//////////////////////////////////////////////////////////////////
 [ INICIALIZACIÓN DEL MAPA]*/

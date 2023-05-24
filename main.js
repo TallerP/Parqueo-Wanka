@@ -12,7 +12,7 @@ import './app/githubLogin.js'
 import './app/logout.js'
 import './app/postList.js'
 
-// lista de cambio de estado de autenticación
+// list for auth state changes
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     loginCheck(user);
