@@ -606,7 +606,7 @@ img {
 }
 
 .gm-style-iw-t {
-  bottom: 65px !important;
+  bottom: 95px !important;
 }
 
 .info-window:hover {
@@ -694,3 +694,4 @@ input[type="number"].input {
 .coolinput input[type="text"].input:focus {
   outline: none;
 }
+

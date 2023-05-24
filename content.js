@@ -96,8 +96,8 @@ const createMarker = (
 
 ) => {
   const markerIcon = {
-    url: disponibilidad ? "imgs/libre.png" : "imgs/ocupado.png",
-    scaledSize: new google.maps.Size(43, 65),
+    url: disponibilidad ? "imgs/libre.svg" : "imgs/ocupado.svg",
+    scaledSize: new google.maps.Size(43, 95),
   };
 
   const marker = new google.maps.Marker({
