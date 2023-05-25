@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Visualización de Parqueos por DNI</title>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+</head>
+
+<body>
+    <h1>Parqueos por DNI</h1>
+    <ul id="parqueos-list"></ul>
+
+    <script>
+        // Configurar la conexión con Firebase
+        var firebaseConfig = {
+            apiKey: "AIzaSyDtpOfIff-7_ZKPcKzojiW8Q4lldvV8iwc",
+            authDomain: "tallerproyectos2023-d32b7.firebaseapp.com",
+            databaseURL: "https://tallerproyectos2023-d32b7-default-rtdb.firebaseio.com",
+            projectId: "tallerproyectos2023-d32b7",
+            storageBucket: "tallerproyectos2023-d32b7.appspot.com",
+            messagingSenderId: "52196951713",
+            appId: "1:52196951713:web:806d3df12faa67f673d2e0"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+
+        // Obtener referencia a la base de datos
+        var database = firebase.database();
+
+        // Obtener referencia al elemento <ul> en el HTML
+        var parqueosList = document.getElementById("parqueos-list");
+
+        // Escuchar cambios en el estado de autenticación
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                // El usuario está autenticado
+                var userId = user.uid;
+
+                // Leer los datos de Firebase y mostrar los parqueos asociados al usuario
+                database.ref("datos").orderByChild("userId").equalTo(userId).on("value", function(snapshot) {
+                    // Limpiar la lista antes de actualizarla
+                    parqueosList.innerHTML = "";
+
+                    // Obtener los datos del snapshot
+                    var parqueos = snapshot.val();
+
+                    // Recorrer los parqueos y mostrar los datos
+                    for (var key in parqueos) {
+                        var parqueo = parqueos[key]; // Obtener los datos del parqueo
+
+                        // Mostrar los datos del parqueo
+                        var listItem = document.createElement("li");
+                        listItem.innerHTML = `
+                            <strong>Nombre:</strong> ${parqueo.nombre}<br>
+                            <strong>Dirección:</strong> ${parqueo.direccion}<br>
+                            <strong>Tipo:</strong> ${parqueo.tipo}<br>
+                            <strong>Precio:</strong> ${parqueo.precio}<br>
+                            <strong>Horario:</strong> ${parqueo.horario}<br>
+                            <strong>Descripción:</strong> ${parqueo.descripcion}<br>
+                            <strong>Latitud:</strong> ${parqueo.Latitud}<br>
+                            <strong>Longitud:</strong> ${parqueo.Longitud}<br>
+                            <strong>Cantidad de espacios:</strong> ${parqueo.cantespacios}<br>
+                            <strong>Celular:</strong> ${parqueo.celular}<br>
+                            <strong>Disponibilidad:</strong> ${parqueo.disponibilidad}<br>
+                            <strong>Imagen URL:</strong> ${parqueo.imagenURL}<br>
+                        `;
+
+                        // Agregar el elemento de lista al <ul>
+                        parqueosList.appendChild(listItem);
+                    }
+                });
+            } else {
+                window.location.href = "./actualizardatos.html";
+            }
+        });
+    </script>
+</body>
+
+</html>
