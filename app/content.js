@@ -1,9 +1,22 @@
+// Configuración de Firebase
+var firebaseConfig = {
+  apiKey: "AIzaSyDtpOfIff-7_ZKPcKzojiW8Q4lldvV8iwc",
+  authDomain: "tallerproyectos2023-d32b7.firebaseapp.com",
+  databaseURL: "https://tallerproyectos2023-d32b7-default-rtdb.firebaseio.com",
+  projectId: "tallerproyectos2023-d32b7",
+  storageBucket: "tallerproyectos2023-d32b7.appspot.com",
+  messagingSenderId: "52196951713",
+  appId: "1:52196951713:web:806d3df12faa67f673d2e0",
+};
 
+// Inicializar la aplicación de Firebase
+firebase.initializeApp(firebaseConfig);
+const firebaseRef = firebase.database().ref("datos");
 
 /*//////////////////////////////////////////////////////////////////
 [ INICIALIZACIÓN DEL MAPA]*/
 
-let ubicacionActual;
+let ubicacionActual = null;
 let map;
 let marker;
 let destinoMarker = null;
@@ -13,15 +26,15 @@ let markers = [];
 
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(
-    function (position) {
-      var latitud = position.coords.latitude;
-      var longitud = position.coords.longitude;
-      ubicacionActual = { lat: latitud, lng: longitud };
-
+    (position) => {
+      ubicacionActual = new google.maps.LatLng(
+        position.coords.latitude,
+        position.coords.longitude
+      );
       initMap();
     },
-    function (error) {
-      console.log("Ha ocurrido un error al obtener la ubicación del usuario");
+    (error) => {
+      console.log("Error en la geolocalización:", error);
       initMap();
     }
   );
@@ -68,7 +81,6 @@ function initMap() {
   createLocationMarkers();
 }
 
-
 const createMarker = (
   coord,
   precio,
@@ -80,11 +92,12 @@ const createMarker = (
   descripcion,
   tipo,
   espacio,
-  disponibilidad
+  disponibilidad,
+
 ) => {
   const markerIcon = {
-    url: disponibilidad ? "imgs/libre.png" : "imgs/ocupado.png",
-    scaledSize: new google.maps.Size(43, 65),
+    url: disponibilidad ? "imgs/libre.svg" : "imgs/ocupado.svg",
+    scaledSize: new google.maps.Size(43, 95),
   };
 
   const marker = new google.maps.Marker({
@@ -119,12 +132,26 @@ const createMarker = (
     document.getElementById("ubicacion-descripcion").textContent = descripcion;
     document.getElementById("ubicacion-tipo").textContent = tipo;
     document.getElementById("ubicacion-espacio").textContent = espacio;
-    // Muestra el div en la pantalla
+    
+    
     document.getElementById("info-container").classList.add("show");
   });
 
   markers.push(marker);
 };
+
+function loadFirebaseImage(imagenURL, callback) {
+  var storageRef = firebase.storage().ref(imagenURL); //Ruta de la imagen
+  var imageRef = storageRef.child(imagenURL);
+
+  imageRef
+    .getDownloadURL()
+    .then(function(url) {
+      callback(url);
+    })
+    .catch(function(error) {
+    });
+}
 
 /*//////////////////////////////////////////////////////////////////
 [ CREAR RUTA ]*/
@@ -161,13 +188,14 @@ function crearRuta(destino) {
 /*//////////////////////////////////////////////////////////////////
 [ OPTION TIPO ]*/
 
+let lastTipoSeleccionado = "todos";
 const tipoSelector = document.getElementById("tipo");
 
 document.addEventListener("DOMContentLoaded", () => {
   const tipoSelector = document.getElementById("tipo");
   tipoSelector.addEventListener("change", (event) => {
-    const tipoSeleccionado = event.target.value;
-    filterMarkers(tipoSeleccionado);
+    lastTipoSeleccionado = event.target.value;
+    filterMarkers(lastTipoSeleccionado);
   });
 });
 
@@ -194,15 +222,7 @@ function toRadians(degrees) {
   return degrees * (Math.PI / 180);
 }
 
-let lastTipoSeleccionado = "todos";
-let ubicacionesCercanas = []; // Variable para almacenar las ubicaciones filtradas
-
 rangoSelector.addEventListener("change", () => {
-  filterMarkers(lastTipoSeleccionado);
-});
-
-tipoSelector.addEventListener("change", (event) => {
-  lastTipoSeleccionado = event.target.value;
   filterMarkers(lastTipoSeleccionado);
 });
 
@@ -210,103 +230,83 @@ tipoSelector.addEventListener("change", (event) => {
 [ FILTER  ]*/
 let rangeCircle = null;
 
-function filterMarkers(tipoSeleccionado = "todos") {
+function filterMarkers() {
   const rangoSeleccionado = Number(rangoSelector.value);
 
-  if (tipoSeleccionado === "todos") {
+  if (lastTipoSeleccionado) {
     document.getElementById("info-container").classList.remove("show");
   } else {
     document.getElementById("info-container").classList.remove("show");
   }
 
-  // Borra todos los marcadores del mapa
   markers.forEach((marker) => marker.setMap(null));
   markers = [];
 
-  // Al seleccionar otro filtro elimina la ruta que se estableció anteriormente
   directionsDisplay.setDirections({ routes: [] });
 
-  // Obtén la ubicación actual de la geolocalización
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const ubicacionActual = new google.maps.LatLng(
-        position.coords.latitude,
-        position.coords.longitude
+  if (rangeCircle) {
+    rangeCircle.setMap(null);
+    rangeCircle = null;
+  }
+
+  rangeCircle = new google.maps.Circle({
+    strokeColor: "#ff0000",
+    strokeOpacity: 0.8,
+    strokeWeight: 1,
+    fillColor: "transparent",
+    fillOpacity: 0.05,
+    map: map,
+    center: ubicacionActual,
+    radius: rangoSeleccionado * 1000,
+  });
+
+  function updateRangeCircle(center, radius) {
+    rangeCircle.setCenter(center);
+    rangeCircle.setRadius(radius);
+  }
+
+  map.setCenter(ubicacionActual);
+  map.setZoom(14);
+
+  const firebaseRef = firebase.database().ref("datos");
+  firebaseRef.on("value", (snapshot) => {
+    snapshot.forEach((childSnapshot) => {
+      const ubicacion = childSnapshot.val();
+      const coord = new google.maps.LatLng(
+        ubicacion.Latitud,
+        ubicacion.Longitud
       );
 
-      // Eliminar el círculo existente si hay uno
-      if (rangeCircle) {
-        rangeCircle.setMap(null);
-        rangeCircle = null;
-      }
+      if (lastTipoSeleccionado === "todos" || ubicacion.tipo === lastTipoSeleccionado) {
+        const distancia = getDistance(coord, ubicacionActual);
 
-      // Crea el círculo con el patrón de relleno
-      rangeCircle = new google.maps.Circle({
-        strokeColor: "#ff0000", // Color del borde
-        strokeOpacity: 0.8, // Opacidad del borde
-        strokeWeight: 1, // Grosor del borde
-        fillColor: "transparent", // Color de relleno
-        fillOpacity: 0.05, // Opacidad del relleno
-        map: map, // Mapa al que se agrega el círculo
-        center: ubicacionActual,
-        radius: rangoSeleccionado * 1000,
-      });
-
-      // Función para actualizar el círculo de rango
-      function updateRangeCircle(center, radius) {
-        rangeCircle.setCenter(center); // Establecer la posición del círculo
-        rangeCircle.setRadius(radius); // Establecer el radio del círculo
-      }
-
-      // Centrar el mapa en la ubicación actual
-      map.setCenter(ubicacionActual);
-      map.setZoom(14);
-
-      // Obtén los datos de ubicaciones desde Firebase Realtime Database
-      const firebaseRef = firebase.database().ref("datos");
-      firebaseRef.on("value", (snapshot) => {
-        snapshot.forEach((childSnapshot) => {
-          const ubicacion = childSnapshot.val();
-          const coord = new google.maps.LatLng(
-            ubicacion.Latitud,
-            ubicacion.Longitud
+        if (distancia <= rangoSeleccionado && !markers.includes(coord)) {
+          createMarker(
+            coord,
+            ubicacion.precio,
+            map,
+            ubicacion.nombre,
+            ubicacion.direccion,
+            ubicacion.celular,
+            ubicacion.horario,
+            ubicacion.descripcion,
+            ubicacion.tipo,
+            ubicacion.cantespacios,
+            ubicacion.disponibilidad
           );
+        }
+      }
+    });
+  });
 
-          if (tipoSeleccionado === "todos" || ubicacion.tipo === tipoSeleccionado) {
-            const distancia = getDistance(coord, ubicacionActual);
+  rangoSelector.addEventListener("change", function () {
+    const rangoSeleccionado = Number(rangoSelector.value);
+    const radioEnMetros = rangoSeleccionado * 1000;
 
-            if (distancia <= rangoSeleccionado && !markers.includes(coord)) {
-              createMarker(
-                coord,
-                ubicacion.precio,
-                map,
-                ubicacion.nombre,
-                ubicacion.direccion,
-                ubicacion.celular,
-                ubicacion.horario,
-                ubicacion.descripcion,
-                ubicacion.tipo,
-                ubicacion.cantespacios,
-                ubicacion.disponibilidad
-              );
-            }
-          }
-        });
-      });
-
-      // Llamar a la función de actualización del círculo en el evento de cambio de rango
-      rangoSelector.addEventListener("change", function () {
-        const rangoSeleccionado = Number(rangoSelector.value);
-        const radioEnMetros = rangoSeleccionado * 1000; // Convertir el rango a metros
-
-        updateRangeCircle(ubicacionActual, radioEnMetros);
-      });
-    },
-    (error) => {
-      console.log("Error en la geolocalización:", error);
-    }
-  );
+    updateRangeCircle(ubicacionActual, radioEnMetros);
+  });
 }
+
 
 const createLocationMarkers = () => {
   // Obtiene los filtros seleccionados
