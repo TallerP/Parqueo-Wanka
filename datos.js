@@ -24,83 +24,80 @@ document.addEventListener("DOMContentLoaded", () => {
     .orderByChild("IDUsuario")
     .equalTo(userID)
     .on("value", (snapshot) => {
-      const parqueos = snapshot.val();
+      // Limpiar la lista de parqueos antes de volver a cargarla
+      parqueosDiv.innerHTML = "";
 
-      if (parqueos) {
-        Object.keys(parqueos).forEach((parqueoKey) => {
-          const parqueo = parqueos[parqueoKey];
-          const nombre = parqueo.nombre;
-          const pre = parqueo.precio;
+      // Itera sobre los parqueos y muestra la lista en la página
+      snapshot.forEach((childSnapshot) => {
+        const parqueo = childSnapshot.val();
+        const parqueoID = childSnapshot.key; // Obtén el ID del parqueo
 
-          // Crea la tarjeta del parqueo
-          var parqueoCard = document.createElement("div");
-          parqueoCard.classList.add("card");
+        // Crear elemento de parqueo
+        var parqueoElement = document.createElement("div");
+        parqueoElement.classList.add("parqueo");
 
-          // Crea el título de la tarjeta
-          var titulo = document.createElement("h1");
-          var precio = document.createElement("p");
-          titulo.textContent = nombre;
-          precio.textContent = pre;
+        // Crear elemento de título
+        var tituloElement = document.createElement("h1");
+        tituloElement.textContent = parqueo.nombre;
 
-          // Crea los botones de actualizar y eliminar
-          var actualizarBtn = document.createElement("button");
-          actualizarBtn.textContent = "Actualizar";
-          actualizarBtn.classList.add("btn-menu");
-          actualizarBtn.addEventListener("click", () => {
-            // Lógica para actualizar el parqueo
-          });
-
-          var eliminarBtn = document.createElement("button");
-          eliminarBtn.textContent = "Eliminar";
-          eliminarBtn.classList.add("btn-menu");
-          eliminarBtn.addEventListener("click", () => {
-            // Lógica para eliminar el parqueo
-          });
-
-          // Agrega los elementos a la tarjeta del parqueo
-          parqueoCard.appendChild(titulo);
-          parqueoCard.appendChild(precio);
-          parqueoCard.appendChild(actualizarBtn);
-          parqueoCard.appendChild(eliminarBtn);
-
-          // Agrega la tarjeta al div de parqueos
-          parqueosDiv.appendChild(parqueoCard);
+        // Crear botón de eliminar
+        var eliminarBtn = document.createElement("button");
+        eliminarBtn.textContent = "Eliminar";
+        eliminarBtn.classList.add("btn-menu");
+        eliminarBtn.addEventListener("click", () => {
+          eliminarParqueo(parqueoID); // Llama a la función eliminarParqueo pasando el ID del parqueo
         });
-      } else {
-        console.log("No se ha creado ningún parqueo");
-      }
+
+        // Agregar elementos al div de parqueo
+        parqueoElement.appendChild(tituloElement);
+        parqueoElement.appendChild(eliminarBtn);
+        parqueosDiv.appendChild(parqueoElement);
+      });
     });
 });
 
+// Función para eliminar un parqueo
+function eliminarParqueo(parqueoID) {
+  // Lógica para eliminar el parqueo de la base de datos
+  firebase
+    .database()
+    .ref("datos/" + parqueoID)
+    .remove()
+    .then(() => {
+      // El parqueo se eliminó exitosamente
+      console.log("Parqueo eliminado correctamente");
+    })
+    .catch((error) => {
+      // Ocurrió un error al eliminar el parqueo
+      console.error("Error al eliminar el parqueo:", error);
+    });
+}
+
+
 document.addEventListener("DOMContentLoaded", () => {
-  
   // Obtén referencias a los elementos del DOM
   var openModalBtn = document.getElementById("openModalBtn");
   var modal = document.getElementById("myModal");
   var closeModalBtn = document.getElementsByClassName("close")[0];
   var updateBtn = document.getElementById("updateBtn");
 
-// Abre el modal al hacer clic en el botón correspondiente
-openModalBtn.addEventListener("click", function () {
-  modal.style.display = "block";
-});
+  // Abre el modal al hacer clic en el botón correspondiente
+  openModalBtn.addEventListener("click", function () {
+    modal.style.display = "block";
+  });
 
-
-// Cierra el modal al hacer clic en la "x" de cierre
-closeModalBtn.addEventListener("click", function () {
-  modal.style.display = "none";
-});
-
-// Cierra el modal al hacer clic fuera de él
-window.addEventListener("click", function (event) {
-  if (event.target == modal) {
+  // Cierra el modal al hacer clic en la "x" de cierre
+  closeModalBtn.addEventListener("click", function () {
     modal.style.display = "none";
-  }
+  });
+
+  // Cierra el modal al hacer clic fuera de él
+  window.addEventListener("click", function (event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  });
 });
-
-
-});
-
 
 function guardarDato(userID) {
   // Obtén los valores de los campos de entrada
@@ -146,24 +143,21 @@ function guardarDato(userID) {
       // Obtén la URL de descarga de la imagen
       uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
         // Guarda los datos junto con la URL de la imagen y el ID de usuario en la base de datos de Firebase
-        firebase
-          .database()
-          .ref("datos")
-          .push({
-            Latitud: Latitud,
-            Longitud: Longitud,
-            nombre: nombre,
-            direccion: direccion,
-            celular: celular,
-            tipo: tipo,
-            precio: precio,
-            horario: horario,
-            descripcion: descripcion,
-            cantespacios: cantespacios,
-            disponibilidad: disponibilidad,
-            imagenURL: downloadURL, // Guarda la URL de la imagen
-            IDUsuario: userID // Guarda el ID de usuario
-          });
+        firebase.database().ref("datos").push({
+          Latitud: Latitud,
+          Longitud: Longitud,
+          nombre: nombre,
+          direccion: direccion,
+          celular: celular,
+          tipo: tipo,
+          precio: precio,
+          horario: horario,
+          descripcion: descripcion,
+          cantespacios: cantespacios,
+          disponibilidad: disponibilidad,
+          imagenURL: downloadURL, // Guarda la URL de la imagen
+          IDUsuario: userID, // Guarda el ID de usuario
+        });
 
         alert("Datos guardados correctamente");
       });
@@ -238,48 +232,5 @@ function actualizarDato(id) {
     })
     .catch((error) => {
       console.log("Error al actualizar el dato:", error);
-    });
-}
-
-
-function buscarDato() {
-  var id = document.getElementById("buscnom").value;
-
-  firebase
-    .database()
-    .ref("datos")
-    .orderByChild("nombre")
-    .equalTo(id)
-    .once("value", function (snapshot) {
-      if (snapshot.exists()) {
-        snapshot.forEach(function (childSnapshot) {
-          var data = childSnapshot.val();
-          alert("El estacionamiento con ID que busca se encontró con éxito.");
-
-          document.getElementById("Latitud").value = data.Latitud;
-          document.getElementById("Longitud").value = data.Longitud;
-          document.getElementById("nombre").value = data.nombre;
-          document.getElementById("direccion").value = data.direccion;
-          document.getElementById("celular").value = data.celular;
-          document.getElementById("tipo").value = data.tipo;
-          document.getElementById("precio").value = data.precio;
-          document.getElementById("horario").value = data.horario;
-          document.getElementById("cantespacios").value = data.cantespacios;
-          document.getElementById("descripcion").value = data.descripcion;
-
-          var disponibilidadDiv = document.getElementById("disponibilidad");
-          if (data.disponibilidad) {
-            disponibilidadDiv.textContent = "Disponible";
-            disponibilidadDiv.classList.remove("inactivo");
-            disponibilidadDiv.classList.add("activo");
-          } else {
-            disponibilidadDiv.textContent = "No disponible";
-            disponibilidadDiv.classList.remove("activo");
-            disponibilidadDiv.classList.add("inactivo");
-          }
-        });
-      } else {
-        alert("El estacionamiento con el ID especificado no se encontró.");
-      }
     });
 }
