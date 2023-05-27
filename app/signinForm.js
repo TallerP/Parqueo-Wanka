@@ -10,19 +10,11 @@ signInForm.addEventListener("submit", async (e) => {
   const password = signInForm["login-password"].value;
 
   try {
-    const userCredentials = await signInWithEmailAndPassword(auth, email, password)
-    console.log(userCredentials)
+    const userCredentials = await signInWithEmailAndPassword(auth, email, password);
+    const userID = userCredentials.user.uid; // Obtener el ID de usuario
 
-    // Close the login modal
-    const modal = bootstrap.Modal.getInstance(signInForm.closest('.modal'));
-    modal.hide();
-
-    // reset the form
-    signInForm.reset();
-
-    window.location.href = "./actualizardatos.html";
-    // show welcome message
-    showMessage("Welcome" + userCredentials.user.email);
+    // Redireccionar a la página 'actualizardatos.html' con el ID de usuario como parámetro
+    window.location.href = `./actualizardatos.html?userID=${userID}`;
   } catch (error) {
     if (error.code === 'auth/wrong-password') {
       showMessage("Wrong password", "error")

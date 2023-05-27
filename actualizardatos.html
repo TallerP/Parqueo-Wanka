@@ -6,6 +6,7 @@
     <title>ParqueoWanka</title>
     
     <link rel="imagen" href="imagen.css">
+    <link rel="stylesheet" href="./main.css">
     <script src="https://kit.fontawesome.com/4dd069025c.js" crossorigin="anonymous"></script>
     <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-database.js"></script>
@@ -21,142 +22,141 @@
             </div>
         </nav>
     </header>
-    <div class="main-content">
-        <div class="crud-container">
-            <div class="crud-header">
-                <h1>
-                    <i class="fa-solid fa-user"></i>
-                    Actualizar Parqueos
-                </h1>
-                <div>Encontrar por Nombre
-                    <input type="text" id="buscnom" name="buscnom">
-                    <th><button class="boton" onclick="buscarDato()"></th>Buscar</button>
-                </div>
-            </div>
-            
-            <table class="table">
-                <thead>
+    <section>
+        <div>
+            <button id="openModalBtn" class="btn-menu">Crear Parqueo</button>
+        </div>
+        <div id="parqueosDiv" class="listparqueos">
+        </div>
+    </section>
+    
+    
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Crear Parqueo</h2>
+          <div class="main-content">
+            <div class="crud-container">         
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th for="Latitud">Latitud:</th>
+                            <th for="Longitud">Longitud:</th>
+                            <th for="nombre">Nombre:</th>
+                            <th for="direccion">Direccion:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="number" id="Latitud" name="Latitud" readonly><br></td>
+                            <td><input type="number" id="Longitud" name="Longitud" readonly><br></td>
+                            <td><input type="text" id="nombre" name="nombre"><br></td>
+                            <td><input type="text" id="direccion" name="direccion"><br></td>
+                        </tr>
+                    </tbody>
+    
                     <tr>
-                        <th for="Latitud">Latitud:</th>
-                        <th for="Longitud">Longitud:</th>
-                        <th for="nombre">Nombre:</th>
-                        <th for="direccion">Direccion:</th>
+                        <th for="Celular">Celular:</th>
+                        <th for="tipo">Tipo:</th>
+                        <th for="horario">Precio:</th>
+                        <th for="precio">Horario:</th>
                     </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><input type="number" id="Latitud" name="Latitud" readonly><br></td>
-                        <td><input type="number" id="Longitud" name="Longitud" readonly><br></td>
-                        <td><input type="text" id="nombre" name="nombre"><br></td>
-                        <td><input type="text" id="direccion" name="direccion"><br></td>
-                    </tr>
-                </tbody>
-
-                <tr>
-                    <th for="Celular">Celular:</th>
-                    <th for="tipo">Tipo:</th>
-                    <th for="horario">Precio:</th>
-                    <th for="precio">Horario:</th>
-                </tr>
-                <tbody>
-                    <tr>
-                        <td><input type="tel" id="celular" name="celular"><br></td>
-                        <td><select id="tipo">
-                                <option value="seleccionar">-- Seleccionar</option>
-                                <option value="techado">Techado</option>
-                                <option value="sin-techo">Sin techo</option>
-                                <option value="techado">Subterraneo</option>
-                            </select></td>
-                        <td><input type="text" id="precio" name="precio" value="S/."><br></td>
-                        <td><input type="text" id="horario" name="horario"><br></td>
-                    </tr>
-
-                </tbody>
-
-                </thead>
-
-            </table>
-            <th for="descripcion">Descripcion:</th>
-            <td><input type="text" id="descripcion" name="descripcion"><br></td>
-            <th for="descripcion">Cantidad de Espacios: </th>
-            <td><input type="number" id="cantespacios" name="cantespacios"><br></td>
-            <th for="descripcion">Disponibilidad:</th>
-            <td>
-                <div id="disponibilidad" value="false"></div>
-                <!-- Agrega el atributo value al elemento <div> para guardar la disponibilidad -->
-                <script>
-                    var cantespaciosInput = document.getElementById('cantespacios');
-                    var disponibilidadDiv = document.getElementById('disponibilidad');
-
-                    cantespaciosInput.addEventListener('change', function () {
-                        var espaciosDisponibles = cantespaciosInput.value;
-                        if (espaciosDisponibles > 0) {
-                            disponibilidadDiv.textContent = 'Disponible';
-                            disponibilidadDiv.classList.remove('inactivo');
-                            disponibilidadDiv.classList.add('activo');
-                            disponibilidadDiv.setAttribute('value', 'true'); // Establece el valor 'true' para la disponibilidad
-                        } else {
-                            disponibilidadDiv.textContent = 'No disponible';
-                            disponibilidadDiv.classList.remove('activo');
-                            disponibilidadDiv.classList.add('inactivo');
-                            disponibilidadDiv.setAttribute('value', 'false'); // Establece el valor 'false' para la disponibilidad
-                        }
-                    });
-                </script>
-            </td>
-            <th for="descripcion">Subir Imagenes: </th>
-            <td><input type="file" id="subirimagen" /><br></td>
-
-
-
-            <div class="row">
-                <div class="col-md-12">
-                    <div id="mapa" style="width: 100%; height: 250px"></div>
-                </div>
-            </div>
-
-            <script>
-                function iniciarMapa() {
-                    var latitud = -12.069342;
-                    var longitud = -75.211912;
-
-                    coordenadas = {
-                        lng: longitud,
-                        lat: latitud
-                    }
-
-                    generarMapa(coordenadas);
-
-                    function generarMapa(coordenadas) {
-                        var mapa = new google.maps.Map(document.getElementById('mapa'),
-                            {
-                                zoom: 13.5,
-                                center: new google.maps.LatLng(coordenadas.lat, coordenadas.lng)
+                    <tbody>
+                        <tr>
+                            <td><input type="tel" id="celular" name="celular"><br></td>
+                            <td><select id="tipo">
+                                    <option value="seleccionar">-- Seleccionar</option>
+                                    <option value="techado">Techado</option>
+                                    <option value="sin-techo">Sin techo</option>
+                                    <option value="techado">Subterraneo</option>
+                                </select></td>
+                            <td><input type="text" id="precio" name="precio" value="S/."><br></td>
+                            <td><input type="text" id="horario" name="horario"><br></td>
+                        </tr>
+    
+                    </tbody>
+    
+                    </thead>
+    
+                </table>
+                <th for="descripcion">Descripcion:</th>
+                <td><input type="text" id="descripcion" name="descripcion"><br></td>
+                <th for="descripcion">Cantidad de Espacios: </th>
+                <td><input type="number" id="cantespacios" name="cantespacios"><br></td>
+                <th for="descripcion">Disponibilidad:</th>
+                <td>
+                    <div id="disponibilidad" value="false"></div>
+                    <!-- Agrega el atributo value al elemento <div> para guardar la disponibilidad -->
+                    <script>
+                        var cantespaciosInput = document.getElementById('cantespacios');
+                        var disponibilidadDiv = document.getElementById('disponibilidad');
+    
+                        cantespaciosInput.addEventListener('change', function () {
+                            var espaciosDisponibles = cantespaciosInput.value;
+                            if (espaciosDisponibles > 0) {
+                                disponibilidadDiv.textContent = 'Disponible';
+                                disponibilidadDiv.classList.remove('inactivo');
+                                disponibilidadDiv.classList.add('activo');
+                                disponibilidadDiv.setAttribute('value', 'true'); // Establece el valor 'true' para la disponibilidad
+                            } else {
+                                disponibilidadDiv.textContent = 'No disponible';
+                                disponibilidadDiv.classList.remove('activo');
+                                disponibilidadDiv.classList.add('inactivo');
+                                disponibilidadDiv.setAttribute('value', 'false'); // Establece el valor 'false' para la disponibilidad
                             }
-                        );
-
-                        marcador = new google.maps.Marker({
-                            map: mapa,
-                            draggable: true,
-                            position: new google.maps.LatLng(coordenadas.lat, coordenadas.lng)
                         });
-
-                        marcador.addListener('dragend', function (event) {
-                            document.getElementById("Latitud").value = this.getPosition().lat();
-                            document.getElementById("Longitud").value = this.getPosition().lng();
-                        })
+                    </script>
+                </td>
+                <th for="descripcion">Subir Imagenes: </th>
+                <td><input type="file" id="subirimagen" /><br></td>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="mapa" style="width: 100%; height: 250px"></div>
+                    </div>
+                </div>
+    
+                <script>
+                    function iniciarMapa() {
+                        var latitud = -12.069342;
+                        var longitud = -75.211912;
+    
+                        coordenadas = {
+                            lng: longitud,
+                            lat: latitud
+                        }
+    
+                        generarMapa(coordenadas);
+    
+                        function generarMapa(coordenadas) {
+                            var mapa = new google.maps.Map(document.getElementById('mapa'),
+                                {
+                                    zoom: 13.5,
+                                    center: new google.maps.LatLng(coordenadas.lat, coordenadas.lng)
+                                }
+                            );
+    
+                            marcador = new google.maps.Marker({
+                                map: mapa,
+                                draggable: true,
+                                position: new google.maps.LatLng(coordenadas.lat, coordenadas.lng)
+                            });
+    
+                            marcador.addListener('dragend', function (event) {
+                                document.getElementById("Latitud").value = this.getPosition().lat();
+                                document.getElementById("Longitud").value = this.getPosition().lng();
+                            })
+                        }
                     }
-                }
-            </script>
-            <div></div>
-            <div>
-                <th><button class="boton" onclick="guardarDato()"></th>Guardar</button>
-                <th><button class="boton" onclick="actualizarDato()"></th>Actualizar</button>
-                <th><button class="boton" onclick="limpiarDato()"></th>Limpiar</button>
+                </script>
+                <div></div>
+                <div>
+                    
+                </div>
             </div>
         </div>
+        <button class="btn-menu" onclick="guardarDato(userID)">Guardar</button>
+        </div>
     </div>
-
 
     <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmn7dgBjGCRulPapD4gPqSE6XQAQ7iCTg&callback=iniciarMapa"></script>
