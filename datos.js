@@ -48,9 +48,19 @@ document.addEventListener("DOMContentLoaded", () => {
           eliminarParqueo(parqueoID); // Llama a la función eliminarParqueo pasando el ID del parqueo
         });
 
+        // Crear botón de actualizar
+        var actualizarBtn = document.createElement("button");
+        actualizarBtn.textContent = "Actualizar";
+        actualizarBtn.classList.add("btn-menu");
+        actualizarBtn.addEventListener("click", () => {
+          // Lógica para actualizar el parqueo
+          abrirFormulario(parqueoID); // Llama a la función abrirFormulario pasando el ID del parqueo
+        });
+
         // Agregar elementos al div de parqueo
         parqueoElement.appendChild(tituloElement);
         parqueoElement.appendChild(eliminarBtn);
+        parqueoElement.appendChild(actualizarBtn);
         parqueosDiv.appendChild(parqueoElement);
       });
     });
@@ -73,7 +83,7 @@ function abrirFormulario(parqueoID) {
       "Latitud": "Latitud",
       "Longitud": "Longitud",
       "nombre": "nombre",
-      "direccion": "direccion",
+      "direccion": "dirección",
       "celular": "celular",
       "tipo": "tipo",
       "precio": "precio",
@@ -84,10 +94,19 @@ function abrirFormulario(parqueoID) {
 
     for (var propiedad in campos) {
       if (campos.hasOwnProperty(propiedad) && propiedad !== "tipo") {
+        // Crear etiqueta de nombre del campo
+        var label = document.createElement("label");
+        label.setAttribute("for", propiedad);
+        label.textContent = campos[propiedad];
+
+        // Agregar la etiqueta al formulario
+        formulario.appendChild(label);
+
         // Crear el campo de entrada
         var campo = document.createElement("input");
         campo.setAttribute("type", "text");
         campo.setAttribute("name", propiedad);
+        campo.setAttribute("id", propiedad);
         campo.setAttribute("value", parqueo[campos[propiedad]]);
 
         // Agregar el campo al formulario
@@ -96,6 +115,11 @@ function abrirFormulario(parqueoID) {
     }
 
     // Crear el campo de selección para el tipo de parqueo
+    var labelTipo = document.createElement("label");
+    labelTipo.setAttribute("for", "tipo");
+    labelTipo.textContent = "Tipo";
+    formulario.appendChild(labelTipo);
+
     var tipoSelect = document.createElement("select");
     tipoSelect.setAttribute("name", "tipo");
 
@@ -123,6 +147,17 @@ function abrirFormulario(parqueoID) {
     // Agregar el campo de selección al formulario
     formulario.appendChild(tipoSelect);
 
+    // Crear el campo de carga de imágenes
+    var labelImagen = document.createElement("label");
+    labelImagen.setAttribute("for", "imagen");
+    labelImagen.textContent = "Imagen";
+    formulario.appendChild(labelImagen);
+
+    var inputImagen = document.createElement("input");
+    inputImagen.setAttribute("type", "file");
+    inputImagen.setAttribute("name", "imagen");
+    formulario.appendChild(inputImagen);
+
     // Crear el botón de guardar cambios
     var guardarBtn = document.createElement("button");
     guardarBtn.textContent = "Guardar cambios";
@@ -142,19 +177,50 @@ function abrirFormulario(parqueoID) {
       // Actualizar la disponibilidad según la cantidad de espacios
       datosActualizados.disponibilidad = datosActualizados.cantespacios > 0;
 
-      // Actualizar el parqueo en la base de datos
-      parqueoRef.update(datosActualizados)
-        .then(function() {
-          // Éxito al actualizar el parqueo
-          alert("Parqueo actualizado correctamente");
+      // Subir la imagen al almacenamiento de Firebase
+      var imagenArchivo = inputImagen.files[0];
+      if (imagenArchivo) {
+        var storageRef = firebase.storage().ref();
+        var imagenRef = storageRef.child("parqueos/" + parqueoID + "/imagen");
 
-          // Cerrar el formulario de actualización
-          formulario.remove();
-        })
-        .catch(function(error) {
-          // Error al actualizar el parqueo
-          alert("Error al actualizar el parqueo:", error);
-        });
+        imagenRef.put(imagenArchivo)
+          .then(function(snapshot) {
+            // Obtener la URL de descarga de la imagen subida
+            return imagenRef.getDownloadURL();
+          })
+          .then(function(url) {
+            // Actualizar la URL de la imagen en los datos actualizados
+            datosActualizados.imagen = url;
+
+            // Actualizar el parqueo en la base de datos
+            return parqueoRef.update(datosActualizados);
+          })
+          .then(function() {
+            // Éxito al actualizar el parqueo
+            alert("Parqueo actualizado correctamente");
+
+            // Cerrar el formulario de actualización
+            formulario.remove();
+          })
+          .catch(function(error) {
+            // Error al actualizar el parqueo
+            alert("Error al actualizar el parqueo:", error);
+          });
+      } else {
+        // No se seleccionó una nueva imagen, actualizar solo los otros campos
+        parqueoRef.update(datosActualizados)
+          .then(function() {
+            // Éxito al actualizar el parqueo
+            alert("Parqueo actualizado correctamente");
+
+            // Cerrar el formulario de actualización
+            formulario.remove();
+          })
+          .catch(function(error) {
+            // Error al actualizar el parqueo
+            alert("Error al actualizar el parqueo:", error);
+          });
+      }
     });
 
     // Agregar el botón de guardar cambios al formulario
@@ -164,6 +230,8 @@ function abrirFormulario(parqueoID) {
     document.body.appendChild(formulario);
   });
 }
+
+
 
 
 
@@ -188,6 +256,7 @@ function eliminarParqueo(parqueoID) {
       console.error("Error al eliminar el parqueo:", error);
     });
 }
+
 
 
 document.addEventListener("DOMContentLoaded", () => {
