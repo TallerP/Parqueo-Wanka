@@ -19,6 +19,62 @@ const userID = urlParams.get("userID");
 const firebaseRef = firebase.database().ref("datos");
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Realiza una consulta en la base de datos para obtener los parqueos del usuario
+  firebaseRef
+    .orderByChild("IDUsuario")
+    .equalTo(userID)
+    .on("value", (snapshot) => {
+      // Limpiar la lista de parqueos antes de volver a cargarla
+      parqueosDiv.innerHTML = "";
+
+      // Itera sobre los parqueos y muestra la lista en la página
+      snapshot.forEach((childSnapshot) => {
+        const parqueo = childSnapshot.val();
+        const parqueoID = childSnapshot.key; // Obtén el ID del parqueo
+
+        // Crear elemento de parqueo
+        var parqueoElement = document.createElement("div");
+        parqueoElement.classList.add("parqueo");
+
+        // Crear elemento de título
+        var tituloElement = document.createElement("h1");
+        tituloElement.textContent = parqueo.nombre;
+
+        // Crear botón de eliminar
+        var eliminarBtn = document.createElement("button");
+        eliminarBtn.textContent = "Eliminar";
+        eliminarBtn.classList.add("btn-menu");
+        eliminarBtn.addEventListener("click", () => {
+          eliminarParqueo(parqueoID); // Llama a la función eliminarParqueo pasando el ID del parqueo
+        });
+
+        // Agregar elementos al div de parqueo
+        parqueoElement.appendChild(tituloElement);
+        parqueoElement.appendChild(eliminarBtn);
+        parqueosDiv.appendChild(parqueoElement);
+      });
+    });
+});
+
+// Función para eliminar un parqueo
+function eliminarParqueo(parqueoID) {
+  // Lógica para eliminar el parqueo de la base de datos
+  firebase
+    .database()
+    .ref("datos/" + parqueoID)
+    .remove()
+    .then(() => {
+      // El parqueo se eliminó exitosamente
+      console.log("Parqueo eliminado correctamente");
+    })
+    .catch((error) => {
+      // Ocurrió un error al eliminar el parqueo
+      console.error("Error al eliminar el parqueo:", error);
+    });
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
   // Obtén referencias a los elementos del DOM
   var openModalBtn = document.getElementById("openModalBtn");
   var modal = document.getElementById("myModal");
