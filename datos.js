@@ -48,19 +48,9 @@ document.addEventListener("DOMContentLoaded", () => {
           eliminarParqueo(parqueoID); // Llama a la función eliminarParqueo pasando el ID del parqueo
         });
 
-        // Crear botón de actualizar
-        var actualizarBtn = document.createElement("button");
-        actualizarBtn.textContent = "Actualizar";
-        actualizarBtn.classList.add("btn-menu");
-        actualizarBtn.addEventListener("click", () => {
-          // Lógica para actualizar el parqueo
-          abrirFormulario(parqueoID); // Llama a la función abrirFormulario pasando el ID del parqueo
-        });
-
         // Agregar elementos al div de parqueo
         parqueoElement.appendChild(tituloElement);
         parqueoElement.appendChild(eliminarBtn);
-        parqueoElement.appendChild(actualizarBtn);
         parqueosDiv.appendChild(parqueoElement);
       });
     });
@@ -83,7 +73,7 @@ function abrirFormulario(parqueoID) {
       "Latitud": "Latitud",
       "Longitud": "Longitud",
       "nombre": "nombre",
-      "direccion": "dirección",
+      "direccion": "direccion",
       "celular": "celular",
       "tipo": "tipo",
       "precio": "precio",
@@ -94,19 +84,10 @@ function abrirFormulario(parqueoID) {
 
     for (var propiedad in campos) {
       if (campos.hasOwnProperty(propiedad) && propiedad !== "tipo") {
-        // Crear etiqueta de nombre del campo
-        var label = document.createElement("label");
-        label.setAttribute("for", propiedad);
-        label.textContent = campos[propiedad];
-
-        // Agregar la etiqueta al formulario
-        formulario.appendChild(label);
-
         // Crear el campo de entrada
         var campo = document.createElement("input");
         campo.setAttribute("type", "text");
         campo.setAttribute("name", propiedad);
-        campo.setAttribute("id", propiedad);
         campo.setAttribute("value", parqueo[campos[propiedad]]);
 
         // Agregar el campo al formulario
@@ -115,11 +96,6 @@ function abrirFormulario(parqueoID) {
     }
 
     // Crear el campo de selección para el tipo de parqueo
-    var labelTipo = document.createElement("label");
-    labelTipo.setAttribute("for", "tipo");
-    labelTipo.textContent = "Tipo";
-    formulario.appendChild(labelTipo);
-
     var tipoSelect = document.createElement("select");
     tipoSelect.setAttribute("name", "tipo");
 
@@ -147,17 +123,6 @@ function abrirFormulario(parqueoID) {
     // Agregar el campo de selección al formulario
     formulario.appendChild(tipoSelect);
 
-    // Crear el campo de carga de imágenes
-    var labelImagen = document.createElement("label");
-    labelImagen.setAttribute("for", "imagen");
-    labelImagen.textContent = "Imagen";
-    formulario.appendChild(labelImagen);
-
-    var inputImagen = document.createElement("input");
-    inputImagen.setAttribute("type", "file");
-    inputImagen.setAttribute("name", "imagen");
-    formulario.appendChild(inputImagen);
-
     // Crear el botón de guardar cambios
     var guardarBtn = document.createElement("button");
     guardarBtn.textContent = "Guardar cambios";
@@ -177,50 +142,19 @@ function abrirFormulario(parqueoID) {
       // Actualizar la disponibilidad según la cantidad de espacios
       datosActualizados.disponibilidad = datosActualizados.cantespacios > 0;
 
-      // Subir la imagen al almacenamiento de Firebase
-      var imagenArchivo = inputImagen.files[0];
-      if (imagenArchivo) {
-        var storageRef = firebase.storage().ref();
-        var imagenRef = storageRef.child("parqueos/" + parqueoID + "/imagen");
+      // Actualizar el parqueo en la base de datos
+      parqueoRef.update(datosActualizados)
+        .then(function() {
+          // Éxito al actualizar el parqueo
+          alert("Parqueo actualizado correctamente");
 
-        imagenRef.put(imagenArchivo)
-          .then(function(snapshot) {
-            // Obtener la URL de descarga de la imagen subida
-            return imagenRef.getDownloadURL();
-          })
-          .then(function(url) {
-            // Actualizar la URL de la imagen en los datos actualizados
-            datosActualizados.imagen = url;
-
-            // Actualizar el parqueo en la base de datos
-            return parqueoRef.update(datosActualizados);
-          })
-          .then(function() {
-            // Éxito al actualizar el parqueo
-            alert("Parqueo actualizado correctamente");
-
-            // Cerrar el formulario de actualización
-            formulario.remove();
-          })
-          .catch(function(error) {
-            // Error al actualizar el parqueo
-            alert("Error al actualizar el parqueo:", error);
-          });
-      } else {
-        // No se seleccionó una nueva imagen, actualizar solo los otros campos
-        parqueoRef.update(datosActualizados)
-          .then(function() {
-            // Éxito al actualizar el parqueo
-            alert("Parqueo actualizado correctamente");
-
-            // Cerrar el formulario de actualización
-            formulario.remove();
-          })
-          .catch(function(error) {
-            // Error al actualizar el parqueo
-            alert("Error al actualizar el parqueo:", error);
-          });
-      }
+          // Cerrar el formulario de actualización
+          formulario.remove();
+        })
+        .catch(function(error) {
+          // Error al actualizar el parqueo
+          alert("Error al actualizar el parqueo:", error);
+        });
     });
 
     // Agregar el botón de guardar cambios al formulario
@@ -230,8 +164,6 @@ function abrirFormulario(parqueoID) {
     document.body.appendChild(formulario);
   });
 }
-
-
 
 
 
@@ -263,7 +195,6 @@ document.addEventListener("DOMContentLoaded", () => {
   var openModalBtn = document.getElementById("openModalBtn");
   var modal = document.getElementById("myModal");
   var closeModalBtn = document.getElementsByClassName("close")[0];
-  var updateBtn = document.getElementById("updateBtn");
 
   // Abre el modal al hacer clic en el botón correspondiente
   openModalBtn.addEventListener("click", function () {
@@ -349,6 +280,201 @@ function guardarDato(userID) {
   );
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  // Realiza una consulta en la base de datos para obtener los parqueos del usuario
+  let parqueoIDToUpdate = "";
+  firebaseRef
+    .orderByChild("IDUsuario")
+    .equalTo(userID)
+    .on("value", (snapshot) => {
+      // Limpiar la lista de parqueos antes de volver a cargarla
+      parqueosDiv.innerHTML = "";
+
+      // Itera sobre los parqueos y muestra la lista en la página
+      snapshot.forEach((childSnapshot) => {
+        const parqueo = childSnapshot.val();
+        const parqueoID = childSnapshot.key; // Obtén el ID del parqueo
+
+        // Crear elemento de parqueo
+        var parqueoElement = document.createElement("div");
+        parqueoElement.classList.add("parqueo");
+
+        // Crear elemento de título
+        var tituloElement = document.createElement("h1");
+        tituloElement.textContent = parqueo.nombre;
+
+        // Crear botón de eliminar
+        var eliminarBtn = document.createElement("button");
+        eliminarBtn.textContent = "Eliminar";
+        eliminarBtn.classList.add("btn-menu");
+        eliminarBtn.addEventListener("click", () => {
+          eliminarParqueo(parqueoID); // Llama a la función eliminarParqueo pasando el ID del parqueo
+        });
+
+        var actualizarBtn = document.createElement("button");
+        actualizarBtn.textContent = "Actualizar";
+        actualizarBtn.classList.add("btn-menu");
+        actualizarBtn.id = "openModalEdit";
+        actualizarBtn.addEventListener("click", () => {
+          parqueoIDToUpdate = parqueoID;
+          // Llama a la función actualizarDato pasando el parqueoID como argumento
+          mostrarModalActualizar(parqueoID, parqueo);
+        });
+
+        // Agregar elementos al div de parqueo
+        parqueoElement.appendChild(tituloElement);
+        parqueoElement.appendChild(actualizarBtn);
+        parqueoElement.appendChild(eliminarBtn);
+        parqueosDiv.appendChild(parqueoElement);
+      });
+    });
+});
+
+// Función para mostrar el modal con los datos del parqueo a actualizar
+function mostrarModalActualizar(parqueoID, parqueo) {
+  // Lógica para mostrar el modal y sus componentes (título, campos de edición, botones, etc.)
+  var modalEdit = document.getElementById("myModalEdit");
+  var closeModalBtn = document.getElementsByClassName("close")[0];
+
+  // Rellenar los campos del modal con los datos del parqueo
+  document.getElementById("modalNombre").value = parqueo.nombre;
+  document.getElementById("modalDireccion").value = parqueo.direccion;
+  document.getElementById("modalCelular").value = parqueo.celular;
+  document.getElementById("modalDescrip").value = parqueo.descripcion;
+  document.getElementById("modalHorario").value = parqueo.horario;
+  document.getElementById("modalPrecio").value = parqueo.precio;
+  document.getElementById("modalEspacios").value = parqueo.cantespacios;
+  document.getElementById("modalTipo").value = parqueo.tipo;
+  document.getElementById("modalLat").value = parqueo.Latitud;
+  document.getElementById("modalLong").value = parqueo.Longitud;
+  document.getElementById("modalDispo").value = parqueo.disponibilidad;
+
+  // Guardar los valores actuales en la variable datosActuales
+  var datosActualesParqueo = {
+    nombre: parqueo.nombre,
+    direccion: parqueo.direccion,
+    celular: parqueo.celular,
+    descripcion: parqueo.descripcion,
+    horario: parqueo.horario,
+    precio: parqueo.precio,
+    cantespacios: parqueo.cantespacios,
+    tipo: parqueo.tipo,
+    Latitud: parqueo.Latitud,
+    Longitud: parqueo.Longitud,
+    disponibilidad: parqueo.disponibilidad,
+  };
+
+  // Abre el modal al hacer clic en el botón correspondiente
+  modalEdit.style.display = "block";
+
+  // Cierra el modal al hacer clic en la "x" de cierre
+  closeModalBtn.addEventListener("click", function () {
+    modalEdit.style.display = "none";
+  });
+
+  // Cierra el modal al hacer clic fuera de él
+  window.addEventListener("click", function (event) {
+    if (event.target == modalEdit) {
+      modalEdit.style.display = "none";
+    }
+  });
+
+  // Agregar evento al botón de guardar del modal
+  document.getElementById("modalGuardarBtn").addEventListener("click", () => {
+    if (parqueoID !== "") {
+      // Obtener los valores actualizados de los campos del modal
+      var nombre = document.getElementById("modalNombre").value;
+      var direccion = document.getElementById("modalDireccion").value;
+      var celular = document.getElementById("modalCelular").value;
+      var descripcion = document.getElementById("modalDescrip").value;
+      var horario = document.getElementById("modalHorario").value;
+      var precio = document.getElementById("modalPrecio").value;
+      var cantespacios = document.getElementById("modalEspacios").value;
+      var tipo = document.getElementById("modalTipo").value;
+      var Latitud = document.getElementById("modalLat").value;
+      var Longitud = document.getElementById("modalLong").value;
+      var disponibilidad = document.getElementById("modalDispo").value;
+
+      // Actualiza la disponibilidad basado en la cantidad de espacios disponibles
+      var disponibilidad;
+      if (cantespacios > 0) {
+        disponibilidad = true;
+      } else {
+        disponibilidad = false;
+      }
+
+      // Llamar a la función actualizarDato pasando el parqueoID y los nuevos valores
+      actualizarDato(parqueoID, {
+        Latitud: Latitud,
+        Longitud: Longitud,
+        nombre: nombre,
+        direccion: direccion,
+        celular: celular,
+        tipo: tipo,
+        precio: precio,
+        cantespacios: cantespacios,
+        horario: horario,
+        descripcion: descripcion,
+        disponibilidad: disponibilidad,
+      });
+
+      // Cerrar el modal o realizar otras acciones necesarias
+      modalEdit.style.display = "none";
+      parqueoID = "";
+    }
+  });
+}
+
+function actualizarDato(id, nuevosValores) {
+  var cantespacios = parseInt(nuevosValores.cantespacios);
+  var disponibilidad;
+  if (cantespacios > 0) {
+    disponibilidad = true;
+  } else {
+    disponibilidad = false;
+  }
+
+  firebase
+    .database()
+    .ref("datos/" + id)
+    .update({
+      Latitud: nuevosValores.Latitud,
+      Longitud: nuevosValores.Longitud,
+      nombre: nuevosValores.nombre,
+      direccion: nuevosValores.direccion,
+      celular: nuevosValores.celular,
+      tipo: nuevosValores.tipo,
+      precio: nuevosValores.precio,
+      cantespacios: nuevosValores.cantespacios,
+      horario: nuevosValores.horario,
+      descripcion: nuevosValores.descripcion,
+      disponibilidad: disponibilidad,
+    })
+    .then(() => {
+      alert("Dato actualizado correctamente");
+    })
+    .catch((error) => {
+      console.log("Error al actualizar el dato:", error);
+    });
+}
+
+// Función para eliminar un parqueo
+function eliminarParqueo(parqueoID) {
+  // Lógica para eliminar el parqueo de la base de datos
+  firebase
+    .database()
+    .ref("datos/" + parqueoID)
+    .remove()
+    .then(() => {
+      // El parqueo se eliminó exitosamente
+      console.log("Parqueo eliminado correctamente");
+    })
+    .catch((error) => {
+      // Ocurrió un error al eliminar el parqueo
+      console.error("Error al eliminar el parqueo:", error);
+    });
+}
+
 function limpiarDato() {
   const Latitud = document.getElementById("Latitud");
   const Longitud = document.getElementById("Longitud");
@@ -373,48 +499,4 @@ function limpiarDato() {
   celular.value = "";
   cantespacios.value = "";
   disponibilidadDiv.textContent = "";
-}
-
-function actualizarDato(id) {
-  var Latitud = document.getElementById("Latitud").value;
-  var Longitud = document.getElementById("Longitud").value;
-  var nombre = document.getElementById("nombre").value;
-  var direccion = document.getElementById("direccion").value;
-  var celular = document.getElementById("celular").value;
-  var tipo = document.getElementById("tipo").value;
-  var precio = document.getElementById("precio").value;
-  var horario = document.getElementById("horario").value;
-  var cantespacios = document.getElementById("cantespacios").value;
-  var descripcion = document.getElementById("descripcion").value;
-
-  // Actualiza la disponibilidad basado en la cantidad de espacios disponibles
-  var disponibilidad;
-  if (cantespacios > 0) {
-    disponibilidad = true;
-  } else {
-    disponibilidad = false;
-  }
-
-  firebase
-    .database()
-    .ref("datos/" + id)
-    .update({
-      Latitud: Latitud,
-      Longitud: Longitud,
-      nombre: nombre,
-      direccion: direccion,
-      celular: celular,
-      tipo: tipo,
-      precio: precio,
-      cantespacios: cantespacios,
-      horario: horario,
-      descripcion: descripcion,
-      disponibilidad: disponibilidad,
-    })
-    .then(() => {
-      alert("Dato actualizado correctamente");
-    })
-    .catch((error) => {
-      console.log("Error al actualizar el dato:", error);
-    });
 }

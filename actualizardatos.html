@@ -158,6 +158,74 @@
         </div>
     </div>
 
+    <div id="myModalEdit" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Actualizar Parqueo</h2>
+          <div class="form-content ">
+            <div class="coolinput">
+                <label for="input" class="text">Nombre:</label>
+                <input type="text" id="modalNombre" placeholder="Nombre" name="Nombre" class="input">
+            </div>
+            <div class="coolinput">
+                <label for="input" class="text">Direccion:</label>
+                <input type="text" id="modalDireccion" placeholder="Direccion" name="precio" class="input">
+            </div>
+            <div class="coolinput">
+                <label for="input" class="text">Teléfono:</label>
+                <input type="text" id="modalCelular" placeholder="Teléfono" name="precio" class="input">
+            </div>
+            <div class="coolinput">
+                <label for="input" class="text">Descripción:</label>
+                <input type="text" id="modalDescrip" placeholder="Descripción" name="precio" class="input">
+            </div>
+            <div class="coolinput">
+                <label for="input" class="text">Horario:</label>
+                <input type="text" id="modalHorario" placeholder="Horario" name="precio" class="input">
+            </div>
+            <div class="coolinput">
+                <label for="input" class="text">Imagen:</label>
+                <input type="file" id="subirimagen"  class="input"/>
+            </div>
+          </div>
+          <div class="form-content ">
+            <div class="coolinput">
+                <label for="input" class="text">Tarifa:</label>
+                <input type="text" id="modalPrecio" placeholder="S/...." name="precio" class="input">
+            </div>
+            <div class="coolinput">
+                <label for="input" class="text">Espacios disponibles:</label>
+                <input type="number" id="modalEspacios" name="cantespacios" placeholder="1" name="input" class="input">
+            </div>
+            <div class="coolinput">
+                <label for="input" class="text">Tipo de estacionamiento:</label>
+                <select id="modalTipo">
+                    <option value="seleccionar">-- Seleccionar</option>
+                    <option value="techado">Techado</option>
+                    <option value="sin-techo">Sin techo</option>
+                    <option value="techado">Subterraneo</option>
+                </select>
+            </div>
+          </div>
+          <div class="form-content ">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="mapa" style="width: 100%; height: 250px"></div>
+                </div>
+            </div>
+            <div>
+                <h5 >Latitud:</h5>
+                <input type="number" id="modalLat" name="Latitud" readonly>
+                <h5 >Longitud:</h5>
+                <input type="number" id="modalLong" name="Longitud" readonly>
+                <h5 >Disponibilidad:</h5>
+                <div id="modalDispo" value="false"></div>
+            </div>
+          </div>
+          
+        <button id="modalGuardarBtn" class="btn-menu" >Guardar</button>
+        </div>
+    </div>
     <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmn7dgBjGCRulPapD4gPqSE6XQAQ7iCTg&callback=iniciarMapa"></script>
         
