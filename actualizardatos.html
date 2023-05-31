@@ -14,9 +14,47 @@
 
   <body>
     <header class="header">
-      <a class="navbar-item" href="index.html"> Home </a>
+      <div class="dropdown">
+        <button class="dropdown-button">
+          <img
+            src="https://icongr.am/jam/menu.svg?size=32&color=000000"
+            alt=""
+          />
+        </button>
+        <ul class="dropdown-menu">
+          <li>
+            <a class="menu-item" href="index.html">
+              <img
+                src="https://icongr.am/material/home-map-marker.svg?size=20&color=4f4f4f"
+                alt=""
+              />Inicio
+            </a>
+          </li>
+          <li>
+            <a class="menu-item" href="">
+              <img
+                src="https://icongr.am/material/logout.svg?size=20&color=4f4f4f"
+                alt=""
+              />Cerrar sesión
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="admAvatar">
+        <div class="admAvatar-Img">
+          <img
+            src="https://icongr.am/fontawesome/user.svg?size=22&color=ffffff"
+            alt=""
+          />
+        </div>
+        <div class="admAvatar-Title">
+          <h2>James Scott</h2>
+          <h4>james@gmail.com</h4>
+        </div>
+      </div>
     </header>
-    <section>
+    <section class="Sec-Act">
       <div>
         <button id="openModalBtn" class="btn-success">Crear Parqueo</button>
       </div>
@@ -363,19 +401,21 @@
     </div>
 
     <div id="modalConfirm" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>¿Estás seguro de que deseas eliminar este parqueo?</h2>
-        <div class="form-content">
-          <div>
-            <button id="btnCancelar" class="btn-cancel">Cancelar</button>
-          </div>
-          <div>
-            <button id="btnAceptar" class="btn-success">Aceptar</button>
-          </div>
+      <div class="modal-div">
+        <div class="modal-header">
+          <h1>Eliminar playa de estacionamiento</h1>
+          <span class="close">&times;</span>
+        </div>
+        <div class="modal-content">
+          <h2>¿Estás seguro de que deseas eliminar este parqueo?</h2>
+        </div>
+        <div class="modal-footer">
+          <button id="btnCancelar" class="btn-cancel">Cancelar</button>
+          <button id="btnAceptar" class="btn-success">Aceptar</button>
         </div>
       </div>
     </div>
+
     <script src="./datos.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmn7dgBjGCRulPapD4gPqSE6XQAQ7iCTg&callback=iniciarMapa"></script>
   </body>

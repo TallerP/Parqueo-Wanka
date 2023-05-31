@@ -134,6 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+
 // Abre el modal de crear parqueo
 document.addEventListener("DOMContentLoaded", () => {
   var openModalBtn = document.getElementById("openModalBtn");
@@ -287,39 +288,57 @@ document.addEventListener("DOMContentLoaded", () => {
         const parqueo = childSnapshot.val();
         const parqueoID = childSnapshot.key;
 
-        var parqueoElement = document.createElement("div");
+        const parqueoElement = document.createElement("div");
         parqueoElement.classList.add("parqueo");
 
-        var tituloElement = document.createElement("h1");
-        tituloElement.textContent = parqueo.nombre;
+        const disponibilidadText = parqueo.disponibilidad ? "ACTIVO" : "INACTIVO";
+        const disponibilidadClass = parqueo.disponibilidad ? "verde" : "rojo";
 
-        // Crear botón de eliminar
-        var eliminarBtn = document.createElement("button");
-        eliminarBtn.textContent = "Eliminar";
-        eliminarBtn.classList.add("btn-cancel");
+        parqueoElement.innerHTML = `
+          <div class="parqueo-Content">
+            <div class="parqC-img">
+              <img id="" src="${parqueo.imagenURL}" loading="lazy" />
+              <span class="parqC-Prec">${parqueo.precio} x h</span> 
+            </div>
+            <div class="parqC-title">
+              <span><img src="https://icongr.am/jam/map-marker-f.svg?size=18&color=14bbf0" alt=""> ${parqueo.direccion}</span>
+              <h2>${parqueo.nombre}</h2>
+              <div class="parqC-act">
+                <div class="parqC-act-Esp">
+                  <img src="https://icongr.am/jam/car-f.svg?size=20&amp;color=fb3447" alt=""> 
+                  <span>${parqueo.cantespacios} espacio(s)</span> 
+                </div class="parqC-act-Esp">
+                <div class="${disponibilidadClass}"> <span>${disponibilidadText}</span> </div>
+              </div>
+            </div>
+            
+          </div>
+          <div class="parqueo-Btns">
+            <button class="btn-cancel" data-parqueo-id="${parqueoID}">Eliminar</button>
+            <button class="btn-success" id="openModalEdit" data-parqueo-id="${parqueoID}">Actualizar</button>
+          </div>
+        `;
+
+        // Obtener los botones de eliminar y actualizar dentro del parqueoElement
+        const eliminarBtn = parqueoElement.querySelector(".btn-cancel");
+        const actualizarBtn = parqueoElement.querySelector(".btn-success");
+
         eliminarBtn.addEventListener("click", () => {
           parqueoIDToUpdate = parqueoID;
-          mostrarModalConfirmacion(parqueoIDToUpdate); // Mostrar el modal de confirmación para el parqueo seleccionado
+          mostrarModalConfirmacion(parqueoIDToUpdate);
         });
 
-        var actualizarBtn = document.createElement("button");
-        actualizarBtn.textContent = "Actualizar";
-        actualizarBtn.classList.add("btn-success");
-        actualizarBtn.id = "openModalEdit";
         actualizarBtn.addEventListener("click", () => {
           parqueoIDToUpdate = parqueoID;
           parqueoDate = parqueo;
-          // Llama a la función actualizarDato pasando el parqueoID como argumento
           mostrarModalActualizar(parqueoIDToUpdate, parqueo);
         });
 
-        parqueoElement.appendChild(tituloElement);
-        parqueoElement.appendChild(actualizarBtn);
-        parqueoElement.appendChild(eliminarBtn);
         parqueosDiv.appendChild(parqueoElement);
       });
     });
 });
+
 
 document.addEventListener("DOMContentLoaded", () => {
   var modalEdit = document.getElementById("myModalEdit");
