@@ -8,11 +8,17 @@ var firebaseConfig = {
   messagingSenderId: "52196951713",
   appId: "1:52196951713:web:806d3df12faa67f673d2e0",
 };
+
 firebase.initializeApp(firebaseConfig);
 
-// Obtener el ID de usuario de la URL
-const urlParams = new URLSearchParams(window.location.search);
-const userID = urlParams.get("userID");
+const userID = localStorage.getItem("userID");
+
+if (!userID) {
+  window.location.replace("index.html");
+} else {
+  
+}
+const database = firebase.database();
 const firebaseRef = firebase.database().ref("datos");
 
 function iniciarMapa() {
@@ -55,7 +61,6 @@ function iniciarMapa() {
     document.getElementById("Longitud").textContent = lng;
   }
 }
-
 
 document.addEventListener('DOMContentLoaded', function() {
   const decrementButton = document.querySelector('.decrement');
@@ -132,8 +137,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
-
-
 
 // Abre el modal de crear parqueo
 document.addEventListener("DOMContentLoaded", () => {

@@ -1,244 +1,353 @@
 <!DOCTYPE html>
 <html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parqueo Wanka</title>
+    <!-- Toastify CSS -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <link rel="stylesheet" href="./main.css" />
+    <!-- Estilos CSS de SplideJS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@splidejs/splide@3.0.9/dist/css/splide.min.css"
+    />
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Parqueo Wanka</title>
-  <!-- BOOSTRAP CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css">
-  <!-- Toastify CSS -->
-  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-  <link rel="stylesheet" href="./main.css">
-  <link rel="stylesheet" href="./app/content.js">
-  <!-- Estilos CSS de SplideJS -->
-  <link
-  rel="stylesheet"
-  href="https://unpkg.com/@splidejs/splide@3.0.9/dist/css/splide.min.css"
-/>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-database.js"></script>
+    
+  </head>
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-  href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300&display=swap"
-  rel="stylesheet"
-/>
-<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-database.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmn7dgBjGCRulPapD4gPqSE6XQAQ7iCTg&libraries=geometry&map_ids=ab9ec8e84265fcee&callback=initMap&style=feature:all|element:labels|visibility:off"></script>
-</head>
-
-<body>
-
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
-    <div class="container">
-      <a class="navbar-brand" href="#">Parqueo Wanka</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav ms-auto">
-          <a class="nav-link logged-out" href="#" data-bs-toggle="modal" data-bs-target="#signinModal">Signin</a>
-          <a class="nav-link logged-out" href="#" data-bs-toggle="modal" data-bs-target="#signupModal">Signup</a>
-          <a class="nav-link logged-in" href="#" id="logout">Logout</a>
-          <a class="nav-link logged-in" href="actualizardatos.html" id="logout">Actualizar Datos</a>
-          <a class="nav-link logged-in" href="listaparqueos.html" id="logout">Listado Parqueos</a>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <div class="container p-4">
-    <div class="row">
-      <div class="col-md-6 offset-md-3">
-        <ul class="list-group posts">
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content bg-dark">
-        <div class="modal-header">
-          <h3>SignUp</h3>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body p-5">
-          <form id="signup-form">
-
-            <label for="email">Email:</label>
-            <input type="text" id="signup-email" class="form-control mb-3" placeholder="Title" required>
-
-            <label for="password">Password:</label>
-            <input type="password" id="signup-password" class="form-control mb-3" placeholder="Password" required>
-
-            <button type="submit" class="btn btn-primary">Save changes</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="signinModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalSignin"
-    aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>SignIn</h3>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
+  <body>
+    <div class="modal hidden">
+        <div id="H-login" class="modal-Home">
+          <div class="modal-H-Header">
+            <span id="hideModalBtn" class="close">&times;</span>
+            <h2>Iniciar sesión</h2>
+            <h3>Registra playas de estacionamiento.</h3>
+          </div>
           <form id="login-form">
-            <label for="email">Email</label>
-            <input type="text" id="login-email" class="form-control mb-3" placeholder="Title" required>
-            <label for="password">Password:</label>
-            <input type="password" id="login-password" class="form-control mb-3" placeholder="Password" required>
-
-            <button type="submit" class="btn btn-success w-100 mb-4">Login</button>
-
-            <button type="button" class="btn btn-info" id="googleLogin">Google</button>
-            <button type="button" class="btn btn-primary" id="facebookLogin">Facebook</button>
-            <button type="button" class="btn btn-dark" id="githubLogin">Github</button>
+            <div class="modal-H-Body">
+              <div class="H-Body-item H-item-input">
+                <img src="./imgs/user.svg" alt="" />
+                <input
+                  type="text"
+                  id="login-email"
+                  class="form-control mb-3"
+                  placeholder="nombre@gmail.com"
+                  required
+                />
+              </div>
+              <div class="H-Body-item H-item-input">
+                <img src="./imgs/pas.svg" alt="" />
+                <input
+                  type="password"
+                  id="login-password"
+                  class="form-control mb-3"
+                  placeholder="Al menos 8 caractéres"
+                  required
+                />
+              </div>
+              <div class="H-Body-item">
+                <h4>¿Olvidaste tu contraseña?</h4>
+              </div>
+              <div class="H-Body-item">
+                <button type="submit" class="">Ingresar</button>
+              </div>
+              <div class="H-Body-item">
+                <span id="create-span">¿No tienes una cuenta? <strong>Crea una cuenta.</strong> </span>
+              </div>
+            </div>
+            <div class="separator">o</div>
+            <div class="modal-H-Footer">
+              <button type="button" class="btn btn-info" id="googleLogin">
+                <img
+              src="https://icongr.am/devicon/google-original.svg?size=20&color=currentColor"
+              alt=""
+            />Google
+              </button>
+              <button type="button" class="btn btn-primary" id="facebookLogin">
+                <img
+              src="https://icongr.am/devicon/facebook-original.svg?size=20&color=currentColor"
+              alt=""
+            />Facebook
+              </button>
+            </div>
           </form>
         </div>
-      </div>
+        <div id="H-logout" class="modal-Home">
+          <div class="modal-H-Header">
+            <span id="hideModalBtn2" class="close">&times;</span>
+            <h2>Crear cuenta</h2>
+            <h3>Registra playas de estacionamiento.</h3>
+          </div>
+          <form id="signup-form">
+            <div class="modal-H-Body">
+              <div class="H-Body-item H-item-input">
+                <img src="./imgs/user.svg" alt="" />
+                <input
+                  type="text"
+                  id="signup-email"
+                  class="form-control mb-3"
+                  placeholder="nombre@gmail.com"
+                  required
+                />
+              </div>
+              <div class="H-Body-item H-item-input">
+                <img src="./imgs/pas.svg" alt="" />
+                <input
+                  type="password"
+                  id="signup-password"
+                  class="form-control mb-3"
+                  placeholder="Al menos 8 caractéres"
+                  required
+                />
+              </div>
+              <div class="H-Body-item">
+                <h4>¿Olvidaste tu contraseña?</h4>
+              </div>
+              <div class="H-Body-item">
+                <button type="submit" class="">Crear</button>
+              </div>
+              <div class="H-Body-item">
+                <span id="login-span">¿Ya tienes una cuenta? <strong>Iniciar sesión.</strong> </span>
+              </div>
+            </div>            
+          </form>
+        </div>
     </div>
-  </div>
 
-  <section>
-    <div  style="margin-top: 50px;" class="c-explorar">
-      <div class="c-explorar-filter">
-        <div class="custom-select">
-          <select id="tipo">
-            <option value="todos">Todos</option>
-            <option value="techado">Techado</option>
-            <option value="sin-techo">Sin Techo</option>
-            <option value="subterraneo">Subterráneo</option>
-          </select>
-        </div>
-        <div>
-          <select id="rango">
-            <option value="2">2 km</option>
-            <option value="4">4 km</option>
-            <option value="8">8 km</option>
-          </select>
-        </div>
-      </div>
-      <button type="button" class="btn-micro" title="Búsqueda por voz">
-        <img src="https://icongr.am/jam/mic-alt.svg?size=20&color=222222" alt="" class="icon-micro" />
-      </button>
-    </div>
-    <div id="info-container" class="c-explorar-list">
-      <div class="splide">
-        <div class="splide__track">
-          <ul class="splide__list">
-            <li class="splide__slide">
-              <img
-                src="https://a0.muscache.com/im/pictures/miso/Hosting-14979866/original/75595cfc-37d6-42d8-95dd-0ea3c966ef88.jpeg?im_w=720"
-                alt="Image 1" class="list-item-img" />
-            </li>
-            <li class="splide__slide">
-              <img
-                src="https://a0.muscache.com/im/pictures/miso/Hosting-576599054777073307/original/53e611cc-b827-4cec-850e-c1db1274de43.jpeg?im_w=720"
-                alt="Image 2" class="list-item-img" />
-            </li>
-            <li class="splide__slide">
-              <img
-                src="https://a0.muscache.com/im/pictures/miso/Hosting-576599054777073307/original/f288503b-fdad-4113-85f1-513697bd2698.jpeg?im_w=720"
-                alt="Image 3" class="list-item-img" />
-            </li>
-            <li class="splide__slide">
-              <img
-                src="https://a0.muscache.com/im/pictures/miso/Hosting-576599054777073307/original/f288503b-fdad-4113-85f1-513697bd2698.jpeg?im_w=720"
-                alt="Image " class="list-item-img" />
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="c-explorar-list-title">
-        <h1 id="ubicacion-nombre"></h1>
-        <span>
-          4,7 -
-          <img src="https://icongr.am/entypo/star.svg?size=15&color=ffc107" alt="" />
-          <img src="https://icongr.am/entypo/star.svg?size=15&color=ffc107" alt="" />
-          <img src="https://icongr.am/entypo/star.svg?size=15&color=ffc107" alt="" />
-          <img src="https://icongr.am/entypo/star.svg?size=15&color=ffc107" alt="" />
-          <img src="https://icongr.am/entypo/star.svg?size=15&color=ffc107" alt="" />
-          (11.116)</span>
-        <span>Playa de estacionamiento</span>
-      </div>
-      <div class="c-explorar-list-import">
-        <div class="content-precio">
-          <span class="content-precio-title">Tarifa</span>
-          <div class="content-precio-det">
-            <img src="https://icongr.am/jam/pin-alt-f.svg?size=20&color=fb3447" alt="" />
-            <h2>
-              <span id="ubicacion-precio" class="content-precio-det-text"></span>
-              x hora
-            </h2>
+    <section>
+      <div class="c-explorar">
+        <div class="c-explorar-filter">
+          <div class="custom-select">
+            <select id="tipo">
+              <option value="todos">Todos</option>
+              <option value="techado">Techado</option>
+              <option value="sin-techo">Sin Techo</option>
+              <option value="subterraneo">Subterráneo</option>
+            </select>
+          </div>
+          <div>
+            <select id="rango">
+              <option value="2">2 km</option>
+              <option value="4">4 km</option>
+              <option value="8">8 km</option>
+            </select>
           </div>
         </div>
-        <div class="content-precio">
-          <span class="content-precio-title">Disponibles</span>
-          <div class="content-precio-det">
-            <img src="https://icongr.am/jam/car-f.svg?size=20&color=fb3447" alt="" />
-            <h2>
-              <span id="ubicacion-espacio" class="content-precio-det-text"></span>
-              espacio(s)
-            </h2>
-          </div>
-        </div>
-        <div class="content-precio">
-          <span class="content-precio-title">Tipo de estacionamiento</span>
-          <div class="content-precio-det">
-            <img src="https://icongr.am/jam/home-f.svg?size=18&color=fb3447" alt="" />
-            <h2>
-              <span id="ubicacion-tipo" class="content-precio-det-text">2</span>
-            </h2>
-          </div>
-        </div>
-      </div>
-      <div class="c-explorar-list-detall">
-        <div class="c-explorar-list-detall-item">
-          <img src="https://icongr.am/jam/map-marker-f.svg?size=22&color=14bbf0" alt="" />
-          <h3 id="ubicacion-direccion"></h3>
-        </div>
-        <div class="c-explorar-list-detall-item">
-          <img src="https://icongr.am/jam/chronometer-f.svg?size=25&color=14bbf0" alt="" />
-          <h3 id="ubicacion-horario"></h3>
-        </div>
-        <div class="c-explorar-list-detall-item">
-          <img src="https://icongr.am/jam/viber.svg?size=22&color=14bbf0" alt="" />
-          <h3 id="ubicacion-numcontact"></h3>
-        </div>
-        <div class="c-explorar-list-detall-item">
-          <img src="https://icongr.am/jam/clipboard-f.svg?size=22&color=14bbf0" alt="" />
-          <h3 id="ubicacion-descripcion"></h3>
-        </div>
-      </div>
-      <div class="c-explorar-list-btn">
-        <button class="btn-rese">
-          <img src="https://icongr.am/jam/write-f.svg?size=15&color=14bbf0" alt="" />
-          Escribir una reseña
+        <button type="button" class="btn-micro" title="Búsqueda por voz">
+          <img
+            src="https://icongr.am/jam/mic-alt.svg?size=20&color=222222"
+            alt=""
+            class="icon-micro"
+          />
         </button>
+        <div class="logged-out">
+          <button id="showModalBtn" class="btn-success">Iniciar Sesión</button>
+        </div>
+        <div class="logged-in">
+          <div class="dropdown">
+            <button class="dropdown-button">
+              <img
+                src="https://icongr.am/jam/menu.svg?size=32&color=000000"
+                alt=""
+              />
+            </button>
+            <ul class="dropdown-menu" id="navbarNavAltMarkup">
+              <li>
+                <a class="menu-item" href="actualizardatos.html">
+                  <img
+                    src="https://icongr.am/material/home-map-marker.svg?size=20&color=4f4f4f"
+                    alt=""
+                  />Parqueos
+                </a>
+              </li>
+              <li>
+                <a id="logout" class="menu-item" href="">
+                  <img
+                    src="https://icongr.am/material/logout.svg?size=20&color=4f4f4f"
+                    alt=""
+                  />Cerrar sesión
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
-    </div>
-    <div id="map" class="map"></div>
-  </section>
+      <div id="info-container" class="c-explorar-list">
+        <div class="splide">
+          <div class="splide__track">
+            <ul class="splide__list">
+              <li class="splide__slide">
+                <img
+                  src="https://a0.muscache.com/im/pictures/miso/Hosting-14979866/original/75595cfc-37d6-42d8-95dd-0ea3c966ef88.jpeg?im_w=720"
+                  alt="Image 1"
+                  class="list-item-img"
+                />
+              </li>
+              <li class="splide__slide">
+                <img
+                  src="https://a0.muscache.com/im/pictures/miso/Hosting-576599054777073307/original/53e611cc-b827-4cec-850e-c1db1274de43.jpeg?im_w=720"
+                  alt="Image 2"
+                  class="list-item-img"
+                />
+              </li>
+              <li class="splide__slide">
+                <img
+                  src="https://a0.muscache.com/im/pictures/miso/Hosting-576599054777073307/original/f288503b-fdad-4113-85f1-513697bd2698.jpeg?im_w=720"
+                  alt="Image 3"
+                  class="list-item-img"
+                />
+              </li>
+              <li class="splide__slide">
+                <img
+                  src="https://a0.muscache.com/im/pictures/miso/Hosting-576599054777073307/original/f288503b-fdad-4113-85f1-513697bd2698.jpeg?im_w=720"
+                  alt="Image "
+                  class="list-item-img"
+                />
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="c-explorar-list-title">
+          <h1 id="ubicacion-nombre"></h1>
+          <span>
+            4,7 -
+            <img
+              src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+              alt=""
+            />
+            <img
+              src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+              alt=""
+            />
+            <img
+              src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+              alt=""
+            />
+            <img
+              src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+              alt=""
+            />
+            <img
+              src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+              alt=""
+            />
+            (11.116)</span
+          >
+          <span>Playa de estacionamiento</span>
+        </div>
+        <div class="c-explorar-list-import">
+          <div class="content-precio">
+            <span class="content-precio-title">Tarifa</span>
+            <div class="content-precio-det">
+              <img
+                src="https://icongr.am/jam/pin-alt-f.svg?size=20&color=fb3447"
+                alt=""
+              />
+              <h2>
+                <span
+                  id="ubicacion-precio"
+                  class="content-precio-det-text"
+                ></span>
+                x hora
+              </h2>
+            </div>
+          </div>
+          <div class="content-precio">
+            <span class="content-precio-title">Disponibles</span>
+            <div class="content-precio-det">
+              <img
+                src="https://icongr.am/jam/car-f.svg?size=20&color=fb3447"
+                alt=""
+              />
+              <h2>
+                <span
+                  id="ubicacion-espacio"
+                  class="content-precio-det-text"
+                ></span>
+                espacio(s)
+              </h2>
+            </div>
+          </div>
+          <div class="content-precio">
+            <span class="content-precio-title">Tipo de estacionamiento</span>
+            <div class="content-precio-det">
+              <img
+                src="https://icongr.am/jam/home-f.svg?size=18&color=fb3447"
+                alt=""
+              />
+              <h2>
+                <span id="ubicacion-tipo" class="content-precio-det-text"
+                  >2</span
+                >
+              </h2>
+            </div>
+          </div>
+        </div>
+        <div class="c-explorar-list-detall">
+          <div class="c-explorar-list-detall-item">
+            <img
+              src="https://icongr.am/jam/map-marker-f.svg?size=22&color=14bbf0"
+              alt=""
+            />
+            <h3 id="ubicacion-direccion"></h3>
+          </div>
+          <div class="c-explorar-list-detall-item">
+            <img
+              src="https://icongr.am/jam/chronometer-f.svg?size=25&color=14bbf0"
+              alt=""
+            />
+            <h3 id="ubicacion-horario"></h3>
+          </div>
+          <div class="c-explorar-list-detall-item">
+            <img
+              src="https://icongr.am/jam/viber.svg?size=22&color=14bbf0"
+              alt=""
+            />
+            <h3 id="ubicacion-numcontact"></h3>
+          </div>
+          <div class="c-explorar-list-detall-item">
+            <img
+              src="https://icongr.am/jam/clipboard-f.svg?size=22&color=14bbf0"
+              alt=""
+            />
+            <h3 id="ubicacion-descripcion"></h3>
+          </div>
+        </div>
+        <div class="c-explorar-list-btn">
+          <button class="btn-rese">
+            <img
+              src="https://icongr.am/jam/write-f.svg?size=15&color=14bbf0"
+              alt=""
+            />
+            Escribir una reseña
+          </button>
+        </div>
+      </div>
+      <div id="map" class="map"></div>
+      <div class="posts">
 
-  <!-- SCRIPTS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Toastify js -->
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-  <script src="./main.js" type="module"></script>
-  <script src="app/content.js" type="module"></script>
-  <script src="https://unpkg.com/@splidejs/splide@3.0.9/dist/js/splide.min.js"></script>
-  
-</body>
-
+      </div>
+    </section>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmn7dgBjGCRulPapD4gPqSE6XQAQ7iCTg&callback=iniciarMapa"></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
+    <script src="./main.js" type="module"></script>
+    <script src="./app/content.js" type="module"></script>
+    <script src="https://unpkg.com/@splidejs/splide@3.0.9/dist/js/splide.min.js"></script>
+  </body>
 </html>

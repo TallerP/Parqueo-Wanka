@@ -12,9 +12,11 @@ signInForm.addEventListener("submit", async (e) => {
   try {
     const userCredentials = await signInWithEmailAndPassword(auth, email, password);
     const userID = userCredentials.user.uid; // Obtener el ID de usuario
+    localStorage.setItem("userID", userID); // Almacenar el ID de usuario en el almacenamiento local del navegador
 
-    // Redireccionar a la página 'actualizardatos.html' con el ID de usuario como parámetro
-    window.location.href = `./actualizardatos.html?userID=${userID}`;
+    // Redireccionar a la página de destino
+    window.location.href = "./actualizardatos.html";
+    
   } catch (error) {
     if (error.code === 'auth/wrong-password') {
       showMessage("Wrong password", "error")
