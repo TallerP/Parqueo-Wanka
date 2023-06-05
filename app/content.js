@@ -92,7 +92,8 @@ const createMarker = (
   descripcion,
   tipo,
   espacio,
-  disponibilidad
+  imagen,
+  disponibilidad,
 ) => {
   const markerIcon = {
     url: disponibilidad ? "imgs/libre.svg" : "imgs/ocupado.svg",
@@ -131,6 +132,9 @@ const createMarker = (
     document.getElementById("ubicacion-descripcion").textContent = descripcion;
     document.getElementById("ubicacion-tipo").textContent = tipo;
     document.getElementById("ubicacion-espacio").textContent = espacio;
+    var imagenURL = imagen;
+    var imagenModal = document.getElementById("ubicacion-Image");
+    imagenModal.src = imagenURL;
 
     document.getElementById("info-container").classList.add("show");
   });
@@ -292,6 +296,7 @@ function filterMarkers() {
             ubicacion.descripcion,
             ubicacion.tipo,
             ubicacion.cantespacios,
+            ubicacion.imagenURL,
             ubicacion.disponibilidad
           );
         }
@@ -340,6 +345,7 @@ const createLocationMarkers = () => {
           ubicacion.descripcion,
           ubicacion.tipo,
           ubicacion.cantespacios,
+          ubicacion.imagenURL,
           disponibilidad
         );
       }
