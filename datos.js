@@ -21,6 +21,213 @@ if (!userID) {
 const database = firebase.database();
 const firebaseRef = firebase.database().ref("datos");
 
+function iniciarMapa() {
+  var latitud = -12.069342;
+  var longitud = -75.211912;
+
+  coordenadas = {
+    lng: longitud,
+    lat: latitud,
+  };
+
+  generarMapa(coordenadas);
+
+  function generarMapa(coordenadas) {
+    var mapa = new google.maps.Map(document.getElementById("mapa"), {
+      zoom: 16,
+      center: new google.maps.LatLng(coordenadas.lat, coordenadas.lng),
+    });
+
+    marcador = new google.maps.Marker({
+      map: mapa,
+      draggable: true,
+      position: new google.maps.LatLng(coordenadas.lat, coordenadas.lng),
+    });
+
+    // Mostrar las coordenadas iniciales
+    mostrarCoordenadas(coordenadas.lat, coordenadas.lng);
+
+    marcador.addListener("dragend", function (event) {
+      var lat = this.getPosition().lat();
+      var lng = this.getPosition().lng();
+
+      // Mostrar las nuevas coordenadas
+      mostrarCoordenadas(lat, lng);
+    });
+  }
+
+  function mostrarCoordenadas(lat, lng) {
+    document.getElementById("Latitud").textContent = lat;
+    document.getElementById("Longitud").textContent = lng;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const decrementButton = document.querySelector('.decrement');
+  const incrementButton = document.querySelector('.increment');
+  const quantityInput = document.querySelector('.quantity');
+
+  decrementButton.addEventListener('click', decrement);
+  incrementButton.addEventListener('click', increment);
+
+  function decrement() {
+    let currentQuantity = parseInt(quantityInput.value);
+    if (currentQuantity > 0) {
+      currentQuantity--;
+      quantityInput.value = currentQuantity;
+    }
+  }
+
+  function increment() {
+    let currentQuantity = parseInt(quantityInput.value);
+    currentQuantity++;
+    quantityInput.value = currentQuantity;
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const decrementButtonM = document.getElementById("modalDecreme");
+  const incrementButtonM = document.getElementById("modalIncreme");
+  const quantityInputM = document.getElementById("modalEspacios");
+
+  decrementButtonM.addEventListener('click', decrement);
+  incrementButtonM.addEventListener('click', increment);
+
+  function decrement() {
+    let currentQuantityM = parseInt(quantityInputM.value);
+    if (currentQuantityM > 0) {
+      currentQuantityM--;
+      quantityInputM.value = currentQuantityM;
+    }
+  }
+
+  function increment() {
+    let currentQuantityM = parseInt(quantityInputM.value);
+    currentQuantityM++;
+    quantityInputM.value = currentQuantityM;
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const inputFile = document.querySelector("#subirimagen");
+  const pictureImage = document.querySelector(".subIMG-content");
+  const originalContent = pictureImage.innerHTML;
+
+  inputFile.addEventListener("change", function (e) {
+    const inputTarget = e.target;
+    const file = inputTarget.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.addEventListener("load", function (e) {
+        const readerTarget = e.target;
+
+        const img = document.createElement("img");
+        img.src = readerTarget.result;
+        img.classList.add("picture__img");
+
+        pictureImage.innerHTML = ""; // Limpiar cualquier contenido anterior
+        pictureImage.appendChild(img);
+      });
+
+      reader.readAsDataURL(file);
+    } else {
+      pictureImage.innerHTML = originalContent; // Restaurar el contenido original
+    }
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const inputFile = document.querySelector("#subirimagen");
+  const pictureImage = document.querySelector("#subIMG-Local");
+  const originalContent = pictureImage.innerHTML;
+
+  inputFile.addEventListener("change", function (e) {
+    const inputTarget = e.target;
+    const file = inputTarget.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.addEventListener("load", function (e) {
+        const readerTarget = e.target;
+
+        const img = document.createElement("img");
+        img.src = readerTarget.result;
+        img.classList.add("picture__img");
+
+        pictureImage.innerHTML = ""; // Limpiar cualquier contenido anterior
+        pictureImage.appendChild(img);
+      });
+
+      reader.readAsDataURL(file);
+    } else {
+      pictureImage.innerHTML = originalContent; // Restaurar el contenido original
+    }
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const inputFile = document.querySelector("#subirimg-seguri");
+  const pictureImage = document.querySelector("#subIMG-Seguri");
+  const originalContent = pictureImage.innerHTML;
+
+  inputFile.addEventListener("change", function (e) {
+    const inputTarget = e.target;
+    const file = inputTarget.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.addEventListener("load", function (e) {
+        const readerTarget = e.target;
+
+        const img = document.createElement("img");
+        img.src = readerTarget.result;
+        img.classList.add("picture__img");
+
+        pictureImage.innerHTML = ""; // Limpiar cualquier contenido anterior
+        pictureImage.appendChild(img);
+      });
+
+      reader.readAsDataURL(file);
+    } else {
+      pictureImage.innerHTML = originalContent; // Restaurar el contenido original
+    }
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const inputFile = document.querySelector("#subirimg-estruc");
+  const pictureImage = document.querySelector("#subIMG-estruc");
+  const originalContent = pictureImage.innerHTML;
+
+  inputFile.addEventListener("change", function (e) {
+    const inputTarget = e.target;
+    const file = inputTarget.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.addEventListener("load", function (e) {
+        const readerTarget = e.target;
+
+        const img = document.createElement("img");
+        img.src = readerTarget.result;
+        img.classList.add("picture__estruc");
+
+        pictureImage.innerHTML = ""; // Limpiar cualquier contenido anterior
+        pictureImage.appendChild(img);
+      });
+
+      reader.readAsDataURL(file);
+    } else {
+      pictureImage.innerHTML = originalContent; // Restaurar el contenido original
+    }
+  });
+});
+
 // Abre el modal de crear parqueo
 document.addEventListener("DOMContentLoaded", () => {
   var openModalBtn = document.getElementById("openModalBtn");

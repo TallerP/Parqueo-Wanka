@@ -64,125 +64,199 @@
         <div class="modal-header">
           <h1>Crear playa de estacionamiento</h1>
           <span class="close">&times;</span>
-          <h2>Crear Parqueo</h2>
-          <div class="main-content">
-            <div class="crud-container">         
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th for="Latitud">Latitud:</th>
-                            <th for="Longitud">Longitud:</th>
-                            <th for="nombre">Nombre:</th>
-                            <th for="direccion">Direccion:</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><input type="number" id="Latitud" name="Latitud" readonly><br></td>
-                            <td><input type="number" id="Longitud" name="Longitud" readonly><br></td>
-                            <td><input type="text" id="nombre" name="nombre"><br></td>
-                            <td><input type="text" id="direccion" name="direccion"><br></td>
-                        </tr>
-                    </tbody>
-    
-                    <tr>
-                        <th for="Celular">Celular:</th>
-                        <th for="tipo">Tipo:</th>
-                        <th for="horario">Precio:</th>
-                        <th for="precio">Horario:</th>
-                    </tr>
-                    <tbody>
-                        <tr>
-                            <td><input type="tel" id="celular" name="celular"><br></td>
-                            <td><select id="tipo">
-                                    <option value="seleccionar">-- Seleccionar</option>
-                                    <option value="techado">Techado</option>
-                                    <option value="sin-techo">Sin techo</option>
-                                    <option value="techado">Subterraneo</option>
-                                </select></td>
-                            <td><input type="text" id="precio" name="precio" value="S/."><br></td>
-                            <td><input type="text" id="horario" name="horario"><br></td>
-                        </tr>
-    
-                    </tbody>
-    
-                    </thead>
-    
-                </table>
-                <th for="descripcion">Descripcion:</th>
-                <td><input type="text" id="descripcion" name="descripcion"><br></td>
-                <th for="descripcion">Cantidad de Espacios: </th>
-                <td><input type="number" id="cantespacios" name="cantespacios"><br></td>
-                <th for="descripcion">Disponibilidad:</th>
-                <td>
-                    <div id="disponibilidad" value="false"></div>
-                    <!-- Agrega el atributo value al elemento <div> para guardar la disponibilidad -->
-                    <script>
-                        var cantespaciosInput = document.getElementById('cantespacios');
-                        var disponibilidadDiv = document.getElementById('disponibilidad');
-    
-                        cantespaciosInput.addEventListener('change', function () {
-                            var espaciosDisponibles = cantespaciosInput.value;
-                            if (espaciosDisponibles > 0) {
-                                disponibilidadDiv.textContent = 'Disponible';
-                                disponibilidadDiv.classList.remove('inactivo');
-                                disponibilidadDiv.classList.add('activo');
-                                disponibilidadDiv.setAttribute('value', 'true'); // Establece el valor 'true' para la disponibilidad
-                            } else {
-                                disponibilidadDiv.textContent = 'No disponible';
-                                disponibilidadDiv.classList.remove('activo');
-                                disponibilidadDiv.classList.add('inactivo');
-                                disponibilidadDiv.setAttribute('value', 'false'); // Establece el valor 'false' para la disponibilidad
-                            }
-                        });
-                    </script>
-                </td>
-                <th for="descripcion">Subir Imagenes: </th>
-                <td><input type="file" id="subirimagen" /><br></td>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div id="mapa" style="width: 100%; height: 250px"></div>
-                    </div>
-                </div>
-    
-                <script>
-                    function iniciarMapa() {
-                        var latitud = -12.069342;
-                        var longitud = -75.211912;
-    
-                        coordenadas = {
-                            lng: longitud,
-                            lat: latitud
-                        }
-    
-                        generarMapa(coordenadas);
-    
-                        function generarMapa(coordenadas) {
-                            var mapa = new google.maps.Map(document.getElementById('mapa'),
-                                {
-                                    zoom: 13.5,
-                                    center: new google.maps.LatLng(coordenadas.lat, coordenadas.lng)
-                                }
-                            );
-    
-                            marcador = new google.maps.Marker({
-                                map: mapa,
-                                draggable: true,
-                                position: new google.maps.LatLng(coordenadas.lat, coordenadas.lng)
-                            });
-    
-                            marcador.addListener('dragend', function (event) {
-                                document.getElementById("Latitud").value = this.getPosition().lat();
-                                document.getElementById("Longitud").value = this.getPosition().lng();
-                            })
-                        }
-                    }
-                </script>
-                <div></div>
-                <div>
-                    
-                </div>
+        </div>
+        <div class="modal-content">
+          <div class="form-title">
+            <div>1</div>
+            <h3>Ubicación del estacionamiento</h3>
+          </div>
+          <div class="form-content-2">
+            <div class="DateMapa">
+              <div class="item-DateMapa">
+                <label class="text-Esp">Coordenadas:</label>
+                <p id="Latitud" class="text-Esp"></p>
+                <p id="Longitud" class="text-Esp"></p>
+              </div>
+              <div class="item-DateMapa">
+                <h5>Disponibilidad:</h5>
+                <h4 id="disponibilidad" class="dispo"></h4>
+              </div>
+              
             </div>
+            <div class="mapacrear">
+              <div id="mapa" style="width: 100%; height: 100%"></div>
+            </div>
+          </div>
+          <div class="form-title">
+            <div>2</div>
+            <h3>Información del estacionamiento</h3>
+          </div>
+          <div class="form-content">
+            <div class="coolinput">
+              <input
+                type="text"
+                id="nombre"
+                placeholder="Ej: Estacionamiento Carlos"
+                name="nombre"
+                class="input" required
+              />
+              <label for="nombre" class="text">Nombre:</label>
+            </div>
+            <div class="coolinput">
+              <input
+                type="text"
+                id="direccion"
+                placeholder="Ej: San Marcos 568, Huancayo 12001"
+                name="direccion"
+                class="input" required
+              />
+              <label for="direccion" class="text">Dirección:</label>
+            </div>
+            <div class="coolinput">
+              <input
+                type="text"
+                id="celular"
+                placeholder="Ej: 942003634"
+                name="celular"
+                class="input" required
+              />
+              <label for="celular" class="text">Teléfono:</label>
+            </div>
+            <div class="coolinput">
+              <input
+                type="text"
+                id="horario"
+                placeholder="Ej: De lunes a viernes de 08:30 a 19:00 horas"
+                name="precio"
+                class="input" required
+              />
+              <label for="horario" class="text">Horario de atención:</label>
+            </div>
+            <div class="coolinput pos-2">
+              <textarea
+                name=""
+                id="descripcion"
+                placeholder="Ubicado en el corazón del centro comercial, es la opción ideal para aquellos que buscan comodidad y seguridad al estacionar su vehículo. Con una capacidad de 200 plazas, incluyendo espacios reservados para personas con discapacidad y motocicletas, nuestro estacionamiento ofrece una solución confiable para tus necesidades de estacionamiento. Nuestras instalaciones cuentan con un moderno sistema de vigilancia ..."
+                class="input"
+                cols="10"
+                rows="6" 
+              ></textarea>
+              <label for="descripcion" class="text">Descripción:</label>
+            </div>
+            <div class="form-title">
+              <div>3</div>
+              <h3>Imágenes del estacionamiento</h3>
+            </div>
+            <div class="form-content">
+              <div class="coolinput">
+                <div class="des-IMG">
+                  <h4 class="text-Esp">Imagen del local del estacionamiento </h4>
+                  <p>Representación visual del área física del estacionamiento</p>
+                </div>
+                <label for="subirimagen" class="subIMG">
+                  <div id="subIMG-Local" class="subIMG-content">
+                    <div class="subIMG-img">
+                      <img
+                        src="https://icongr.am/jam/upload.svg?size=20&color=07cfb5"
+                        alt=""
+                      />
+                    </div>
+                    <div class="picture__content">
+                      <span class="picture__image">Haga clic para cargar </span>
+                      <h4 class="picture__text">o simplemente arrastrar y soltar</h3>
+                    </div>
+                  </div>
+                </label>
+                <input type="file" id="subirimagen" class="input"  />
+              </div>
+              <div class="coolinput">
+                <div  class="des-IMG">
+                  <h4 class="text-Esp">Seguridad o cámaras de seguridad del estacionamiento </h4>
+                  <p>Cámaras para prevenir robos y monitorear el área</p>
+                </div>
+                <label for="subirimg-estruc" class="subIMG">
+                  <div id="subIMG-estruc" class="subIMG-content">
+                    <div class="subIMG-img">
+                      <img
+                        src="https://icongr.am/jam/upload.svg?size=20&color=07cfb5"
+                        alt=""
+                      />
+                    </div>
+                    <div class="picture__content">
+                      <span class="picture__image">Haga clic para cargar </span>
+                      <h4 class="picture__text">o simplemente arrastrar y soltar</h3>
+                    </div>
+                  </div>
+                </label>
+                <input type="file" id="subirimg-estruc" class="input"  />
+              </div>
+              <div class="coolinput">
+                <div  class="des-IMG">
+                  <h4 class="text-Esp">Mapa del local del estacionamiento</h4>
+                  <p>Representación gráfica para orientar a los usuarios y mostrar áreas de estacionamiento, entradas y servicios</p>
+                </div>
+                <label for="subirimg-seguri" class="subIMG">
+                  <div id="subIMG-Seguri" class="subIMG-content">
+                    <div class="subIMG-img">
+                      <img
+                        src="https://icongr.am/jam/upload.svg?size=20&color=07cfb5"
+                        alt=""
+                      />
+                    </div>
+                    <div class="picture__content">
+                      <span class="picture__image">Haga clic para cargar </span>
+                      <h4 class="picture__text">o simplemente arrastrar y soltar</h3>
+                    </div>
+                  </div>
+                </label>
+                <input type="file" id="subirimg-seguri" class="input"  />
+              </div>
+            </div>
+            
+          </div>
+          <div class="form-title">
+            <div>4</div>
+            <h3>Datos actualizables del estacionamiento</h3>
+          </div>
+          <div class="form-content">
+            <div class="coolinput">
+              <input
+                type="text"
+                id="precio"
+                placeholder="S/...."
+                name="precio"
+                class="input" required
+              />
+              <label for="precio" class="text">Tarifa x hora:</label>
+            </div>
+            <div class="coolinput">
+              <label for="cantespacios" class="text-Esp"
+                >Espacios disponibles del estacionamiento:</label
+              >
+              <div class="counter">
+                <button class="decrement">-</button>
+                <input
+                  id="cantespacios"
+                  type="number"
+                  class="quantity"
+                  value="0"
+                  readonly
+                />
+                <button class="increment">+</button>
+              </div>
+            </div>
+            <div class="coolinput">
+              <label for="tipo" class="text-Esp"
+                >Tipo de estacionamiento</label
+              >
+              <select id="tipo">
+                <option>-- Seleccionar -- </option>
+                <option value="techado">Techado</option>
+                <option value="sin-techo">Sin techo</option>
+                <option value="subterraneo">Subterraneo</option>
+              </select>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <button id="CancelarBtn" class="btn-cancel">Cancelar</button>
@@ -196,31 +270,97 @@
         <div class="modal-header">
           <h1>Actualizar playa de estacionamiento</h1>
           <span class="close">&times;</span>
-          <h2>Actualizar Parqueo</h2>
-          <div class="form-content ">
+        </div>
+        <div class="modal-content">
+          <div class="form-title">
+            <div>1</div>
+            <h3>Ubicación del estacionamiento</h3>
+          </div>
+          <div class="form-content">
+            <div class="mapacrear">
+              <div id="modalMap" style="width: 100%; height: 100%"></div>
+            </div>
+            <div class="DateMapa">
+              <div class="item-DateMapa">
+                <label class="text-Esp">Coordenadas:</label>
+                <p id="modalLat" class="text-Esp"></p>
+                <p id="modalLong" class="text-Esp"></p>
+              </div>
+              <div class="item-DateMapa">
+                <h5>Disponibilidad:</h5>
+                <h4 id="modalDispo" class="dispo"></h4>
+              </div>
+            </div>
+          </div>
+          <div class="form-title">
+            <div>2</div>
+            <h3>Información del estacionamiento</h3>
+          </div>
+          <div class="form-content">
             <div class="coolinput">
-                <label for="input" class="text">Nombre:</label>
-                <input type="text" id="modalNombre" placeholder="Nombre" name="Nombre" class="input">
+              <input
+                type="text"
+                id="modalNombre"
+                placeholder="Nombre"
+                name="Nombre"
+                class="input"
+              />
+              <label for="modalNombre" class="text"
+                >Nombre del estacionamiento:</label
+              >
             </div>
             <div class="coolinput">
-                <label for="input" class="text">Direccion:</label>
-                <input type="text" id="modalDireccion" placeholder="Direccion" name="precio" class="input">
+              <input
+                type="text"
+                id="modalDireccion"
+                placeholder="Direccion"
+                name="precio"
+                class="input"
+              />
+              <label for="modalDireccion" class="text"
+                >Dirección del estacionamiento:</label
+              >
             </div>
             <div class="coolinput">
-                <label for="input" class="text">Teléfono:</label>
-                <input type="text" id="modalCelular" placeholder="Teléfono" name="precio" class="input">
+              <input
+                type="text"
+                id="modalCelular"
+                placeholder="Teléfono"
+                name="precio"
+                class="input"
+              />
+              <label for="modalCelular" class="text"
+                >Teléfono del estacionamiento:</label
+              >
             </div>
             <div class="coolinput">
-                <label for="input" class="text">Descripción:</label>
-                <input type="text" id="modalDescrip" placeholder="Descripción" name="precio" class="input">
+              <input
+                type="text"
+                id="modalHorario"
+                placeholder="Horario"
+                name="precio"
+                class="input"
+              />
+              <label for="modalHorario" class="text">Horario de atención:</label>
+            </div>
+
+            <div class="coolinput pos-2">
+              <textarea
+                name=""
+                id="modalDescrip"
+                class="input"
+                placeholder="Descripción"
+                cols="10"
+                rows="6"
+              ></textarea>
+              <label for="modalDescrip" class="text"
+                >Descripción del estacionamiento:</label
+              >
             </div>
             <div class="coolinput">
-                <label for="input" class="text">Horario:</label>
-                <input type="text" id="modalHorario" placeholder="Horario" name="precio" class="input">
-            </div>
-            <div class="coolinput">
-                <label for="input" class="text">Imagen:</label>
-                <input type="file" id="subirimagen"  class="input"/>
+              <label class="text">Imagen:</label>
+              <input type="file" id="subirimagen" class="input" />
+              <img id="modalImagen" src="" class="imagenAct" loading="lazy" />
             </div>
           </div>
           <div class="form-title">
@@ -229,21 +369,39 @@
           </div>
           <div class="form-content">
             <div class="coolinput">
-                <label for="input" class="text">Tarifa:</label>
-                <input type="text" id="modalPrecio" placeholder="S/...." name="precio" class="input">
+              <input
+                type="text"
+                id="modalPrecio"
+                placeholder="S/...."
+                name="precio"
+                class="input"
+              />
+              <label for="modalPrecio" class="text">Tarifa x hora:</label>
             </div>
             <div class="coolinput">
-                <label for="input" class="text">Espacios disponibles:</label>
-                <input type="number" id="modalEspacios" name="cantespacios" placeholder="1" name="input" class="input">
+              <label for="modalEspacios" class="text-Esp"
+                >Espacios disponibles del estacionamiento:</label
+              >
+              <div class="counter">
+                <button id="modalDecreme" class="decrement">-</button>
+                <input
+                  id="modalEspacios"
+                  type="number"
+                  class="quantity"
+                  value="0"
+                  readonly
+                />
+                <button id="modalIncreme" class="increment">+</button>
+              </div>
             </div>
             <div class="coolinput">
-                <label for="input" class="text">Tipo de estacionamiento:</label>
-                <select id="modalTipo">
-                    <option value="seleccionar">-- Seleccionar</option>
-                    <option value="techado">Techado</option>
-                    <option value="sin-techo">Sin techo</option>
-                    <option value="techado">Subterraneo</option>
-                </select>
+              <label for="modalTipo" class="text">Tipo de estacionamiento:</label>
+              <select id="modalTipo">
+                <option value="seleccionar">-- Seleccionar -- </option>
+                <option value="techado">Techado</option>
+                <option value="sin-techo">Sin techo</option>
+                <option value="subterraneo">Subterraneo</option>
+              </select>
             </div>
           </div>
         </div>
