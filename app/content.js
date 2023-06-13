@@ -65,7 +65,8 @@ function initMap() {
     mapId: "ab9ec8e84265fcee",
     streetViewControl: false,
     zoomControl: false,
-    fullscreenControl: false
+    fullscreenControl: false,
+    gestureHandling: "greedy"
   });
 
   marker = new google.maps.Marker({
@@ -418,3 +419,40 @@ document.addEventListener("DOMContentLoaded", function () {
     arrows: true,
   }).mount();
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+  const showModalBtn = document.getElementById("showModalBtn");
+  const hideModalBtn = document.getElementById("hideModalBtn");
+  const hideModalBtn2 = document.getElementById("hideModalBtn2");
+  const modal = document.querySelector(".modal");
+
+  showModalBtn.addEventListener("click", function () {
+    modal.classList.remove("hidden");
+  });
+
+  hideModalBtn.addEventListener("click", function () {
+    modal.classList.add("hidden");
+  });
+
+  hideModalBtn2.addEventListener("click", function () {
+    modal.classList.add("hidden");
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const createSpan = document.getElementById("create-span");
+  const loginSpan = document.getElementById("login-span");
+  const loginDiv = document.getElementById("H-login");
+  const logoutDiv = document.getElementById("H-logout");
+
+  createSpan.addEventListener("click", () => {
+    loginDiv.style.display = "none";
+    logoutDiv.style.display = "block";
+  });
+
+  loginSpan.addEventListener("click", () => {
+    loginDiv.style.display = "block";
+    logoutDiv.style.display = "none";
+  });
+});
+
