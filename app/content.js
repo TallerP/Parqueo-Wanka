@@ -13,6 +13,20 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const firebaseRef = firebase.database().ref("datos");
 
+document.addEventListener("DOMContentLoaded", function() {
+  var listClose = document.getElementById("list-clo");
+  if (listClose) {
+    listClose.addEventListener("click", function() {
+      var infoContainer = document.getElementById("info-container");
+      if (infoContainer) {
+        infoContainer.classList.remove("show");
+        
+      }
+    });
+  }
+});
+
+
 /*//////////////////////////////////////////////////////////////////
 [ INICIALIZACIÓN DEL MAPA]*/
 
@@ -51,7 +65,8 @@ function initMap() {
     mapId: "ab9ec8e84265fcee",
     streetViewControl: false,
     zoomControl: false,
-    fullscreenControl: false
+    fullscreenControl: false,
+    gestureHandling: "greedy"
   });
 
   marker = new google.maps.Marker({
@@ -92,9 +107,14 @@ const createMarker = (
   descripcion,
   tipo,
   espacio,
+  imagen,
   disponibilidad,
-
 ) => {
+  if (markers[nombre]) {
+    // Si el marcador ya existe, no se crea nuevamente
+    return;
+  }
+
   const markerIcon = {
     url: disponibilidad ? "imgs/libre.svg" : "imgs/ocupado.svg",
     scaledSize: new google.maps.Size(43, 95),
@@ -116,9 +136,8 @@ const createMarker = (
   const infoWindow = new google.maps.InfoWindow({
     content: contentString,
     closeBoxURL: "",
+    
   });
-
-  // Abre el infoWindow cuando se carga el mapa
   infoWindow.open(map, marker);
 
   marker.addListener("click", function () {
@@ -132,13 +151,51 @@ const createMarker = (
     document.getElementById("ubicacion-descripcion").textContent = descripcion;
     document.getElementById("ubicacion-tipo").textContent = tipo;
     document.getElementById("ubicacion-espacio").textContent = espacio;
-    
-    
+    var imagenURL = imagen;
+    var imagenModal = document.getElementById("ubicacion-Image");
+    imagenModal.src = imagenURL;
+
     document.getElementById("info-container").classList.add("show");
   });
 
-  markers.push(marker);
+  const firebaseRef = firebase.database().ref("datos");
+  firebaseRef.on("child_changed", (snapshot) => {
+    const ubicacion = snapshot.val();
+    const updatedPrecio = ubicacion.precio;
+    const updatedDisponibilidad = ubicacion.disponibilidad;
+
+    if (updatedPrecio !== precio) {
+      precio = updatedPrecio;
+      document.getElementById("ubicacion-precio").textContent = precio;
+    }
+
+    if (updatedDisponibilidad !== disponibilidad) {
+      disponibilidad = updatedDisponibilidad;
+      const updatedMarkerIcon = {
+        url: disponibilidad ? "imgs/libre.svg" : "imgs/ocupado.svg",
+        scaledSize: new google.maps.Size(43, 95),
+      };
+      marker.setIcon(updatedMarkerIcon);
+    }
+
+    // Actualiza el contenido restante del contenedor info-container
+    document.getElementById("ubicacion-nombre").textContent = ubicacion.nombre;
+    document.getElementById("ubicacion-precio").textContent = ubicacion.precio;
+    document.getElementById("ubicacion-direccion").textContent = ubicacion.direccion;
+    document.getElementById("ubicacion-horario").textContent = ubicacion.ubicacionHorario;
+    document.getElementById("ubicacion-numcontact").textContent = ubicacion.numcontact;
+    document.getElementById("ubicacion-descripcion").textContent = ubicacion.descripcion;
+    document.getElementById("ubicacion-tipo").textContent = ubicacion.tipo;
+    document.getElementById("ubicacion-espacio").textContent = ubicacion.espacio;
+    var imagenURL = ubicacion.imagen;
+    var imagenModal = document.getElementById("ubicacion-Image");
+    imagenModal.src = imagenURL;
+  });
+
+  markers[nombre] = marker;
 };
+
+// Función para eliminar un
 
 function loadFirebaseImage(imagenURL, callback) {
   var storageRef = firebase.storage().ref(imagenURL); //Ruta de la imagen
@@ -146,11 +203,10 @@ function loadFirebaseImage(imagenURL, callback) {
 
   imageRef
     .getDownloadURL()
-    .then(function(url) {
+    .then(function (url) {
       callback(url);
     })
-    .catch(function(error) {
-    });
+    .catch(function (error) {});
 }
 
 /*//////////////////////////////////////////////////////////////////
@@ -234,7 +290,7 @@ function filterMarkers() {
   const rangoSeleccionado = Number(rangoSelector.value);
 
   if (lastTipoSeleccionado) {
-    document.getElementById("info-container").classList.remove("show");
+    // document.getElementById("info-container").classList.remove("show");
   } else {
     document.getElementById("info-container").classList.remove("show");
   }
@@ -265,8 +321,8 @@ function filterMarkers() {
     rangeCircle.setRadius(radius);
   }
 
-  map.setCenter(ubicacionActual);
-  map.setZoom(14);
+  // map.setCenter(ubicacionActual);
+  // map.setZoom(14);
 
   const firebaseRef = firebase.database().ref("datos");
   firebaseRef.on("value", (snapshot) => {
@@ -277,7 +333,10 @@ function filterMarkers() {
         ubicacion.Longitud
       );
 
-      if (lastTipoSeleccionado === "todos" || ubicacion.tipo === lastTipoSeleccionado) {
+      if (
+        lastTipoSeleccionado === "todos" ||
+        ubicacion.tipo === lastTipoSeleccionado
+      ) {
         const distancia = getDistance(coord, ubicacionActual);
 
         if (distancia <= rangoSeleccionado && !markers.includes(coord)) {
@@ -292,6 +351,7 @@ function filterMarkers() {
             ubicacion.descripcion,
             ubicacion.tipo,
             ubicacion.cantespacios,
+            ubicacion.imagenURL,
             ubicacion.disponibilidad
           );
         }
@@ -306,7 +366,6 @@ function filterMarkers() {
     updateRangeCircle(ubicacionActual, radioEnMetros);
   });
 }
-
 
 const createLocationMarkers = () => {
   // Obtiene los filtros seleccionados
@@ -341,6 +400,7 @@ const createLocationMarkers = () => {
           ubicacion.descripcion,
           ubicacion.tipo,
           ubicacion.cantespacios,
+          ubicacion.imagenURL,
           disponibilidad
         );
       }
@@ -359,3 +419,40 @@ document.addEventListener("DOMContentLoaded", function () {
     arrows: true,
   }).mount();
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+  const showModalBtn = document.getElementById("showModalBtn");
+  const hideModalBtn = document.getElementById("hideModalBtn");
+  const hideModalBtn2 = document.getElementById("hideModalBtn2");
+  const modal = document.querySelector(".modal");
+
+  showModalBtn.addEventListener("click", function () {
+    modal.classList.remove("hidden");
+  });
+
+  hideModalBtn.addEventListener("click", function () {
+    modal.classList.add("hidden");
+  });
+
+  hideModalBtn2.addEventListener("click", function () {
+    modal.classList.add("hidden");
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const createSpan = document.getElementById("create-span");
+  const loginSpan = document.getElementById("login-span");
+  const loginDiv = document.getElementById("H-login");
+  const logoutDiv = document.getElementById("H-logout");
+
+  createSpan.addEventListener("click", () => {
+    loginDiv.style.display = "none";
+    logoutDiv.style.display = "block";
+  });
+
+  loginSpan.addEventListener("click", () => {
+    loginDiv.style.display = "block";
+    logoutDiv.style.display = "none";
+  });
+});
+

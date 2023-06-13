@@ -2,116 +2,96 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Parqueo Wanka</title>
-  <!-- BOOSTRAP CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css">
   <!-- Toastify CSS -->
-  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-  <link rel="stylesheet" href="./main.css">
-  <link rel="stylesheet" href="./app/content.js">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+  <link rel="stylesheet" href="./main.css" />
   <!-- Estilos CSS de SplideJS -->
-  <link
-  rel="stylesheet"
-  href="https://unpkg.com/@splidejs/splide@3.0.9/dist/css/splide.min.css"
-/>
+  <link rel="stylesheet" href="https://unpkg.com/@splidejs/splide@3.0.9/dist/css/splide.min.css" />
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-  href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300&display=swap"
-  rel="stylesheet"
-/>
-<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-database.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmn7dgBjGCRulPapD4gPqSE6XQAQ7iCTg&libraries=geometry&map_ids=ab9ec8e84265fcee&callback=initMap&style=feature:all|element:labels|visibility:off"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300&display=swap" rel="stylesheet" />
+  <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-database.js"></script>
+
 </head>
 
 <body>
-
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
-    <div class="container">
-      <a class="navbar-brand" href="#">Parqueo Wanka</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav ms-auto">
-          <a class="nav-link logged-out" href="#" data-bs-toggle="modal" data-bs-target="#signinModal">Signin</a>
-          <a class="nav-link logged-out" href="#" data-bs-toggle="modal" data-bs-target="#signupModal">Signup</a>
-          <a class="nav-link logged-in" href="#" id="logout">Logout</a>
-          <a class="nav-link logged-in" href="actualizardatos.html" id="logout">Actualizar Datos</a>
-          <a class="nav-link logged-in" href="listaparqueos.html" id="logout">Listado Parqueos</a>
-        </div>
+  <div class="modal hidden">
+    <div id="H-login" class="modal-Home">
+      <div class="modal-H-Header">
+        <span id="hideModalBtn" class="close">&times;</span>
+        <h2>Iniciar sesión</h2>
+        <h3>Registra playas de estacionamiento.</h3>
       </div>
+      <form id="login-form">
+        <div class="modal-H-Body">
+          <div class="H-Body-item H-item-input">
+            <img src="./imgs/user.svg" alt="" />
+            <input type="text" id="login-email" class="form-control mb-3" placeholder="nombre@gmail.com" required />
+          </div>
+          <div class="H-Body-item H-item-input">
+            <img src="./imgs/pas.svg" alt="" />
+            <input type="password" id="login-password" class="form-control mb-3" placeholder="Al menos 8 caractéres"
+              required />
+          </div>
+          <div class="H-Body-item">
+            <h4>¿Olvidaste tu contraseña?</h4>
+          </div>
+          <div class="H-Body-item">
+            <button type="submit" class="">Ingresar</button>
+          </div>
+          <div class="H-Body-item">
+            <span id="create-span">¿No tienes una cuenta? <strong>Crea una cuenta.</strong> </span>
+          </div>
+        </div>
+        <!-- <div class="separator">o</div> -->
+        <!-- <div class="modal-H-Footer">
+          <button type="button" class="btn btn-info" id="googleLogin">
+            <img src="https://icongr.am/devicon/google-original.svg?size=20&color=currentColor" alt="" />Google
+          </button>
+          <button type="button" class="btn btn-primary" id="facebookLogin">
+            <img src="https://icongr.am/devicon/facebook-original.svg?size=20&color=currentColor" alt="" />Facebook
+          </button>
+        </div> -->
+      </form>
     </div>
-  </nav>
-
-  <div class="container p-4">
-    <div class="row">
-      <div class="col-md-6 offset-md-3">
-        <ul class="list-group posts">
-        </ul>
+    <div id="H-logout" class="modal-Home">
+      <div class="modal-H-Header">
+        <span id="hideModalBtn2" class="close">&times;</span>
+        <h2>Crear cuenta</h2>
+        <h3>Registra playas de estacionamiento.</h3>
       </div>
-    </div>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content bg-dark">
-        <div class="modal-header">
-          <h3>SignUp</h3>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      <form id="signup-form">
+        <div class="modal-H-Body">
+          <div class="H-Body-item H-item-input">
+            <img src="./imgs/user.svg" alt="" />
+            <input type="text" id="signup-email" class="form-control mb-3" placeholder="nombre@gmail.com" required />
+          </div>
+          <div class="H-Body-item H-item-input">
+            <img src="./imgs/pas.svg" alt="" />
+            <input type="password" id="signup-password" class="form-control mb-3" placeholder="Al menos 8 caractéres"
+              required />
+          </div>
+          <div class="H-Body-item">
+            <h4>¿Olvidaste tu contraseña?</h4>
+          </div>
+          <div class="H-Body-item">
+            <button type="submit" class="">Crear</button>
+          </div>
+          <div class="H-Body-item">
+            <span id="login-span">¿Ya tienes una cuenta? <strong>Iniciar sesión.</strong> </span>
+          </div>
         </div>
-        <div class="modal-body p-5">
-          <form id="signup-form">
-
-            <label for="email">Email:</label>
-            <input type="text" id="signup-email" class="form-control mb-3" placeholder="Title" required>
-
-            <label for="password">Password:</label>
-            <input type="password" id="signup-password" class="form-control mb-3" placeholder="Password" required>
-
-            <button type="submit" class="btn btn-primary">Save changes</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="signinModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalSignin"
-    aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>SignIn</h3>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="login-form">
-            <label for="email">Email</label>
-            <input type="text" id="login-email" class="form-control mb-3" placeholder="Title" required>
-            <label for="password">Password:</label>
-            <input type="password" id="login-password" class="form-control mb-3" placeholder="Password" required>
-
-            <button type="submit" class="btn btn-success w-100 mb-4">Login</button>
-
-            <button type="button" class="btn btn-info" id="googleLogin">Google</button>
-            <button type="button" class="btn btn-primary" id="facebookLogin">Facebook</button>
-            <button type="button" class="btn btn-dark" id="githubLogin">Github</button>
-          </form>
-        </div>
-      </div>
+      </form>
     </div>
   </div>
 
   <section>
-    <div  style="margin-top: 50px;" class="c-explorar">
+    <div class="c-explorar">
       <div class="c-explorar-filter">
         <div class="custom-select">
           <select id="tipo">
@@ -129,33 +109,39 @@
           </select>
         </div>
       </div>
-      <button type="button" class="btn-micro" title="Búsqueda por voz">
+      <!-- <button type="button" class="btn-micro" title="Búsqueda por voz">
         <img src="https://icongr.am/jam/mic-alt.svg?size=20&color=222222" alt="" class="icon-micro" />
-      </button>
+      </button> -->
+      <div class="logged-out">
+        <button id="showModalBtn" class="btn-success">Iniciar Sesión</button>
+      </div>
+      <div class="logged-in">
+        <div class="dropdown">
+          <button class="dropdown-button">
+            <img src="https://icongr.am/jam/menu.svg?size=32&color=000000" alt="" />
+          </button>
+          <ul class="dropdown-menu" id="navbarNavAltMarkup">
+            <li>
+              <a class="menu-item" href="actualizardatos.html">
+                <img src="https://icongr.am/material/home-map-marker.svg?size=20&color=4f4f4f" alt="" />Parqueos
+              </a>
+            </li>
+            <li>
+              <a id="logout" class="menu-item" href="">
+                <img src="https://icongr.am/material/logout.svg?size=20&color=4f4f4f" alt="" />Cerrar sesión
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
     <div id="info-container" class="c-explorar-list">
+      <span id="list-clo" class="list-close">&times;</span>
       <div class="splide">
         <div class="splide__track">
           <ul class="splide__list">
             <li class="splide__slide">
-              <img
-                src="https://a0.muscache.com/im/pictures/miso/Hosting-14979866/original/75595cfc-37d6-42d8-95dd-0ea3c966ef88.jpeg?im_w=720"
-                alt="Image 1" class="list-item-img" />
-            </li>
-            <li class="splide__slide">
-              <img
-                src="https://a0.muscache.com/im/pictures/miso/Hosting-576599054777073307/original/53e611cc-b827-4cec-850e-c1db1274de43.jpeg?im_w=720"
-                alt="Image 2" class="list-item-img" />
-            </li>
-            <li class="splide__slide">
-              <img
-                src="https://a0.muscache.com/im/pictures/miso/Hosting-576599054777073307/original/f288503b-fdad-4113-85f1-513697bd2698.jpeg?im_w=720"
-                alt="Image 3" class="list-item-img" />
-            </li>
-            <li class="splide__slide">
-              <img
-                src="https://a0.muscache.com/im/pictures/miso/Hosting-576599054777073307/original/f288503b-fdad-4113-85f1-513697bd2698.jpeg?im_w=720"
-                alt="Image " class="list-item-img" />
+              <img id="ubicacion-Image" src="" alt="Image 1" class="list-item-img" loading="lazy" />
             </li>
           </ul>
         </div>
@@ -224,21 +210,60 @@
       <div class="c-explorar-list-btn">
         <button class="btn-rese">
           <img src="https://icongr.am/jam/write-f.svg?size=15&color=14bbf0" alt="" />
-          Escribir una reseña
+          <a href="#modalrese" class="btn-rese">Escribir una reseña</a>
         </button>
+      </div>
+
+      <div class="modalrese" id="modalrese">
+        <div class="modalrese-content">
+          <h2>Enviar Calificación</h2>
+          <p>¿Como te fue en Parqueo?
+          <div class="re-buttons">
+            <button class="rese-buttons">
+              <img src="https://icongr.am/clarity/star.svg?size=11&color=ffffff" alt="" />
+              1
+            </button>
+            <button class="rese-buttons">
+              <img src="https://icongr.am/clarity/star.svg?size=11&color=ffffff" alt="" />
+              2
+            </button>
+            <button class="rese-buttons">
+              <img src="https://icongr.am/clarity/star.svg?size=11&color=ffffff" alt="" />
+              3
+            </button>
+            <button class="rese-buttons">
+              <img src="https://icongr.am/clarity/star.svg?size=11&color=ffffff" alt="" />
+              4
+            </button>
+            <button class="rese-buttons">
+              <img src="https://icongr.am/clarity/star.svg?size=11&color=ffffff" alt="" />
+              5
+            </button>
+          </div>
+          <div class="modalcoment">
+            <div class="modal-contentcoment">
+              <h2>Deja un comentario</h2>
+              <textarea class="comment-textarea" rows="4" placeholder="Escribe tu comentario aquí"></textarea>
+              <button class="rese-buttons">Enviar</button>
+            </div>
+          </div>
+
+          </p>
+          <a href="#" class="btn-cerrar-rese">Cerrar</a>
+        </div>
       </div>
     </div>
     <div id="map" class="map"></div>
-  </section>
+    <div class="posts">
 
-  <!-- SCRIPTS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Toastify js -->
+    </div>
+  </section>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmn7dgBjGCRulPapD4gPqSE6XQAQ7iCTg&callback=iniciarMapa"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="./main.js" type="module"></script>
-  <script src="app/content.js" type="module"></script>
+  <script src="./app/content.js" type="module"></script>
   <script src="https://unpkg.com/@splidejs/splide@3.0.9/dist/js/splide.min.js"></script>
-  
 </body>
 
 </html>

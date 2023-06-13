@@ -8,19 +8,232 @@ var firebaseConfig = {
   messagingSenderId: "52196951713",
   appId: "1:52196951713:web:806d3df12faa67f673d2e0",
 };
+
 firebase.initializeApp(firebaseConfig);
 
-// Obtener el ID de usuario de la URL
-const urlParams = new URLSearchParams(window.location.search);
-const userID = urlParams.get("userID");
+const userID = localStorage.getItem("userID");
+
+if (!userID) {
+  window.location.replace("index.html");
+} else {
+  
+}
+const database = firebase.database();
 const firebaseRef = firebase.database().ref("datos");
+
+function iniciarMapa() {
+  var latitud = -12.069342;
+  var longitud = -75.211912;
+
+  coordenadas = {
+    lng: longitud,
+    lat: latitud,
+  };
+
+  generarMapa(coordenadas);
+
+  function generarMapa(coordenadas) {
+    var mapa = new google.maps.Map(document.getElementById("mapa"), {
+      zoom: 16,
+      center: new google.maps.LatLng(coordenadas.lat, coordenadas.lng),
+    });
+
+    marcador = new google.maps.Marker({
+      map: mapa,
+      draggable: true,
+      position: new google.maps.LatLng(coordenadas.lat, coordenadas.lng),
+    });
+
+    // Mostrar las coordenadas iniciales
+    mostrarCoordenadas(coordenadas.lat, coordenadas.lng);
+
+    marcador.addListener("dragend", function (event) {
+      var lat = this.getPosition().lat();
+      var lng = this.getPosition().lng();
+
+      // Mostrar las nuevas coordenadas
+      mostrarCoordenadas(lat, lng);
+    });
+  }
+
+  function mostrarCoordenadas(lat, lng) {
+    document.getElementById("Latitud").textContent = lat;
+    document.getElementById("Longitud").textContent = lng;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const decrementButton = document.querySelector('.decrement');
+  const incrementButton = document.querySelector('.increment');
+  const quantityInput = document.querySelector('.quantity');
+
+  decrementButton.addEventListener('click', decrement);
+  incrementButton.addEventListener('click', increment);
+
+  function decrement() {
+    let currentQuantity = parseInt(quantityInput.value);
+    if (currentQuantity > 0) {
+      currentQuantity--;
+      quantityInput.value = currentQuantity;
+    }
+  }
+
+  function increment() {
+    let currentQuantity = parseInt(quantityInput.value);
+    currentQuantity++;
+    quantityInput.value = currentQuantity;
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const decrementButtonM = document.getElementById("modalDecreme");
+  const incrementButtonM = document.getElementById("modalIncreme");
+  const quantityInputM = document.getElementById("modalEspacios");
+
+  decrementButtonM.addEventListener('click', decrement);
+  incrementButtonM.addEventListener('click', increment);
+
+  function decrement() {
+    let currentQuantityM = parseInt(quantityInputM.value);
+    if (currentQuantityM > 0) {
+      currentQuantityM--;
+      quantityInputM.value = currentQuantityM;
+    }
+  }
+
+  function increment() {
+    let currentQuantityM = parseInt(quantityInputM.value);
+    currentQuantityM++;
+    quantityInputM.value = currentQuantityM;
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const inputFile = document.querySelector("#subirimagen");
+  const pictureImage = document.querySelector(".subIMG-content");
+  const originalContent = pictureImage.innerHTML;
+
+  inputFile.addEventListener("change", function (e) {
+    const inputTarget = e.target;
+    const file = inputTarget.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.addEventListener("load", function (e) {
+        const readerTarget = e.target;
+
+        const img = document.createElement("img");
+        img.src = readerTarget.result;
+        img.classList.add("picture__img");
+
+        pictureImage.innerHTML = ""; // Limpiar cualquier contenido anterior
+        pictureImage.appendChild(img);
+      });
+
+      reader.readAsDataURL(file);
+    } else {
+      pictureImage.innerHTML = originalContent; // Restaurar el contenido original
+    }
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const inputFile = document.querySelector("#subirimagen");
+  const pictureImage = document.querySelector("#subIMG-Local");
+  const originalContent = pictureImage.innerHTML;
+
+  inputFile.addEventListener("change", function (e) {
+    const inputTarget = e.target;
+    const file = inputTarget.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.addEventListener("load", function (e) {
+        const readerTarget = e.target;
+
+        const img = document.createElement("img");
+        img.src = readerTarget.result;
+        img.classList.add("picture__img");
+
+        pictureImage.innerHTML = ""; // Limpiar cualquier contenido anterior
+        pictureImage.appendChild(img);
+      });
+
+      reader.readAsDataURL(file);
+    } else {
+      pictureImage.innerHTML = originalContent; // Restaurar el contenido original
+    }
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const inputFile = document.querySelector("#subirimg-seguri");
+  const pictureImage = document.querySelector("#subIMG-Seguri");
+  const originalContent = pictureImage.innerHTML;
+
+  inputFile.addEventListener("change", function (e) {
+    const inputTarget = e.target;
+    const file = inputTarget.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.addEventListener("load", function (e) {
+        const readerTarget = e.target;
+
+        const img = document.createElement("img");
+        img.src = readerTarget.result;
+        img.classList.add("picture__img");
+
+        pictureImage.innerHTML = ""; // Limpiar cualquier contenido anterior
+        pictureImage.appendChild(img);
+      });
+
+      reader.readAsDataURL(file);
+    } else {
+      pictureImage.innerHTML = originalContent; // Restaurar el contenido original
+    }
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const inputFile = document.querySelector("#subirimg-estruc");
+  const pictureImage = document.querySelector("#subIMG-estruc");
+  const originalContent = pictureImage.innerHTML;
+
+  inputFile.addEventListener("change", function (e) {
+    const inputTarget = e.target;
+    const file = inputTarget.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.addEventListener("load", function (e) {
+        const readerTarget = e.target;
+
+        const img = document.createElement("img");
+        img.src = readerTarget.result;
+        img.classList.add("picture__estruc");
+
+        pictureImage.innerHTML = ""; // Limpiar cualquier contenido anterior
+        pictureImage.appendChild(img);
+      });
+
+      reader.readAsDataURL(file);
+    } else {
+      pictureImage.innerHTML = originalContent; // Restaurar el contenido original
+    }
+  });
+});
 
 // Abre el modal de crear parqueo
 document.addEventListener("DOMContentLoaded", () => {
   var openModalBtn = document.getElementById("openModalBtn");
   var modal = document.getElementById("myModal");
   var closeModalBtn = document.getElementsByClassName("close")[0];
-  
+
   openModalBtn.addEventListener("click", function () {
     modal.style.display = "block";
   });
@@ -51,8 +264,8 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   document.getElementById("CrearBtn").addEventListener("click", () => {
-    var Latitud = document.getElementById("Latitud").value;
-    var Longitud = document.getElementById("Longitud").value;
+    var Latitud = document.getElementById("Latitud").textContent;
+    var Longitud = document.getElementById("Longitud").textContent;
     var nombre = document.getElementById("nombre").value;
     var direccion = document.getElementById("direccion").value;
     var celular = document.getElementById("celular").value;
@@ -110,12 +323,19 @@ document.addEventListener("DOMContentLoaded", function () {
           });
 
           alert("Datos guardados correctamente");
-          
+
           limpiarDato();
           modal.style.display = "none";
         });
       }
     );
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  var modal = document.getElementById("myModal");
+  document.getElementById("CancelarBtn").addEventListener("click", () => {
+    modal.style.display = "none";
   });
 });
 
@@ -131,6 +351,7 @@ function limpiarDato() {
   const celular = document.getElementById("celular");
   const cantespacios = document.getElementById("cantespacios");
   const disponibilidadDiv = document.getElementById("disponibilidad");
+  const imagen = document.getElementById("subirimagen");
 
   Latitud.value = "";
   Longitud.value = "";
@@ -143,11 +364,13 @@ function limpiarDato() {
   celular.value = "";
   cantespacios.value = "";
   disponibilidadDiv.textContent = "";
+  imagen.value = "";
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+let parqueoIDToUpdate = "";
+let parqueoDate = "";
 
-  let parqueoIDToUpdate = "";
+document.addEventListener("DOMContentLoaded", () => {
   firebaseRef
     .orderByChild("IDUsuario")
     .equalTo(userID)
@@ -156,42 +379,127 @@ document.addEventListener("DOMContentLoaded", () => {
 
       snapshot.forEach((childSnapshot) => {
         const parqueo = childSnapshot.val();
-        const parqueoID = childSnapshot.key; 
+        const parqueoID = childSnapshot.key;
 
-        var parqueoElement = document.createElement("div");
+        const parqueoElement = document.createElement("div");
         parqueoElement.classList.add("parqueo");
 
-        var tituloElement = document.createElement("h1");
-        tituloElement.textContent = parqueo.nombre;
+        const disponibilidadText = parqueo.disponibilidad ? "ACTIVO" : "INACTIVO";
+        const disponibilidadClass = parqueo.disponibilidad ? "verde" : "rojo";
 
-        // Crear botón de eliminar
-        var eliminarBtn = document.createElement("button");
-        eliminarBtn.textContent = "Eliminar";
-        eliminarBtn.classList.add("btn-menu");
+        parqueoElement.innerHTML = `
+          <div class="parqueo-Content">
+            <div class="parqC-img">
+              <img id="" src="${parqueo.imagenURL}" loading="lazy" />
+              <span class="parqC-Prec">${parqueo.precio} x h</span> 
+            </div>
+            <div class="parqC-title">
+              <span><img src="https://icongr.am/jam/map-marker-f.svg?size=18&color=14bbf0" alt=""> ${parqueo.direccion}</span>
+              <h2>${parqueo.nombre}</h2>
+              <div class="parqC-act">
+                <div class="parqC-act-Esp">
+                  <img src="https://icongr.am/jam/car-f.svg?size=20&amp;color=fb3447" alt=""> 
+                  <span>${parqueo.cantespacios} espacio(s)</span> 
+                </div class="parqC-act-Esp">
+                <div class="${disponibilidadClass}"> <span>${disponibilidadText}</span> </div>
+              </div>
+            </div>
+            
+          </div>
+          <div class="parqueo-Btns">
+            <button class="btn-cancel" data-parqueo-id="${parqueoID}">Eliminar</button>
+            <button class="btn-success" id="openModalEdit" data-parqueo-id="${parqueoID}">Actualizar</button>
+          </div>
+        `;
+
+        // Obtener los botones de eliminar y actualizar dentro del parqueoElement
+        const eliminarBtn = parqueoElement.querySelector(".btn-cancel");
+        const actualizarBtn = parqueoElement.querySelector(".btn-success");
+
         eliminarBtn.addEventListener("click", () => {
-          eliminarParqueo(parqueoID);
+          parqueoIDToUpdate = parqueoID;
+          mostrarModalConfirmacion(parqueoIDToUpdate);
         });
 
-        var actualizarBtn = document.createElement("button");
-        actualizarBtn.textContent = "Actualizar";
-        actualizarBtn.classList.add("btn-menu");
-        actualizarBtn.id = "openModalEdit";
         actualizarBtn.addEventListener("click", () => {
           parqueoIDToUpdate = parqueoID;
-          // Llama a la función actualizarDato pasando el parqueoID como argumento
-          mostrarModalActualizar(parqueoID, parqueo);
+          parqueoDate = parqueo;
+          mostrarModalActualizar(parqueoIDToUpdate, parqueo);
         });
 
-        parqueoElement.appendChild(tituloElement);
-        parqueoElement.appendChild(actualizarBtn);
-        parqueoElement.appendChild(eliminarBtn);
         parqueosDiv.appendChild(parqueoElement);
       });
     });
 });
 
-// Función para mostrar el modal con los datos del parqueo a actualizar
-function mostrarModalActualizar(parqueoID, parqueo) {
+
+document.addEventListener("DOMContentLoaded", () => {
+  var modalEdit = document.getElementById("myModalEdit");
+
+  // Agrega el controlador de evento del botón "Guardar" fuera de la función mostrarModalActualizar
+  document.getElementById("modalGuardarBtn").addEventListener("click", () => {
+    if (parqueoIDToUpdate !== "") {
+      var nombre = document.getElementById("modalNombre").value;
+      var direccion = document.getElementById("modalDireccion").value;
+      var celular = document.getElementById("modalCelular").value;
+      var descripcion = document.getElementById("modalDescrip").value;
+      var horario = document.getElementById("modalHorario").value;
+      var precio = document.getElementById("modalPrecio").value;
+      var cantespacios = document.getElementById("modalEspacios").value;
+      var tipo = document.getElementById("modalTipo").value;
+      var Latitud = document.getElementById("modalLat").textContent;
+      var Longitud = document.getElementById("modalLong").textContent;
+      var disponibilidad = false;
+
+      // Actualiza la disponibilidad basado en la cantidad de espacios disponibles
+      if (cantespacios > 0) {
+        disponibilidad = true; // Asigna true si hay espacios disponibles
+      }
+
+      var cambiosRealizados = false; // Variable para controlar si hubo cambios
+
+      // Verifica si hubo cambios en los campos
+      if (
+        nombre !== parqueoDate.nombre ||
+        direccion !== parqueoDate.direccion ||
+        celular !== parqueoDate.celular ||
+        descripcion !== parqueoDate.descripcion ||
+        horario !== parqueoDate.horario ||
+        precio !== parqueoDate.precio ||
+        cantespacios !== parqueoDate.cantespacios ||
+        tipo !== parqueoDate.tipo ||
+        Latitud !== parqueoDate.Latitud ||
+        Longitud !== parqueoDate.Longitud ||
+        disponibilidad !== parqueoDate.disponibilidad
+      ) {
+        cambiosRealizados = true; // Se encontraron cambios
+      }
+
+      if (cambiosRealizados) {
+        actualizarDato(parqueoIDToUpdate, {
+          Latitud: Latitud,
+          Longitud: Longitud,
+          nombre: nombre,
+          direccion: direccion,
+          celular: celular,
+          tipo: tipo,
+          precio: precio,
+          cantespacios: cantespacios,
+          horario: horario,
+          descripcion: descripcion,
+          disponibilidad: disponibilidad,
+        });
+
+        parqueoIDToUpdate = "";
+        modalEdit.style.display = "none";
+      } else {
+        alert("No se realizaron cambios en la actualización.");
+      }
+    }
+  });
+});
+
+function mostrarModalActualizar(parqueoIDToUpdate, parqueo) {
   var modalEdit = document.getElementById("myModalEdit");
   var closeModalBtn = document.getElementsByClassName("close")[0];
 
@@ -204,9 +512,15 @@ function mostrarModalActualizar(parqueoID, parqueo) {
   document.getElementById("modalPrecio").value = parqueo.precio;
   document.getElementById("modalEspacios").value = parqueo.cantespacios;
   document.getElementById("modalTipo").value = parqueo.tipo;
-  document.getElementById("modalLat").value = parqueo.Latitud;
-  document.getElementById("modalLong").value = parqueo.Longitud;
-  document.getElementById("modalDispo").value = parqueo.disponibilidad;
+  document.getElementById("modalLat").textContent = parqueo.Latitud;
+  document.getElementById("modalLong").textContent = parqueo.Longitud;
+  document.getElementById("modalDispo").textContent = parqueo.disponibilidad
+    ? "Disponible"
+    : "No disponible";
+
+  var imagenURL = parqueo.imagenURL;
+  var imagenModal = document.getElementById("modalImagen");
+  imagenModal.src = imagenURL;
 
   modalEdit.style.display = "block";
 
@@ -217,46 +531,6 @@ function mostrarModalActualizar(parqueoID, parqueo) {
   window.addEventListener("click", function (event) {
     if (event.target == modalEdit) {
       modalEdit.style.display = "none";
-    }
-  });
-
-  document.getElementById("modalGuardarBtn").addEventListener("click", () => {
-    if (parqueoID !== "") {
-      var nombre = document.getElementById("modalNombre").value;
-      var direccion = document.getElementById("modalDireccion").value;
-      var celular = document.getElementById("modalCelular").value;
-      var descripcion = document.getElementById("modalDescrip").value;
-      var horario = document.getElementById("modalHorario").value;
-      var precio = document.getElementById("modalPrecio").value;
-      var cantespacios = document.getElementById("modalEspacios").value;
-      var tipo = document.getElementById("modalTipo").value;
-      var Latitud = document.getElementById("modalLat").value;
-      var Longitud = document.getElementById("modalLong").value;
-      var disponibilidad = document.getElementById("modalDispo").value;
-
-      var disponibilidad;
-      if (cantespacios > 0) {
-        disponibilidad = true;
-      } else {
-        disponibilidad = false;
-      }
-
-      actualizarDato(parqueoID, {
-        Latitud: Latitud,
-        Longitud: Longitud,
-        nombre: nombre,
-        direccion: direccion,
-        celular: celular,
-        tipo: tipo,
-        precio: precio,
-        cantespacios: cantespacios,
-        horario: horario,
-        descripcion: descripcion,
-        disponibilidad: disponibilidad,
-      });
-
-      modalEdit.style.display = "none";
-      parqueoID = "";
     }
   });
 }
@@ -272,7 +546,8 @@ function actualizarDato(id, nuevosValores) {
 
   firebase
     .database()
-    .ref("datos/" + id)
+    .ref("datos")
+    .child(id)
     .update({
       Latitud: nuevosValores.Latitud,
       Longitud: nuevosValores.Longitud,
@@ -294,11 +569,36 @@ function actualizarDato(id, nuevosValores) {
     });
 }
 
+// Función para mostrar el modal de confirmación de eliminación
+function mostrarModalConfirmacion(parqueoIDToUpdate) {
+  var modalConfirm = document.getElementById("modalConfirm");
+
+  // Agrega una referencia a los botones Aceptar y Cancelar del modal
+  var btnAceptar = document.getElementById("btnAceptar");
+  var btnCancelar = document.getElementById("btnCancelar");
+
+  modalConfirm.style.display = "block";
+
+  // Agregar la lógica al botón Aceptar del modal
+  btnAceptar.addEventListener("click", () => {
+    // Ejecutar la función de eliminación real del parqueo
+    eliminarParqueo(parqueoIDToUpdate);
+    // Ocultar el modal de confirmación
+    modalConfirm.style.display = "none";
+  });
+
+  // Agregar la lógica al botón Cancelar del modal
+  btnCancelar.addEventListener("click", () => {
+    // Ocultar el modal de confirmación
+    modalConfirm.style.display = "none";
+  });
+}
+
 // Función para eliminar un parqueo
-function eliminarParqueo(parqueoID) {
+function eliminarParqueo(parqueoIDToUpdate) {
   firebase
     .database()
-    .ref("datos/" + parqueoID)
+    .ref("datos/" + parqueoIDToUpdate)
     .remove()
     .then(() => {
       console.log("Parqueo eliminado correctamente");
@@ -307,3 +607,19 @@ function eliminarParqueo(parqueoID) {
       console.error("Error al eliminar el parqueo:", error);
     });
 }
+
+var cantespaciosInput = document.getElementById('cantespacios');
+var disponibilidadDiv = document.getElementById('disponibilidad');
+
+cantespaciosInput.addEventListener('input', function () {
+  var espaciosDisponibles = parseInt(cantespaciosInput.value);
+  if (espaciosDisponibles > 0) {
+    disponibilidadDiv.textContent = 'ACTIVO';
+    disponibilidadDiv.classList.remove('inactivo');
+    disponibilidadDiv.classList.add('activo');
+  } else {
+    disponibilidadDiv.textContent = 'INACTIVO';
+    disponibilidadDiv.classList.remove('activo');
+    disponibilidadDiv.classList.add('inactivo');
+  }
+});
