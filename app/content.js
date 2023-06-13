@@ -110,11 +110,6 @@ const createMarker = (
   imagen,
   disponibilidad,
 ) => {
-  if (markers[nombre]) {
-    // Si el marcador ya existe, no se crea nuevamente
-    return;
-  }
-
   const markerIcon = {
     url: disponibilidad ? "imgs/libre.svg" : "imgs/ocupado.svg",
     scaledSize: new google.maps.Size(43, 95),
@@ -136,8 +131,9 @@ const createMarker = (
   const infoWindow = new google.maps.InfoWindow({
     content: contentString,
     closeBoxURL: "",
-    
   });
+
+  // Abre el infoWindow cuando se carga el mapa
   infoWindow.open(map, marker);
 
   marker.addListener("click", function () {
@@ -158,41 +154,7 @@ const createMarker = (
     document.getElementById("info-container").classList.add("show");
   });
 
-  const firebaseRef = firebase.database().ref("datos");
-  firebaseRef.on("child_changed", (snapshot) => {
-    const ubicacion = snapshot.val();
-    const updatedPrecio = ubicacion.precio;
-    const updatedDisponibilidad = ubicacion.disponibilidad;
-
-    if (updatedPrecio !== precio) {
-      precio = updatedPrecio;
-      document.getElementById("ubicacion-precio").textContent = precio;
-    }
-
-    if (updatedDisponibilidad !== disponibilidad) {
-      disponibilidad = updatedDisponibilidad;
-      const updatedMarkerIcon = {
-        url: disponibilidad ? "imgs/libre.svg" : "imgs/ocupado.svg",
-        scaledSize: new google.maps.Size(43, 95),
-      };
-      marker.setIcon(updatedMarkerIcon);
-    }
-
-    // Actualiza el contenido restante del contenedor info-container
-    document.getElementById("ubicacion-nombre").textContent = ubicacion.nombre;
-    document.getElementById("ubicacion-precio").textContent = ubicacion.precio;
-    document.getElementById("ubicacion-direccion").textContent = ubicacion.direccion;
-    document.getElementById("ubicacion-horario").textContent = ubicacion.ubicacionHorario;
-    document.getElementById("ubicacion-numcontact").textContent = ubicacion.numcontact;
-    document.getElementById("ubicacion-descripcion").textContent = ubicacion.descripcion;
-    document.getElementById("ubicacion-tipo").textContent = ubicacion.tipo;
-    document.getElementById("ubicacion-espacio").textContent = ubicacion.espacio;
-    var imagenURL = ubicacion.imagen;
-    var imagenModal = document.getElementById("ubicacion-Image");
-    imagenModal.src = imagenURL;
-  });
-
-  markers[nombre] = marker;
+  markers.push(marker);
 };
 
 // Función para eliminar un
