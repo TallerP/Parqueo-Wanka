@@ -10,10 +10,11 @@
   <link rel="stylesheet" href="./main.css" />
   <!-- Estilos CSS de SplideJS -->
   <link rel="stylesheet" href="https://unpkg.com/@splidejs/splide@3.0.9/dist/css/splide.min.css" />
-
+  <link rel="icon" type="image/jpg" href="/favicon.jpg"/>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/rxjs@^7/dist/bundles/rxjs.umd.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-database.js"></script>
 
@@ -48,15 +49,15 @@
             <span id="create-span">¿No tienes una cuenta? <strong>Crea una cuenta.</strong> </span>
           </div>
         </div>
-        <!-- <div class="separator">o</div> -->
-        <!-- <div class="modal-H-Footer">
+        <div class="separator">o</div>
+        <div class="modal-H-Footer">
           <button type="button" class="btn btn-info" id="googleLogin">
             <img src="https://icongr.am/devicon/google-original.svg?size=20&color=currentColor" alt="" />Google
           </button>
           <button type="button" class="btn btn-primary" id="facebookLogin">
             <img src="https://icongr.am/devicon/facebook-original.svg?size=20&color=currentColor" alt="" />Facebook
           </button>
-        </div> -->
+        </div>
       </form>
     </div>
     <div id="H-logout" class="modal-Home">
@@ -109,9 +110,9 @@
           </select>
         </div>
       </div>
-      <!-- <button type="button" class="btn-micro" title="Búsqueda por voz">
+      <button type="button" class="btn-micro" title="Búsqueda por voz">
         <img src="https://icongr.am/jam/mic-alt.svg?size=20&color=222222" alt="" class="icon-micro" />
-      </button> -->
+      </button>
       <div class="logged-out">
         <button id="showModalBtn" class="btn-success">Iniciar Sesión</button>
       </div>
@@ -210,47 +211,8 @@
       <div class="c-explorar-list-btn">
         <button class="btn-rese">
           <img src="https://icongr.am/jam/write-f.svg?size=15&color=14bbf0" alt="" />
-          <a href="#modalrese" class="btn-rese">Escribir una reseña</a>
+          Escribir una reseña
         </button>
-      </div>
-
-      <div class="modalrese" id="modalrese">
-        <div class="modalrese-content">
-          <h2>Enviar Calificación</h2>
-          <p>¿Como te fue en Parqueo?
-          <div class="re-buttons">
-            <button class="rese-buttons">
-              <img src="https://icongr.am/clarity/star.svg?size=11&color=ffffff" alt="" />
-              1
-            </button>
-            <button class="rese-buttons">
-              <img src="https://icongr.am/clarity/star.svg?size=11&color=ffffff" alt="" />
-              2
-            </button>
-            <button class="rese-buttons">
-              <img src="https://icongr.am/clarity/star.svg?size=11&color=ffffff" alt="" />
-              3
-            </button>
-            <button class="rese-buttons">
-              <img src="https://icongr.am/clarity/star.svg?size=11&color=ffffff" alt="" />
-              4
-            </button>
-            <button class="rese-buttons">
-              <img src="https://icongr.am/clarity/star.svg?size=11&color=ffffff" alt="" />
-              5
-            </button>
-          </div>
-          <div class="modalcoment">
-            <div class="modal-contentcoment">
-              <h2>Deja un comentario</h2>
-              <textarea class="comment-textarea" rows="4" placeholder="Escribe tu comentario aquí"></textarea>
-              <button class="rese-buttons">Enviar</button>
-            </div>
-          </div>
-
-          </p>
-          <a href="#" class="btn-cerrar-rese">Cerrar</a>
-        </div>
       </div>
     </div>
     <div id="map" class="map"></div>
@@ -264,6 +226,8 @@
   <script src="./main.js" type="module"></script>
   <script src="./app/content.js" type="module"></script>
   <script src="https://unpkg.com/@splidejs/splide@3.0.9/dist/js/splide.min.js"></script>
+
+
 </body>
 
 </html>

@@ -96,6 +96,13 @@ function initMap() {
   createLocationMarkers();
 }
 
+/*//////////////////////////////////////////////////////////////////
+[ CREAR MARKER ]*/
+const { Subject, Observable } = rxjs;
+const { map: rxjsMap } = rxjs.operators;
+
+const marcad = new Map(); // Mapa para almacenar los marcadores existentes y sus datos
+
 const createMarker = (
   coord,
   precio,
@@ -108,71 +115,107 @@ const createMarker = (
   tipo,
   espacio,
   imagen,
-  disponibilidad,
+  disponibilidad
 ) => {
-  const markerIcon = {
-    url: disponibilidad ? "imgs/libre.svg" : "imgs/ocupado.svg",
-    scaledSize: new google.maps.Size(43, 95),
-  };
+  let markerData = marcad.get(nombre);
 
-  const marker = new google.maps.Marker({
-    position: coord,
-    map: map,
-    icon: markerIcon,
+  if (markerData) {
+    // El marcador ya existe, actualizar los datos
+    markerData.precio = precio;
+    // Actualizar otros datos según sea necesario
+
+    // Actualizar el icono del marcador según la disponibilidad
+    const markerIcon = {
+      url: disponibilidad ? "imgs/libre.svg" : "imgs/ocupado.svg",
+      scaledSize: new google.maps.Size(43, 95),
+    };
+    markerData.marker.setIcon(markerIcon);
+
+    // Actualizar la información del marcador en el infoWindow
+    const contentString =
+      '<div class="info-window">' +
+      '<span class="info-price">' +
+      precio +
+      "</span>" +
+      "</div>";
+    markerData.infoWindow.setContent(contentString);
+  } else {
+    const markerIcon = {
+      url: disponibilidad ? "imgs/libre.svg" : "imgs/ocupado.svg",
+      scaledSize: new google.maps.Size(43, 95),
+    };
+
+    const marker = new google.maps.Marker({
+      position: coord,
+      map: map,
+      icon: markerIcon,
+    });
+
+    const contentString =
+      '<div class="info-window">' +
+      '<span class="info-price">' +
+      precio +
+      "</span>" +
+      "</div>";
+
+    const infoWindow = new google.maps.InfoWindow({
+      content: contentString,
+      closeBoxURL: "",
+    });
+
+    infoWindow.open(map, marker);
+
+    marker.addListener("click", function () {
+      crearRuta(coord);
+
+      dataSubject.next({
+        nombre,
+        precio,
+        direccion,
+        ubicacionHorario,
+        numcontact,
+        descripcion,
+        tipo,
+        espacio,
+        imagen,
+      });
+
+      document.getElementById("info-container").classList.add("show");
+    });
+
+    markerData = {
+      marker,
+      precio,
+      direccion,
+      numcontact,
+      ubicacionHorario,
+      descripcion,
+      tipo,
+      espacio,
+      imagen,
+      infoWindow,
+    };
+
+    marcad.set(nombre, markerData);
+  }
+
+  // Notificar los cambios al subscriber
+  dataSubject.next({
+    nombre,
+    precio,
+    direccion,
+    ubicacionHorario,
+    numcontact,
+    descripcion,
+    tipo,
+    espacio,
+    imagen,
   });
-
-  const contentString =
-    '<div class="info-window">' +
-    '<span class="info-price">' +
-    precio +
-    "</span>" +
-    "</div>";
-
-  const infoWindow = new google.maps.InfoWindow({
-    content: contentString,
-    closeBoxURL: "",
-  });
-
-  // Abre el infoWindow cuando se carga el mapa
-  infoWindow.open(map, marker);
-
-  marker.addListener("click", function () {
-    crearRuta(coord);
-
-    document.getElementById("ubicacion-nombre").textContent = nombre;
-    document.getElementById("ubicacion-precio").textContent = precio;
-    document.getElementById("ubicacion-direccion").textContent = direccion;
-    document.getElementById("ubicacion-horario").textContent = ubicacionHorario;
-    document.getElementById("ubicacion-numcontact").textContent = numcontact;
-    document.getElementById("ubicacion-descripcion").textContent = descripcion;
-    document.getElementById("ubicacion-tipo").textContent = tipo;
-    document.getElementById("ubicacion-espacio").textContent = espacio;
-    var imagenURL = imagen;
-    var imagenModal = document.getElementById("ubicacion-Image");
-    imagenModal.src = imagenURL;
-
-    document.getElementById("info-container").classList.add("show");
-  });
-
-  markers.push(marker);
 };
 
-// Función para eliminar un
+// Resto del código...
 
-function loadFirebaseImage(imagenURL, callback) {
-  var storageRef = firebase.storage().ref(imagenURL); //Ruta de la imagen
-  var imageRef = storageRef.child(imagenURL);
 
-  imageRef
-    .getDownloadURL()
-    .then(function (url) {
-      callback(url);
-    })
-    .catch(function (error) {});
-}
-
-/*//////////////////////////////////////////////////////////////////
-[ CREAR RUTA ]*/
 
 function crearRuta(destino) {
   if (destinoMarker && destinoMarker.getPosition().equals(destino)) {
@@ -202,6 +245,64 @@ function crearRuta(destino) {
     }
   });
 }
+
+const dataSubject = new Subject();
+
+const dataObservable = dataSubject.asObservable();
+
+dataObservable
+  .pipe(
+    rxjsMap((data) => {
+      // Actualizar solo los marcadores modificados
+      const modifiedMarkers = [];
+      for (const [nombre, markerData] of marcad.entries()) {
+        if (data && data.nombre === nombre) {
+          // Encontrar marcador existente con datos modificados
+          markerData.precio = data.precio;
+          // Actualizar otros datos según sea necesario
+          modifiedMarkers.push(markerData.marker);
+        }
+      }
+      return modifiedMarkers;
+    })
+  )
+  .subscribe((modifiedMarkers) => {
+    // Actualizar los marcadores modificados en el mapa
+    for (const marker of modifiedMarkers) {
+      // Actualizar la información del marcador en la interfaz según sea necesario
+    }
+  });
+
+// Suscribirse al Observable
+dataObservable.subscribe((data) => {
+  if (data) {
+    document.getElementById("ubicacion-nombre").textContent = data.nombre;
+    document.getElementById("ubicacion-precio").textContent = data.precio;
+    document.getElementById("ubicacion-direccion").textContent =
+      data.direccion;
+    document.getElementById("ubicacion-horario").textContent =
+      data.ubicacionHorario;
+    document.getElementById("ubicacion-numcontact").textContent =
+      data.numcontact;
+    document.getElementById("ubicacion-descripcion").textContent =
+      data.descripcion;
+    document.getElementById("ubicacion-tipo").textContent = data.tipo;
+    document.getElementById("ubicacion-espacio").textContent = data.espacio;
+    var imagenURL = data.imagen;
+    var imagenModal = document.getElementById("ubicacion-Image");
+    imagenModal.src = imagenURL;
+
+    document.getElementById("info-container").classList.add("show");
+  } else {
+    // Manejar el valor inicial (null) aquí
+  }
+});
+
+
+
+/*//////////////////////////////////////////////////////////////////
+[ CREAR RUTA ]*/
+
 
 /*//////////////////////////////////////////////////////////////////
 [ OPTION TIPO ]*/
@@ -252,14 +353,14 @@ function filterMarkers() {
   const rangoSeleccionado = Number(rangoSelector.value);
 
   if (lastTipoSeleccionado) {
-    // document.getElementById("info-container").classList.remove("show");
+    
   } else {
-    document.getElementById("info-container").classList.remove("show");
+    
   }
 
   markers.forEach((marker) => marker.setMap(null));
   markers = [];
-
+  
   directionsDisplay.setDirections({ routes: [] });
 
   if (rangeCircle) {
@@ -283,8 +384,7 @@ function filterMarkers() {
     rangeCircle.setRadius(radius);
   }
 
-  // map.setCenter(ubicacionActual);
-  // map.setZoom(14);
+  
 
   const firebaseRef = firebase.database().ref("datos");
   firebaseRef.on("value", (snapshot) => {
@@ -300,7 +400,7 @@ function filterMarkers() {
         ubicacion.tipo === lastTipoSeleccionado
       ) {
         const distancia = getDistance(coord, ubicacionActual);
-
+        
         if (distancia <= rangoSeleccionado && !markers.includes(coord)) {
           createMarker(
             coord,

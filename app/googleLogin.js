@@ -2,9 +2,8 @@ import { GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/fir
 import { auth } from "./firebase.js";
 import { showMessage } from "./showMessage.js";
 
-const googleButton = document.getElementById("googleLogin");
+const googleButton = document.querySelector("#googleLogin");
 
-if(googleButton){
 googleButton.addEventListener("click", async (e) => {
   e.preventDefault();
 
@@ -24,4 +23,3 @@ googleButton.addEventListener("click", async (e) => {
     console.log(error);
   }
 });
-}
