@@ -518,3 +518,115 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+//MICROFONO
+// Obtener referencias a los elementos del DOM
+const startButton = document.getElementById('startButton');
+const resultDiv = document.getElementById('result');
+
+// Verificar si el navegador soporta la API de reconocimiento de voz
+if ('webkitSpeechRecognition' in window) {
+  // Crear una instancia de reconocimiento de voz
+  const recognition = new webkitSpeechRecognition();
+
+  // Configurar el idioma (opcional)
+  recognition.lang = 'es';
+
+  // No detener la grabación automáticamente después de que se detecte un final de voz
+  recognition.continuous = true;
+
+  // Variable de estado para verificar si la captura de voz está en curso
+  let isCapturing = false;
+
+  // Referencia al temporizador
+  let timeout;
+
+  // Evento que se dispara cuando se recibe una transcripción
+  recognition.onresult = function(event) {
+    const transcript = event.results[event.results.length - 1][0].transcript;
+    resultDiv.textContent += transcript;
+
+    // Llama a la función crearRuta() con el destino capturado por voz
+    crearRuta(transcript);
+  };
+
+  // Evento que se dispara cuando se hace clic en el botón de inicio
+  startButton.addEventListener('click', function() {
+    if (isCapturing) {
+      recognition.stop();
+      resultDiv.textContent = ''; // Limpiar el contenido capturado
+      clearTimeout(timeout); // Limpiar el temporizador
+      startButton.innerHTML = '<img src="https://icongr.am/jam/mic-alt.svg?size=20&color=222222" alt="" class="icon-micro" />';
+    } else {
+      recognition.start();
+      startButton.innerHTML = '<img src="https://icongr.am/jam/mic-alt-off.svg?size=20&color=222222" alt="" class="icon-micro" />';
+      timeout = setTimeout(function() {
+        recognition.stop();
+        resultDiv.textContent = ''; // Limpiar el contenido capturado
+        startButton.innerHTML = '<img src="https://icongr.am/jam/mic-alt.svg?size=20&color=222222" alt="" class="icon-micro" />';
+      }, 7000); // 7 segundos (7000 milisegundos)
+    }
+    isCapturing = !isCapturing;
+  });
+
+  // Evento que se dispara cuando la captura de voz se detiene
+  recognition.onend = function() {
+    clearTimeout(timeout); // Limpiar el temporizador
+    startButton.innerHTML = '<img src="https://icongr.am/jam/mic-alt.svg?size=20&color=222222" alt="" class="icon-micro" />';
+  };
+
+  function crearRuta(destino) {
+    // ...
+
+    if (destinoMarker && destinoMarker.getPosition().equals(destino)) {
+      // El usuario hizo clic en el mismo marcador de destino
+      return;
+    }
+
+    directionsDisplay.setDirections({ routes: [] });
+
+    if (destinoMarker) {
+      // Elimina el marcador de destino anterior si existe
+      destinoMarker.setMap(null);
+    }
+
+    // Consulta los nombres en la base de datos de Firebase
+    const nombresRef = firebase.database().ref('nombre');
+    nombresRef.once('value', function(snapshot) {
+      const nombres = snapshot.val();
+
+      // Busca coincidencias con el destino capturado por voz
+      const coincidencia = Object.keys(nombres).find(function(nombre) {
+        return destino.toLowerCase().includes(nombre.toLowerCase());
+      });
+
+      if (coincidencia) {
+        const estacionamiento = nombres[coincidencia];
+        const estacionamientoLocation = new google.maps.LatLng(estacionamiento.lat, estacionamiento.lng);
+
+        // Crea la solicitud para la ruta
+        const solicitud = {
+          origin: marker.getPosition(),
+          destination: estacionamientoLocation,
+          travelMode: "DRIVING",
+        };
+
+        // Llama al servicio de direcciones para obtener la ruta
+        directionsService.route(solicitud, function(resultado, estado) {
+          if (estado === "OK") {
+            // Muestra la ruta en el mapa
+            directionsDisplay.setDirections(resultado);
+          }
+        });
+      } else {
+        console.log('No se encontró ninguna coincidencia con el destino capturado por voz');
+      }
+    });
+
+    // Resto del código...
+  }
+} else {
+  // El navegador no soporta la API de reconocimiento de voz
+  resultDiv.textContent = 'El reconocimiento de voz no es compatible con tu navegador.';
+  startButton.disabled = true;
+}
+
