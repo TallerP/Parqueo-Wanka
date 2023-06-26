@@ -13,14 +13,14 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const firebaseRef = firebase.database().ref("datos");
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   var listClose = document.getElementById("list-clo");
   if (listClose) {
-    listClose.addEventListener("click", function() {
+    listClose.addEventListener("click", function () {
       var infoContainer = document.getElementById("info-container");
       if (infoContainer) {
         infoContainer.classList.remove("show");
-        
+
       }
     });
   }
@@ -353,14 +353,15 @@ function filterMarkers() {
   const rangoSeleccionado = Number(rangoSelector.value);
 
   if (lastTipoSeleccionado) {
-    
+
   } else {
-    
+
   }
 
   markers.forEach((marker) => marker.setMap(null));
   markers = [];
-  
+  console.log(markers);
+
   directionsDisplay.setDirections({ routes: [] });
 
   if (rangeCircle) {
@@ -384,7 +385,7 @@ function filterMarkers() {
     rangeCircle.setRadius(radius);
   }
 
-  
+
 
   const firebaseRef = firebase.database().ref("datos");
   firebaseRef.on("value", (snapshot) => {
@@ -400,7 +401,7 @@ function filterMarkers() {
         ubicacion.tipo === lastTipoSeleccionado
       ) {
         const distancia = getDistance(coord, ubicacionActual);
-        
+
         if (distancia <= rangoSeleccionado && !markers.includes(coord)) {
           createMarker(
             coord,
@@ -417,6 +418,7 @@ function filterMarkers() {
             ubicacion.disponibilidad
           );
         }
+        console.log(markers)
       }
     });
   });
@@ -518,6 +520,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+
 //MICROFONO
 // Obtener referencias a los elementos del DOM
 const startButton = document.getElementById('startButton');
@@ -541,16 +544,16 @@ if ('webkitSpeechRecognition' in window) {
   let timeout;
 
   // Evento que se dispara cuando se recibe una transcripción
-  recognition.onresult = function(event) {
+  recognition.onresult = function (event) {
     const transcript = event.results[event.results.length - 1][0].transcript;
     resultDiv.textContent += transcript;
 
-    // Llama a la función crearRuta() con el destino capturado por voz
-    crearRuta(transcript);
+    // Llama a la función realizarAcciones() con el texto capturado por voz
+    realizarAcciones(transcript);
   };
 
   // Evento que se dispara cuando se hace clic en el botón de inicio
-  startButton.addEventListener('click', function() {
+  startButton.addEventListener('click', function () {
     if (isCapturing) {
       recognition.stop();
       resultDiv.textContent = ''; // Limpiar el contenido capturado
@@ -559,7 +562,7 @@ if ('webkitSpeechRecognition' in window) {
     } else {
       recognition.start();
       startButton.innerHTML = '<img src="https://icongr.am/jam/mic-alt-off.svg?size=20&color=222222" alt="" class="icon-micro" />';
-      timeout = setTimeout(function() {
+      timeout = setTimeout(function () {
         recognition.stop();
         resultDiv.textContent = ''; // Limpiar el contenido capturado
         startButton.innerHTML = '<img src="https://icongr.am/jam/mic-alt.svg?size=20&color=222222" alt="" class="icon-micro" />';
@@ -569,64 +572,111 @@ if ('webkitSpeechRecognition' in window) {
   });
 
   // Evento que se dispara cuando la captura de voz se detiene
-  recognition.onend = function() {
+  recognition.onend = function () {
     clearTimeout(timeout); // Limpiar el temporizador
     startButton.innerHTML = '<img src="https://icongr.am/jam/mic-alt.svg?size=20&color=222222" alt="" class="icon-micro" />';
   };
 
-  function crearRuta(destino) {
-    // ...
+  function realizarAcciones(texto) {
+    // Convertir el texto a minúsculas para facilitar la comparación
+    const textoLowerCase = texto.toLowerCase();
 
-    if (destinoMarker && destinoMarker.getPosition().equals(destino)) {
-      // El usuario hizo clic en el mismo marcador de destino
+    // Verificar si el texto contiene la palabra clave "estacionamiento" y el nombre de un estacionamiento específico
+    if (textoLowerCase.includes('estacionamiento')) {
+      const palabras = textoLowerCase.split(' ');
+      const indexEstacionamiento = palabras.indexOf('estacionamiento');
+
+      if (indexEstacionamiento !== -1 && indexEstacionamiento < palabras.length - 1) {
+        const nombreEstacionamiento = palabras[indexEstacionamiento + 1];
+
+        buscarEnBaseDeDatos(nombreEstacionamiento);
+        return; // Detener la ejecución del resto del código en esta función
+      }
+    }
+
+    // Si no se encontró una coincidencia específica, puedes realizar otras acciones o respuestas genéricas aquí
+    console.log('No se encontró una acción específica para el texto capturado');
+  }
+
+  function buscarEnBaseDeDatos(texto) {
+    // Aquí puedes implementar la lógica para buscar en tu base de datos y tomar acciones
+    // basadas en los resultados obtenidos
+    // Puedes utilizar el SDK de Firebase o cualquier otra tecnología de base de datos que estés utilizando
+
+    // Ejemplo: Consulta en la base de datos Firebase
+    const database = firebase.database();
+    const estacionamientosRef = database.ref("datos");
+
+    estacionamientosRef.orderByChild("nombre").equalTo(texto).once("value", function (snapshot) {
+      if (snapshot.exists()) {
+        // Se encontró el estacionamiento en la base de datos
+        // Puedes tomar las acciones correspondientes aquí
+        console.log("Estacionamiento encontrado en la base de datos");
+
+        // Obtén las coordenadas y la disponibilidad del estacionamiento
+        const estacionamiento = snapshot.val()[Object.keys(snapshot.val())[0]];
+        const Latitud = estacionamiento.Latitud;
+        const Longitud = estacionamiento.Longitud;
+        const disponibilidad = estacionamiento.disponibilidad;
+
+        if (disponibilidad) {
+          decirEnVozAlta(`Estacionamiento encontrado, te marco la ruta a ${texto}`);
+          crearRuta(Latitud, Longitud); // Llama a la función crearRuta() con las coordenadas del estacionamiento
+        } else {
+          decirEnVozAlta(`Estacionamiento encontrado, pero no hay espacios disponibles en ${texto}, porfavor brindame el nombre
+          de uno que si tenga espacios disponibles para darte la ruta`);
+        }
+      } else {
+        // No se encontró el estacionamiento en la base de datos
+        // Puedes tomar otras acciones aquí
+        console.log("Estacionamiento no encontrado en la base de datos");
+        decirEnVozAlta('No pude encontrar el estacionamiento, porfavor vuelve a hablar');
+      }
+    }, function (error) {
+      console.log("Error al buscar en la base de datos: ", error);
+    });
+  }
+
+  function crearRuta(Latitud, Longitud) {
+    // Aquí tienes el código de la función crearRuta() que se proporcionó anteriormente
+    if (destinoMarker && destinoMarker.getPosition().equals(Latitud, Longitud)) {
+      // el usuario hizo clic en el mismo marcador de destino
       return;
     }
 
     directionsDisplay.setDirections({ routes: [] });
 
     if (destinoMarker) {
-      // Elimina el marcador de destino anterior si existe
+      // elimina el marcador de destino anterior si existe
       destinoMarker.setMap(null);
     }
 
-    // Consulta los nombres en la base de datos de Firebase
-    const nombresRef = firebase.database().ref('nombre');
-    nombresRef.once('value', function(snapshot) {
-      const nombres = snapshot.val();
+    // Crea la solicitud para la ruta
+    var solicitud = {
+      origin: marker.getPosition(),
+      destination: new google.maps.LatLng(Latitud, Longitud),
+      travelMode: "DRIVING",
+    };
 
-      // Busca coincidencias con el destino capturado por voz
-      const coincidencia = Object.keys(nombres).find(function(nombre) {
-        return destino.toLowerCase().includes(nombre.toLowerCase());
-      });
-
-      if (coincidencia) {
-        const estacionamiento = nombres[coincidencia];
-        const estacionamientoLocation = new google.maps.LatLng(estacionamiento.lat, estacionamiento.lng);
-
-        // Crea la solicitud para la ruta
-        const solicitud = {
-          origin: marker.getPosition(),
-          destination: estacionamientoLocation,
-          travelMode: "DRIVING",
-        };
-
-        // Llama al servicio de direcciones para obtener la ruta
-        directionsService.route(solicitud, function(resultado, estado) {
-          if (estado === "OK") {
-            // Muestra la ruta en el mapa
-            directionsDisplay.setDirections(resultado);
-          }
-        });
-      } else {
-        console.log('No se encontró ninguna coincidencia con el destino capturado por voz');
+    // Llama al servicio de direcciones para obtener la ruta
+    directionsService.route(solicitud, function (resultado, estado) {
+      if (estado === "OK") {
+        // Muestra la ruta en el mapa
+        directionsDisplay.setDirections(resultado);
       }
     });
+  }
 
-    // Resto del código...
+  function decirEnVozAlta(texto) {
+    const utterance = new SpeechSynthesisUtterance(texto);
+    speechSynthesis.speak(utterance);
   }
 } else {
   // El navegador no soporta la API de reconocimiento de voz
   resultDiv.textContent = 'El reconocimiento de voz no es compatible con tu navegador.';
   startButton.disabled = true;
 }
+
+
+
 
