@@ -571,11 +571,14 @@ if ('webkitSpeechRecognition' in window) {
     // Verificar si el texto contiene la palabra clave "muestra la lista"
     if (textoLowerCase.includes('muestra la lista')) {
       for (const elemento in markerData) {
-        const nombreDato = markerData[elemento].nombre; // Suponiendo que cada dato en markerData tiene una propiedad "nombre"
-        decirEnVozAlta(nombreDato); // Llamar a la función de síntesis de voz con el nombre actual
+        const nombreDato = markerData[elemento].nombre;
+        const precioDato = markerData[elemento].precio; // Suponiendo que cada dato en markerData tiene una propiedad "precio"
+        const cantidadEspacios = markerData[elemento].espacios; // Suponiendo que cada dato en markerData tiene una propiedad "espacios"
+        const mensaje = `${nombreDato}, el precio es: ${precioDato}, y la cantidad de espacios: ${cantidadEspacios}`;
+        decirEnVozAlta(mensaje);
       }
-  
-      return; // Detener la ejecución del resto del código en esta función
+    
+      return;
     }
   
     // Si no se encontró una coincidencia específica, puedes realizar otras acciones o respuestas genéricas aquí
@@ -584,44 +587,6 @@ if ('webkitSpeechRecognition' in window) {
   
 
 
-  function buscarEnBaseDeDatos(texto) {
-    // Aquí puedes implementar la lógica para buscar en tu base de datos y tomar acciones
-    // basadas en los resultados obtenidos
-    // Puedes utilizar el SDK de Firebase o cualquier otra tecnología de base de datos que estés utilizando
-
-    // Ejemplo: Consulta en la base de datos Firebase
-    const database = firebase.database();
-    const estacionamientosRef = database.ref("datos");
-
-    estacionamientosRef.orderByChild("nombre").equalTo(texto).once("value", function (snapshot) {
-      if (snapshot.exists()) {
-        // Se encontró el estacionamiento en la base de datos
-        // Puedes tomar las acciones correspondientes aquí
-        console.log("Estacionamiento encontrado en la base de datos");
-
-        // Obtén las coordenadas y la disponibilidad del estacionamiento
-        const estacionamiento = snapshot.val()[Object.keys(snapshot.val())[0]];
-        const Latitud = estacionamiento.Latitud;
-        const Longitud = estacionamiento.Longitud;
-        const disponibilidad = estacionamiento.disponibilidad;
-
-        if (disponibilidad) {
-          decirEnVozAlta(`Estacionamiento encontrado, te marco la ruta a ${texto}`);
-          crearRuta(Latitud, Longitud); // Llama a la función crearRuta() con las coordenadas del estacionamiento
-          infoContainer.classList.add("show"); // Abre el modal mostrando la información del estacionamiento
-        } else {
-          decirEnVozAlta(`Estacionamiento encontrado, pero no hay espacios disponibles en ${texto}, por favor bríndame el nombre de uno que sí tenga espacios disponibles para darte la ruta`);
-        }
-      } else {
-        // No se encontró el estacionamiento en la base de datos
-        // Puedes tomar otras acciones aquí
-        console.log("Estacionamiento no encontrado en la base de datos");
-        decirEnVozAlta('No pude encontrar el estacionamiento, por favor vuelve a hablar');
-      }
-    }, function (error) {
-      console.log("Error al buscar en la base de datos: ", error);
-    });
-  }
 
   function crearRuta(Latitud, Longitud) {
     // Aquí tienes el código de la función crearRuta() que se proporcionó anteriormente
@@ -680,3 +645,17 @@ if ('webkitSpeechRecognition' in window) {
   resultDiv.textContent = 'El reconocimiento de voz no es compatible con tu navegador.';
   startButton.disabled = true;
 }
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  var listClose = document.getElementById("list-clo");
+  if (listClose) {
+    listClose.addEventListener("click", function() {
+      var infoContainer = document.getElementById("info-container");
+      if (infoContainer) {
+        infoContainer.classList.remove("show");
+        
+      }
+    });
+  }
+});
