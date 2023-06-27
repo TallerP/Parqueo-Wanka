@@ -573,8 +573,8 @@ if ('webkitSpeechRecognition' in window) {
       for (const elemento in markerData) {
         const nombreDato = markerData[elemento].nombre;
         const precioDato = markerData[elemento].precio; // Suponiendo que cada dato en markerData tiene una propiedad "precio"
-        const cantidadEspacios = markerData[elemento].espacios; // Suponiendo que cada dato en markerData tiene una propiedad "espacios"
-        const mensaje = `${nombreDato}, el precio es: ${precioDato}, y la cantidad de espacios: ${cantidadEspacios}`;
+        const espacio = markerData[elemento].espacio; // Suponiendo que cada dato en markerData tiene una propiedad "espacios"
+        const mensaje = `El estacionamiento ${nombreDato}, el precio es: ${precioDato}, y la cantidad de espacios: ${espacio}`;
         decirEnVozAlta(mensaje);
       }
     
