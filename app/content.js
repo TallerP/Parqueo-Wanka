@@ -1,28 +1,34 @@
-// Configuración de Firebase
-var firebaseConfig = {
-  apiKey: "AIzaSyDtpOfIff-7_ZKPcKzojiW8Q4lldvV8iwc",
-  authDomain: "tallerproyectos2023-d32b7.firebaseapp.com",
-  databaseURL: "https://tallerproyectos2023-d32b7-default-rtdb.firebaseio.com",
-  projectId: "tallerproyectos2023-d32b7",
-  storageBucket: "tallerproyectos2023-d32b7.appspot.com",
-  messagingSenderId: "52196951713",
-  appId: "1:52196951713:web:806d3df12faa67f673d2e0",
-};
+document.addEventListener("DOMContentLoaded", () => {
+  const firebaseConfig = {
+    apiKey: "AIzaSyDtpOfIff-7_ZKPcKzojiW8Q4lldvV8iwc",
+    authDomain: "tallerproyectos2023-d32b7.firebaseapp.com",
+    databaseURL:
+      "https://tallerproyectos2023-d32b7-default-rtdb.firebaseio.com",
+    projectId: "tallerproyectos2023-d32b7",
+    storageBucket: "tallerproyectos2023-d32b7.appspot.com",
+    messagingSenderId: "52196951713",
+    appId: "1:52196951713:web:806d3df12faa67f673d2e0",
+  };
 
-// Inicializar la aplicación de Firebase
-firebase.initializeApp(firebaseConfig);
-const firebaseRef = firebase.database().ref("datos");
+  firebase.initializeApp(firebaseConfig);
+  updateMarkers();
+  createLocationMarkers();
+});
+
+/*//////////////////////////////////////////////////////////////////
+[ SLIDERJS ]*/
 
 /*//////////////////////////////////////////////////////////////////
 [ INICIALIZACIÓN DEL MAPA]*/
 
-let ubicacionActual = null;
-let map;
-let marker;
-let destinoMarker = null;
-let directionsDisplay;
-let directionsService;
-let markers = [];
+let ubicacionActual = new google.maps.LatLng(0, 0); // Asigna las coordenadas iniciales deseadas
+var map;
+var marker;
+var destinoMarker = null;
+var directionsDisplay;
+var directionsService;
+var markers = [];
+var markerData = [];
 
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(
@@ -76,10 +82,14 @@ function initMap() {
     map: map,
   });
   directionsDisplay.setMap(map);
-
-  filterMarkers();
-  createLocationMarkers();
 }
+/*//////////////////////////////////////////////////////////////////
+[ MARKER ]*/
+
+const firebaseURL =
+  "https://tallerproyectos2023-d32b7-default-rtdb.firebaseio.com/datos.json";
+const markerClickSubject = new rxjs.Subject();
+var selectedMarker = null;
 
 const createMarker = (
   coord,
@@ -93,7 +103,7 @@ const createMarker = (
   tipo,
   espacio,
   imagen,
-  disponibilidad,
+  disponibilidad
 ) => {
   const markerIcon = {
     url: disponibilidad ? "imgs/libre.svg" : "imgs/ocupado.svg",
@@ -104,92 +114,285 @@ const createMarker = (
     position: coord,
     map: map,
     icon: markerIcon,
+    clickable: true,
+    visible: true,
   });
 
-  const contentString =
-    '<div class="info-window">' +
-    '<span class="info-price">' +
-    precio +
-    "</span>" +
-    "</div>";
+  const content = buildContent({
+    precio: precio,
+    nombre: nombre,
+    direccion: direccion,
+    numcontact: numcontact,
+    ubicacionHorario: ubicacionHorario,
+    descripcion: descripcion,
+    tipo: tipo,
+    espacio: espacio,
+    imagen: imagen,
+  });
 
   const infoWindow = new google.maps.InfoWindow({
-    content: contentString,
-    closeBoxURL: "",
+    content: content,
   });
 
-  // Abre el infoWindow cuando se carga el mapa
   infoWindow.open(map, marker);
 
   marker.addListener("click", function () {
-    crearRuta(coord);
-
-    document.getElementById("ubicacion-nombre").textContent = nombre;
-    document.getElementById("ubicacion-precio").textContent = precio;
-    document.getElementById("ubicacion-direccion").textContent = direccion;
-    document.getElementById("ubicacion-horario").textContent = ubicacionHorario;
-    document.getElementById("ubicacion-numcontact").textContent = numcontact;
-    document.getElementById("ubicacion-descripcion").textContent = descripcion;
-    document.getElementById("ubicacion-tipo").textContent = tipo;
-    document.getElementById("ubicacion-espacio").textContent = espacio;
-    var imagenURL = imagen;
-    var imagenModal = document.getElementById("ubicacion-Image");
-    imagenModal.src = imagenURL;
-
-    document.getElementById("info-container").classList.add("show");
+    if (selectedMarker === marker) {
+      selectedMarker = null;
+      clearAdditionalInfo();
+    } else {
+      selectedMarker = marker;
+      crearRuta(coord);
+      showAdditionalInfo(
+        nombre,
+        precio,
+        direccion,
+        numcontact,
+        ubicacionHorario,
+        descripcion,
+        tipo,
+        espacio,
+        imagen
+      );
+      infoWindow.open(map, marker);
+    }
   });
 
-  markers.push(marker);
+  markers.push(marker); // Agregar el marcador a la variable "markers"
 };
 
-function loadFirebaseImage(imagenURL, callback) {
-  var storageRef = firebase.storage().ref(imagenURL); //Ruta de la imagen
-  var imageRef = storageRef.child(imagenURL);
+function buildContent(property) {
+  const content = document.createElement("div");
 
-  imageRef
-    .getDownloadURL()
-    .then(function (url) {
-      callback(url);
-    })
-    .catch(function (error) {});
+  content.classList.add("property");
+  content.innerHTML = `<div class="icon"> <span class="fa-sr-only">S/. ${property.precio}</span></div>`;
+  return content;
 }
+
+function showAdditionalInfo(
+  nombre,
+  precio,
+  direccion,
+  numcontact,
+  ubicacionHorario,
+  descripcion,
+  tipo,
+  espacio,
+  imagenURL
+) {
+  const additionalInfoDiv = document.getElementById("additional-info");
+  additionalInfoDiv.innerHTML = `
+         <div class="info-header">
+         <h2 >${nombre}</h2>
+          <span id="list-clo" class="list-close">&times;</span>
+        </div>
+        <div class="info-content">
+          <div class="spli">
+          <img
+          id="ubicacion-Image"
+          src="${imagenURL}"
+          alt=""
+          class="list-item-img"
+          loading="lazy"
+        />
+          </div>
+          <div class="c-explorar-list-title">
+            <h1 >${nombre}</h1>
+            <span>
+              4,7 -
+              <img
+                src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+                alt=""
+              />
+              <img
+                src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+                alt=""
+              />
+              <img
+                src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+                alt=""
+              />
+              <img
+                src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+                alt=""
+              />
+              <img
+                src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+                alt=""
+              />
+              (11.116)</span
+            >
+            <span>Playa de estacionamiento</span>
+          </div>
+          <div class="c-explorar-list-import">
+            <div class="content-precio">
+              <span class="content-precio-title">Tarifa</span>
+              <div class="content-precio-det">
+                <img
+                  src="https://icongr.am/jam/pin-alt-f.svg?size=20&color=fb3447"
+                  alt=""
+                />
+                <h2>
+                  S/.
+                  ${precio}
+                  x hora
+                </h2>
+              </div>
+            </div>
+            <div class="content-precio">
+              <span class="content-precio-title">Disponibles</span>
+              <div class="content-precio-det">
+                <img
+                  src="https://icongr.am/jam/car-f.svg?size=20&color=fb3447"
+                  alt=""
+                />
+                <h2>
+                  <span
+                    id="ubicacion-espacio"
+                    class="content-precio-det-text"
+                  >${espacio}</span>
+                  espacio(s)
+                </h2>
+              </div>
+            </div>
+            <div class="content-precio">
+              <span class="content-precio-title">Tipo de estacionamiento</span>
+              <div class="content-precio-det">
+                <img
+                  src="https://icongr.am/jam/home-f.svg?size=18&color=fb3447"
+                  alt=""
+                />
+                <h2>
+                ${tipo}
+                </h2>
+              </div>
+            </div>
+          </div>
+          <div class="c-explorar-list-detall">
+            <div class="c-explorar-list-detall-item">
+              <img
+                src="https://icongr.am/jam/map-marker-f.svg?size=22&color=14bbf0"
+                alt=""
+              />
+              <h3 id="ubicacion-direccion"> ${direccion}</h3>
+            </div>
+            <div class="c-explorar-list-detall-item">
+              <img
+                src="https://icongr.am/jam/chronometer-f.svg?size=25&color=14bbf0"
+                alt=""
+              />
+              <h3 id="ubicacion-horario">${ubicacionHorario}</h3>
+            </div>
+            <div class="c-explorar-list-detall-item">
+              <img
+                src="https://icongr.am/jam/viber.svg?size=22&color=14bbf0"
+                alt=""
+              />
+              <h3 id="ubicacion-numcontact">${numcontact}</h3>
+            </div>
+            <div class="c-explorar-list-detall-item">
+              <img
+                src="https://icongr.am/jam/clipboard-f.svg?size=22&color=14bbf0"
+                alt=""
+              />
+              <h3 id="ubicacion-descripcion">${descripcion}</h3>
+            </div>
+          </div>
+          <div class="c-explorar-list-btn">
+            <button class="btn-rese">
+              <img
+                src="https://icongr.am/jam/write-f.svg?size=15&color=14bbf0"
+                alt=""
+              />
+              Escribir una reseña
+            </button>
+          </div>
+        </div>
+  
+  `;
+  additionalInfoDiv.style.display = "block";
+}
+
+function clearAdditionalInfo() {
+  const additionalInfoDiv = document.getElementById("additional-info");
+  additionalInfoDiv.innerHTML = "";
+  additionalInfoDiv.style.display = "none";
+}
+
+const updateMarkers = () => {
+  fetch(firebaseURL)
+    .then((response) => response.json())
+    .then((data) => {
+      const dataArray = Object.values(data);
+
+      // Limpiar los marcadores existentes
+      markers.forEach((marker) => {
+        marker.setMap(null);
+      });
+      markers = [];
+
+      // Iterar sobre los datos actualizados y crear nuevos marcadores
+      dataArray.forEach((item) => {
+        const coord = new google.maps.LatLng(item.Latitud, item.Longitud);
+        const precio = item.precio;
+        const nombre = item.nombre;
+        const direccion = item.direccion;
+        const numcontact = item.celular;
+        const ubicacionHorario = item.horario;
+        const descripcion = item.descripcion;
+        const tipo = item.tipo;
+        const espacio = item.cantespacios;
+        const imagen = item.imagenURL;
+        const disponibilidad = item.disponibilidad;
+
+        createMarker(
+          coord,
+          precio,
+          map,
+          nombre,
+          direccion,
+          numcontact,
+          ubicacionHorario,
+          descripcion,
+          tipo,
+          espacio,
+          imagen,
+          disponibilidad
+        );
+      });
+
+      // Filtrar los marcadores según sea necesario
+      filterMarkers();
+    })
+    .catch((error) => {
+      console.log("Error al obtener los datos:", error);
+    });
+};
 
 /*//////////////////////////////////////////////////////////////////
 [ CREAR RUTA ]*/
 
 function crearRuta(destino) {
-  if (destinoMarker && destinoMarker.getPosition().equals(destino)) {
-    // el usuario hizo clic en el mismo marcador de destino
-    return;
+  if (ubicacionActual && destino) {
+    const request = {
+      origin: ubicacionActual,
+      destination: destino,
+      travelMode: google.maps.TravelMode.DRIVING,
+    };
+
+    directionsService.route(request, (result, status) => {
+      if (status === google.maps.DirectionsStatus.OK) {
+        directionsDisplay.setDirections(result);
+        directionsDisplay.setOptions({ preserveViewport: true });
+      }
+    });
   }
-
-  directionsDisplay.setDirections({ routes: [] });
-
-  if (destinoMarker) {
-    // elimina el marcador de destino anterior si existe
-    destinoMarker.setMap(null);
-  }
-
-  // Crea la solicitud para la ruta
-  var solicitud = {
-    origin: marker.getPosition(),
-    destination: destino,
-    travelMode: "DRIVING",
-  };
-
-  // Llama al servicio de direcciones para obtener la ruta
-  directionsService.route(solicitud, function (resultado, estado) {
-    if (estado === "OK") {
-      // Muestra la ruta en el mapa
-      directionsDisplay.setDirections(resultado);
-    }
-  });
 }
 
 /*//////////////////////////////////////////////////////////////////
 [ OPTION TIPO ]*/
 
-let lastTipoSeleccionado = "todos";
+var lastTipoSeleccionado = "todos";
 const tipoSelector = document.getElementById("tipo");
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -227,23 +430,77 @@ rangoSelector.addEventListener("change", () => {
   filterMarkers(lastTipoSeleccionado);
 });
 
+const createLocationMarkers = () => {
+  markers.forEach((marker) => {
+    const coord = new google.maps.LatLng(marker.Latitud, marker.Longitud);
+    const precio = marker.precio;
+    const nombre = marker.nombre;
+    const direccion = marker.direccion;
+    const numcontact = marker.celular;
+    const ubicacionHorario = marker.horario;
+    const descripcion = marker.descripcion;
+    const tipo = marker.tipo;
+    const espacio = marker.cantespacios;
+    const imagen = marker.imagenURL;
+    const disponibilidad = marker.disponibilidad;
+
+    createMarker(
+      coord,
+      precio,
+      map,
+      nombre,
+      direccion,
+      numcontact,
+      ubicacionHorario,
+      descripcion,
+      tipo,
+      espacio,
+      imagen,
+      disponibilidad
+    );
+  });
+};
+
 /*//////////////////////////////////////////////////////////////////
 [ FILTER  ]*/
-let rangeCircle = null;
+var rangeCircle = null;
 
 function filterMarkers() {
-  const rangoSeleccionado = Number(rangoSelector.value);
-
-  if (lastTipoSeleccionado) {
-    document.getElementById("info-container").classList.remove("show");
-  } else {
-    document.getElementById("info-container").classList.remove("show");
+  if (ubicacionActual === null) {
+    // Ubicacion actual no válida, haz algo en consecuencia
+    return;
   }
 
-  markers.forEach((marker) => marker.setMap(null));
-  markers = [];
+  const rangoSeleccionado = Number(rangoSelector.value);
 
-  directionsDisplay.setDirections({ routes: [] });
+  const nuevosMarkers = [];
+
+  markers.forEach((marker) => {
+    if (
+      marker instanceof google.maps.Marker &&
+      marker.get("tipo") === lastTipoSeleccionado
+    ) {
+      marker.setMap(map);
+
+      const markerInfo = {
+        coord: marker.getPosition(),
+        nombre: marker.get("nombre"),
+        precio: marker.get("precio"),
+      };
+
+      nuevosMarkers.push(markerInfo);
+    } else {
+      if (marker instanceof google.maps.Marker) {
+        marker.setMap(null);
+      }
+    }
+  });
+
+  markers = nuevosMarkers;
+
+  if (directionsDisplay && directionsDisplay.setDirections) {
+    directionsDisplay.setDirections({ routes: [] });
+  }
 
   if (rangeCircle) {
     rangeCircle.setMap(null);
@@ -266,9 +523,6 @@ function filterMarkers() {
     rangeCircle.setRadius(radius);
   }
 
-  map.setCenter(ubicacionActual);
-  map.setZoom(14);
-
   const firebaseRef = firebase.database().ref("datos");
   firebaseRef.on("value", (snapshot) => {
     snapshot.forEach((childSnapshot) => {
@@ -284,21 +538,45 @@ function filterMarkers() {
       ) {
         const distancia = getDistance(coord, ubicacionActual);
 
-        if (distancia <= rangoSeleccionado && !markers.includes(coord)) {
-          createMarker(
-            coord,
-            ubicacion.precio,
-            map,
-            ubicacion.nombre,
-            ubicacion.direccion,
-            ubicacion.celular,
-            ubicacion.horario,
-            ubicacion.descripcion,
-            ubicacion.tipo,
-            ubicacion.cantespacios,
-            ubicacion.imagenURL,
-            ubicacion.disponibilidad
-          );
+        if (distancia <= rangoSeleccionado) {
+          if (
+            coord !== null &&
+            coord !== undefined &&
+            !markers.some(
+              (marker) => marker.coord && marker.coord.equals(coord)
+            )
+          ) {
+            createMarker(
+              coord,
+              ubicacion.precio,
+              map,
+              ubicacion.nombre,
+              ubicacion.direccion,
+              ubicacion.celular,
+              ubicacion.horario,
+              ubicacion.descripcion,
+              ubicacion.tipo,
+              ubicacion.cantespacios,
+              ubicacion.imagenURL,
+              ubicacion.disponibilidad
+            );
+
+            markers.push({
+              latitud: coord.lat(),
+              longitud: coord.lng(),
+              nombre: ubicacion.nombre,
+              precio: ubicacion.precio,
+              espacio: ubicacion.cantespacios,
+            });
+            markerData = markers.filter(
+              (marker) =>
+                marker.latitud &&
+                marker.longitud &&
+                marker.nombre &&
+                marker.precio &&
+                marker.espacio
+            );
+          }
         }
       }
     });
@@ -310,60 +588,9 @@ function filterMarkers() {
 
     updateRangeCircle(ubicacionActual, radioEnMetros);
   });
+
+  console.log(markerData);
 }
-
-const createLocationMarkers = () => {
-  // Obtiene los filtros seleccionados
-  const tipoEstacionamiento = document.getElementById("tipo").value;
-
-  // Obtén los datos de ubicaciones desde Firebase Realtime Database
-  const firebaseRef = firebase.database().ref("datos");
-  firebaseRef.on("value", (snapshot) => {
-    snapshot.forEach((childSnapshot) => {
-      const ubicacion = childSnapshot.val();
-      const coord = new google.maps.LatLng(
-        ubicacion.Latitud,
-        ubicacion.Longitud
-      );
-      const disponibilidad = ubicacion.disponibilidad;
-
-      // Configura las opciones de filtrado para la ubicación actual
-      const options = {
-        tipoEstacionamiento: ubicacion.tipo,
-      };
-
-      // Comprueba si la ubicación coincide con los filtros seleccionados
-      if (filterMarkers(options, tipoEstacionamiento)) {
-        createMarker(
-          coord,
-          ubicacion.precio,
-          map,
-          ubicacion.nombre,
-          ubicacion.direccion,
-          ubicacion.celular,
-          ubicacion.horario,
-          ubicacion.descripcion,
-          ubicacion.tipo,
-          ubicacion.cantespacios,
-          ubicacion.imagenURL,
-          disponibilidad
-        );
-      }
-    });
-  });
-};
-/*//////////////////////////////////////////////////////////////////
-[ SLIDERJS ]*/
-
-document.addEventListener("DOMContentLoaded", function () {
-  new Splide(".splide", {
-    type: "slide",
-    perPage: 1,
-    focus: "center",
-    pagination: true,
-    arrows: true,
-  }).mount();
-});
 
 document.addEventListener("DOMContentLoaded", function () {
   const showModalBtn = document.getElementById("showModalBtn");
@@ -400,3 +627,266 @@ document.addEventListener("DOMContentLoaded", function () {
     logoutDiv.style.display = "none";
   });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+  var listClose = document.getElementById("list-clo");
+  if (listClose) {
+    listClose.addEventListener("click", function () {
+      additionalInfoDiv.style.display = "none";
+    });
+  }
+});
+
+//MICROFONO
+document.addEventListener("DOMContentLoaded", function () {
+  const open = document.getElementById("startButton");
+  const modal_container = document.getElementById("modal_container3");
+  const resultDiv = document.getElementById("result");
+
+  if ("webkitSpeechRecognition" in window) {
+    // Crear una instancia de reconocimiento de voz
+    const recognition = new webkitSpeechRecognition();
+
+    // Configurar el idioma (opcional)
+    recognition.lang = "es";
+
+    // No detener la grabación automáticamente después de que se detecte un final de voz
+    recognition.continuous = true;
+
+    // Variable de estado para verificar si la captura de voz está en curso
+    let isCapturing = false;
+    let timeout;
+
+    // Evento que se dispara cuando se recibe una transcripción
+    recognition.onresult = function (event) {
+      const transcript = event.results[event.results.length - 1][0].transcript;
+      const cleanedTranscript = removePunctuation(transcript); // Eliminar signos de puntuación
+      resultDiv.textContent = cleanedTranscript;
+
+      // Llama a la función realizarAcciones() con el texto capturado por voz
+      realizarAcciones(cleanedTranscript);
+      realizarAcciones2(cleanedTranscript);
+    };
+
+    // Evento que se dispara cuando se hace clic en el botón de inicio
+    function toggleCapture() {
+      if (isCapturing) {
+        recognition.stop();
+        clearTimeout(timeout); // Limpiar el temporizador
+        modal_container.classList.remove("show"); // Ocultar el modal
+        isCapturing = false;
+      } else {
+        resultDiv.textContent = "Escuchando...";
+        recognition.start();
+        timeout = setTimeout(function () {
+          recognition.stop();
+          modal_container.classList.remove("show"); // Ocultar el modal
+          isCapturing = false;
+        }, 5000);
+        modal_container.classList.add("show"); // Mostrar el modal
+        isCapturing = true;
+      }
+    }
+
+    resultDiv.textContent = "Escuchando..."; // Establecer el texto inicial
+
+    open.addEventListener("click", toggleCapture);
+
+    // Obtener referencias a los elementos del DOM
+    const close = document.getElementById("close3");
+
+    close.addEventListener("click", () => {
+      modal_container.classList.remove("show");
+      recognition.stop();
+      clearTimeout(timeout); // Limpiar el temporizador
+      isCapturing = false;
+    });
+
+    // Evento que se dispara cuando la captura de voz se detiene
+    recognition.onend = function () {
+      clearTimeout(timeout); // Limpiar el temporizador
+    };
+  } else {
+    // El navegador no soporta la API de reconocimiento de voz
+    alert("Este navegador no soporta la API de reconocimiento de voz.");
+  }
+});
+
+function removePunctuation(text) {
+  return text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+}
+
+function realizarAcciones(texto) {
+  // Convertir el texto a minúsculas para facilitar la comparación
+  const textoLowerCase = texto.toLowerCase();
+
+  // Verificar si el texto capturado coincide con alguna acción específica
+  if (
+    textoLowerCase.includes("cancelar") ||
+    textoLowerCase.includes("cerrar")
+  ) {
+    recognition.stop();
+    resultDiv.textContent = ""; // Limpiar el contenido capturado
+    clearTimeout(timeout); // Limpiar el temporizador
+    modal_container.classList.remove("show"); // Cerrar el modal
+    return; // Detener la ejecución del resto del código en esta función
+  }
+
+  // Verificar si el texto contiene la palabra clave "estacionamiento" y el nombre de un estacionamiento específico
+  if (textoLowerCase.includes("estacionamiento")) {
+    const palabras = textoLowerCase.split(" ");
+    const indexEstacionamiento = palabras.indexOf("estacionamiento");
+    if (
+      indexEstacionamiento !== -1 &&
+      indexEstacionamiento < palabras.length - 1
+    ) {
+      // Obtener el nombre del estacionamiento como todo el texto después de la palabra "estacionamiento"
+      const nombreEstacionamiento = palabras
+        .slice(indexEstacionamiento + 1)
+        .join(" ")
+        .toLowerCase();
+      console.log(nombreEstacionamiento);
+
+      // Filtrar los estacionamientos en markerData por el nombre
+      const estacionamientosFiltrados = markerData.filter(
+        (dato) => dato.nombre.toLowerCase() === nombreEstacionamiento
+      );
+
+      if (estacionamientosFiltrados.length > 0) {
+        console.log("Estacionamiento encontrado en la base de datos");
+        // Obtener la latitud y longitud del primer estacionamiento encontrado
+        const estacionamiento = estacionamientosFiltrados[0];
+        const latitud = estacionamiento.latitud;
+        const longitud = estacionamiento.longitud;
+        const precio = estacionamiento.precio;
+        const espacio = estacionamiento.espacio;
+        const disponibilidad = estacionamiento.disponibilidad;
+
+        if (disponibilidad === false) {
+          console.log(
+            "Estacionamiento encontrado, pero no hay espacios disponibles Por favor, selecciona otro."
+          );
+          decirEnVozAlta(
+            "Estacionamiento encontrado, pero no hay espacios disponibles Por favor, selecciona otro."
+          );
+        } else {
+          decirEnVozAlta(
+            `Encontré el Estacionamiento ${nombreEstacionamiento}, cuenta con ${espacio} espacio disponibles La tarifa es ${precio} `
+          );
+          // Generar la ruta hacia el estacionamiento utilizando la latitud y longitud
+          crearR(latitud, longitud);
+
+          // Calcular la distancia entre la ubicación actual y el estacionamiento
+          const distancia = calcularDistancia(
+            marker.getPosition().lat(),
+            marker.getPosition().lng(),
+            latitud,
+            longitud
+          );
+
+          // Leer en voz alta la distancia al estacionamiento
+          decirEnVozAlta(
+            `La distancia al estacionamiento es de ${distancia.toFixed(
+              2
+            )} kilómetros.`
+          );
+        }
+      } else {
+        console.log("No se encontraron estacionamientos con ese nombre");
+        decirEnVozAlta(
+          `No encontré el estacionamiento ${nombreEstacionamiento}, no existe o no está en el rango de kilómetros seleccionado`
+        );
+      }
+
+      return; // Detener la ejecución del resto del código en esta función
+    }
+  }
+
+  // Si no se encontró una coincidencia específica, puedes realizar otras acciones o respuestas genéricas aquí
+  console.log("No se encontró una acción específica para el texto capturado");
+}
+
+function realizarAcciones2(texto) {
+  // Convertir el texto a minúsculas para facilitar la comparación
+  const textoLowerCase = texto.toLowerCase();
+
+  // Verificar si el texto contiene la palabra clave "muestra la lista"
+  if (textoLowerCase.includes("muestra la lista")) {
+    for (const elemento in markerData) {
+      const nombreDato = markerData[elemento].nombre; // Suponiendo que cada dato en markerData tiene una propiedad "nombre"
+      decirEnVozAlta(nombreDato); // Llamar a la función de síntesis de voz con el nombre actual
+    }
+
+    return; // Detener la ejecución del resto del código en esta función
+  }
+
+  // Si no se encontró una coincidencia específica, puedes realizar otras acciones o respuestas genéricas aquí
+  console.log("No se encontró una acción específica para el texto capturado");
+}
+
+function crearR(latitud, longitud) {
+  // Aquí tienes el código de la función crearRuta() que se proporcionó anteriormente
+  if (destinoMarker && destinoMarker.getPosition().equals(latitud, longitud)) {
+    // el usuario hizo clic en el mismo marcador de destino
+    return;
+  }
+
+  directionsDisplay.setDirections({ routes: [] });
+
+  if (destinoMarker) {
+    // elimina el marcador de destino anterior si existe
+    destinoMarker.setMap(null);
+  }
+
+  // Crea la solicitud para la ruta
+  var solicitud = {
+    origin: marker.getPosition(),
+    destination: new google.maps.LatLng(latitud, longitud),
+    travelMode: "DRIVING",
+  };
+
+  // Llama al servicio de direcciones para obtener la ruta
+  directionsService.route(solicitud, function (resultado, estado) {
+    if (estado === "OK") {
+      // Muestra la ruta en el mapa
+      directionsDisplay.setDirections(resultado);
+    }
+  });
+
+  const distancia = calcularDistancia(
+    marker.getPosition().lat(),
+    marker.getPosition().lng(),
+    latitud,
+    longitud
+  );
+
+  // Muestra la distancia en la consola o en otro lugar de tu elección
+  console.log(
+    `La distancia al estacionamiento es de ${distancia.toFixed(2)} kilómetros.`
+  );
+}
+
+function calcularDistancia(latitud1, longitud1, latitud2, longitud2) {
+  const radioTierra = 6371; // Radio medio de la Tierra en kilómetros
+  const dLat = toRadian(latitud2 - latitud1);
+  const dLon = toRadian(longitud2 - longitud1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRadian(latitud1)) *
+      Math.cos(toRadian(latitud2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distancia = radioTierra * c;
+  return distancia;
+}
+
+function toRadian(grados) {
+  return grados * (Math.PI / 180);
+}
+
+function decirEnVozAlta(texto) {
+  const utterance = new SpeechSynthesisUtterance(texto);
+  speechSynthesis.speak(utterance);
+}
+

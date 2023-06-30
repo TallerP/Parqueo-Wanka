@@ -138,6 +138,96 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+  const inputFile = document.querySelector("#subirimagen");
+  const pictureImage = document.querySelector("#subIMG-Local");
+  const originalContent = pictureImage.innerHTML;
+
+  inputFile.addEventListener("change", function (e) {
+    const inputTarget = e.target;
+    const file = inputTarget.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.addEventListener("load", function (e) {
+        const readerTarget = e.target;
+
+        const img = document.createElement("img");
+        img.src = readerTarget.result;
+        img.classList.add("picture__img");
+
+        pictureImage.innerHTML = ""; // Limpiar cualquier contenido anterior
+        pictureImage.appendChild(img);
+      });
+
+      reader.readAsDataURL(file);
+    } else {
+      pictureImage.innerHTML = originalContent; // Restaurar el contenido original
+    }
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const inputFile = document.querySelector("#subirimg-seguri");
+  const pictureImage = document.querySelector("#subIMG-Seguri");
+  const originalContent = pictureImage.innerHTML;
+
+  inputFile.addEventListener("change", function (e) {
+    const inputTarget = e.target;
+    const file = inputTarget.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.addEventListener("load", function (e) {
+        const readerTarget = e.target;
+
+        const img = document.createElement("img");
+        img.src = readerTarget.result;
+        img.classList.add("picture__img");
+
+        pictureImage.innerHTML = ""; // Limpiar cualquier contenido anterior
+        pictureImage.appendChild(img);
+      });
+
+      reader.readAsDataURL(file);
+    } else {
+      pictureImage.innerHTML = originalContent; // Restaurar el contenido original
+    }
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const inputFile = document.querySelector("#subirimg-estruc");
+  const pictureImage = document.querySelector("#subIMG-estruc");
+  const originalContent = pictureImage.innerHTML;
+
+  inputFile.addEventListener("change", function (e) {
+    const inputTarget = e.target;
+    const file = inputTarget.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.addEventListener("load", function (e) {
+        const readerTarget = e.target;
+
+        const img = document.createElement("img");
+        img.src = readerTarget.result;
+        img.classList.add("picture__estruc");
+
+        pictureImage.innerHTML = ""; // Limpiar cualquier contenido anterior
+        pictureImage.appendChild(img);
+      });
+
+      reader.readAsDataURL(file);
+    } else {
+      pictureImage.innerHTML = originalContent; // Restaurar el contenido original
+    }
+  });
+});
+
 // Abre el modal de crear parqueo
 document.addEventListener("DOMContentLoaded", () => {
   var openModalBtn = document.getElementById("openModalBtn");
@@ -517,3 +607,20 @@ function eliminarParqueo(parqueoIDToUpdate) {
       console.error("Error al eliminar el parqueo:", error);
     });
 }
+
+var cantespaciosInput = document.getElementById('cantespacios');
+var disponibilidadDiv = document.getElementById('disponibilidad');
+
+cantespaciosInput.addEventListener('input', function () {
+  var espaciosDisponibles = parseInt(cantespaciosInput.value);
+  if (espaciosDisponibles > 0) {
+    disponibilidadDiv.textContent = 'ACTIVO';
+    disponibilidadDiv.classList.remove('inactivo');
+    disponibilidadDiv.classList.add('activo');
+  } else {
+    disponibilidadDiv.textContent = 'INACTIVO';
+    disponibilidadDiv.classList.remove('activo');
+    disponibilidadDiv.classList.add('inactivo');
+  }
+});
+

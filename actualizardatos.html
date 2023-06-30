@@ -73,7 +73,7 @@
           <div class="form-content-2">
             <div class="DateMapa">
               <div class="item-DateMapa">
-                <label for="input" class="text-Esp">Coordenadas:</label>
+                <label class="text-Esp">Coordenadas:</label>
                 <p id="Latitud" class="text-Esp"></p>
                 <p id="Longitud" class="text-Esp"></p>
               </div>
@@ -97,30 +97,30 @@
                 type="text"
                 id="nombre"
                 placeholder="Ej: Estacionamiento Carlos"
-                name=""
-                class="input"
+                name="nombre"
+                class="input" required
               />
-              <label for="input" class="text">Nombre:</label>
+              <label for="nombre" class="text">Nombre:</label>
             </div>
             <div class="coolinput">
               <input
                 type="text"
                 id="direccion"
                 placeholder="Ej: San Marcos 568, Huancayo 12001"
-                name="precio"
-                class="input"
+                name="direccion"
+                class="input" required
               />
-              <label for="input" class="text">Dirección:</label>
+              <label for="direccion" class="text">Dirección:</label>
             </div>
             <div class="coolinput">
               <input
                 type="text"
                 id="celular"
                 placeholder="Ej: 942003634"
-                name="precio"
-                class="input"
+                name="celular"
+                class="input" required
               />
-              <label for="input" class="text">Teléfono:</label>
+              <label for="celular" class="text">Teléfono:</label>
             </div>
             <div class="coolinput">
               <input
@@ -128,9 +128,9 @@
                 id="horario"
                 placeholder="Ej: De lunes a viernes de 08:30 a 19:00 horas"
                 name="precio"
-                class="input"
+                class="input" required
               />
-              <label for="input" class="text">Horario de atención:</label>
+              <label for="horario" class="text">Horario de atención:</label>
             </div>
             <div class="coolinput pos-2">
               <textarea
@@ -139,30 +139,83 @@
                 placeholder="Ubicado en el corazón del centro comercial, es la opción ideal para aquellos que buscan comodidad y seguridad al estacionar su vehículo. Con una capacidad de 200 plazas, incluyendo espacios reservados para personas con discapacidad y motocicletas, nuestro estacionamiento ofrece una solución confiable para tus necesidades de estacionamiento. Nuestras instalaciones cuentan con un moderno sistema de vigilancia ..."
                 class="input"
                 cols="10"
-                rows="6"
+                rows="6" 
               ></textarea>
-              <label for="input" class="text">Descripción:</label>
+              <label for="descripcion" class="text">Descripción:</label>
             </div>
-            <div class="coolinput">
-              <label for="subirimagen" class="subIMG">
-                <div class="subIMG-content">
-                  <div class="subIMG-img">
-                    <img
-                      src="https://icongr.am/jam/upload.svg?size=28&color=07cfb5"
-                      alt=""
-                    />
-                  </div>
-                  <div>
-                    <span class="picture__image">Haga clic para cargar </span>
-                    <h3>o simplemente arrastrar y soltar</h3>
-                  </div>
+            <div class="form-title">
+              <div>3</div>
+              <h3>Imágenes del estacionamiento</h3>
+            </div>
+            <div class="form-content">
+              <div class="coolinput">
+                <div class="des-IMG">
+                  <h4 class="text-Esp">Imagen del local del estacionamiento </h4>
+                  <p>Representación visual del área física del estacionamiento</p>
                 </div>
-              </label>
-              <input type="file" id="subirimagen" class="input" />
+                <label for="subirimagen" class="subIMG">
+                  <div id="subIMG-Local" class="subIMG-content">
+                    <div class="subIMG-img">
+                      <img
+                        src="https://icongr.am/jam/upload.svg?size=20&color=07cfb5"
+                        alt=""
+                      />
+                    </div>
+                    <div class="picture__content">
+                      <span class="picture__image">Haga clic para cargar </span>
+                      <h4 class="picture__text">o simplemente arrastrar y soltar</h3>
+                    </div>
+                  </div>
+                </label>
+                <input type="file" id="subirimagen" class="input"  />
+              </div>
+              <div class="coolinput">
+                <div  class="des-IMG">
+                  <h4 class="text-Esp">Seguridad o cámaras de seguridad del estacionamiento </h4>
+                  <p>Cámaras para prevenir robos y monitorear el área</p>
+                </div>
+                <label for="subirimg-estruc" class="subIMG">
+                  <div id="subIMG-estruc" class="subIMG-content">
+                    <div class="subIMG-img">
+                      <img
+                        src="https://icongr.am/jam/upload.svg?size=20&color=07cfb5"
+                        alt=""
+                      />
+                    </div>
+                    <div class="picture__content">
+                      <span class="picture__image">Haga clic para cargar </span>
+                      <h4 class="picture__text">o simplemente arrastrar y soltar</h3>
+                    </div>
+                  </div>
+                </label>
+                <input type="file" id="subirimg-estruc" class="input"  />
+              </div>
+              <div class="coolinput">
+                <div  class="des-IMG">
+                  <h4 class="text-Esp">Mapa del local del estacionamiento</h4>
+                  <p>Representación gráfica para orientar a los usuarios y mostrar áreas de estacionamiento, entradas y servicios</p>
+                </div>
+                <label for="subirimg-seguri" class="subIMG">
+                  <div id="subIMG-Seguri" class="subIMG-content">
+                    <div class="subIMG-img">
+                      <img
+                        src="https://icongr.am/jam/upload.svg?size=20&color=07cfb5"
+                        alt=""
+                      />
+                    </div>
+                    <div class="picture__content">
+                      <span class="picture__image">Haga clic para cargar </span>
+                      <h4 class="picture__text">o simplemente arrastrar y soltar</h3>
+                    </div>
+                  </div>
+                </label>
+                <input type="file" id="subirimg-seguri" class="input"  />
+              </div>
             </div>
+            
           </div>
           <div class="form-title">
-            <div>3</div>
+            <div>4</div>
             <h3>Datos actualizables del estacionamiento</h3>
           </div>
           <div class="form-content">
@@ -172,12 +225,12 @@
                 id="precio"
                 placeholder="S/...."
                 name="precio"
-                class="input"
+                class="input" required
               />
-              <label for="input" class="text">Tarifa x hora:</label>
+              <label for="precio" class="text">Tarifa x hora:</label>
             </div>
             <div class="coolinput">
-              <label class="text-Esp"
+              <label for="cantespacios" class="text-Esp"
                 >Espacios disponibles del estacionamiento:</label
               >
               <div class="counter">
@@ -193,11 +246,11 @@
               </div>
             </div>
             <div class="coolinput">
-              <label for="input" class="text-Esp"
+              <label for="tipo" class="text-Esp2"
                 >Tipo de estacionamiento</label
               >
               <select id="tipo">
-                <option value="seleccionar">-- Seleccionar</option>
+                <option>-- Seleccionar -- </option>
                 <option value="techado">Techado</option>
                 <option value="sin-techo">Sin techo</option>
                 <option value="subterraneo">Subterraneo</option>
@@ -229,7 +282,7 @@
             </div>
             <div class="DateMapa">
               <div class="item-DateMapa">
-                <label for="input" class="text-Esp">Coordenadas:</label>
+                <label class="text-Esp">Coordenadas:</label>
                 <p id="modalLat" class="text-Esp"></p>
                 <p id="modalLong" class="text-Esp"></p>
               </div>
@@ -252,7 +305,7 @@
                 name="Nombre"
                 class="input"
               />
-              <label for="input" class="text"
+              <label for="modalNombre" class="text"
                 >Nombre del estacionamiento:</label
               >
             </div>
@@ -264,7 +317,7 @@
                 name="precio"
                 class="input"
               />
-              <label for="input" class="text"
+              <label for="modalDireccion" class="text"
                 >Dirección del estacionamiento:</label
               >
             </div>
@@ -276,7 +329,7 @@
                 name="precio"
                 class="input"
               />
-              <label for="input" class="text"
+              <label for="modalCelular" class="text"
                 >Teléfono del estacionamiento:</label
               >
             </div>
@@ -288,7 +341,7 @@
                 name="precio"
                 class="input"
               />
-              <label for="input" class="text">Horario de atención:</label>
+              <label for="modalHorario" class="text">Horario de atención:</label>
             </div>
 
             <div class="coolinput pos-2">
@@ -300,12 +353,12 @@
                 cols="10"
                 rows="6"
               ></textarea>
-              <label for="input" class="text"
+              <label for="modalDescrip" class="text"
                 >Descripción del estacionamiento:</label
               >
             </div>
             <div class="coolinput">
-              <label for="input" class="text">Imagen:</label>
+              <label class="text">Imagen:</label>
               <input type="file" id="subirimagen" class="input" />
               <img id="modalImagen" src="" class="imagenAct" loading="lazy" />
             </div>
@@ -323,10 +376,10 @@
                 name="precio"
                 class="input"
               />
-              <label for="input" class="text">Tarifa x hora:</label>
+              <label for="modalPrecio" class="text">Tarifa x hora:</label>
             </div>
             <div class="coolinput">
-              <label class="text-Esp"
+              <label for="modalEspacios" class="text-Esp"
                 >Espacios disponibles del estacionamiento:</label
               >
               <div class="counter">
@@ -342,9 +395,9 @@
               </div>
             </div>
             <div class="coolinput">
-              <label for="input" class="text">Tipo de estacionamiento:</label>
+              <label for="modalTipo" class="text-Esp2">Tipo de estacionamiento:</label>
               <select id="modalTipo">
-                <option value="seleccionar">-- Seleccionar</option>
+                <option value="seleccionar">-- Seleccionar -- </option>
                 <option value="techado">Techado</option>
                 <option value="sin-techo">Sin techo</option>
                 <option value="subterraneo">Subterraneo</option>
