@@ -16,119 +16,115 @@
       rel="stylesheet"
       href="https://unpkg.com/@splidejs/splide@3.0.9/dist/css/splide.min.css"
     />
-    <link rel="icon" type="image/jpg" href="imgs/favicon.png" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300&display=swap"
       rel="stylesheet"
     />
-    <script src="https://unpkg.com/rxjs@^7/dist/bundles/rxjs.umd.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-database.js"></script>
+    
   </head>
 
   <body>
     <div class="modal hidden">
-      <div id="H-login" class="modal-Home">
-        <div class="modal-H-Header">
-          <span id="hideModalBtn" class="close">&times;</span>
-          <h2>Iniciar sesión</h2>
-          <h3>Registra playas de estacionamiento.</h3>
+        <div id="H-login" class="modal-Home">
+          <div class="modal-H-Header">
+            <span id="hideModalBtn" class="close">&times;</span>
+            <h2>Iniciar sesión</h2>
+            <h3>Registra playas de estacionamiento.</h3>
+          </div>
+          <form id="login-form">
+            <div class="modal-H-Body">
+              <div class="H-Body-item H-item-input">
+                <img src="./imgs/user.svg" alt="" />
+                <input
+                  type="text"
+                  id="login-email"
+                  class="form-control mb-3"
+                  placeholder="nombre@gmail.com"
+                  required
+                />
+              </div>
+              <div class="H-Body-item H-item-input">
+                <img src="./imgs/pas.svg" alt="" />
+                <input
+                  type="password"
+                  id="login-password"
+                  class="form-control mb-3"
+                  placeholder="Al menos 8 caractéres"
+                  required
+                />
+              </div>
+              <div class="H-Body-item">
+                <h4>¿Olvidaste tu contraseña?</h4>
+              </div>
+              <div class="H-Body-item">
+                <button type="submit" class="">Ingresar</button>
+              </div>
+              <div class="H-Body-item">
+                <span id="create-span">¿No tienes una cuenta? <strong>Crea una cuenta.</strong> </span>
+              </div>
+            </div>
+            <div class="separator">o</div>
+            <div class="modal-H-Footer">
+              <button type="button" class="btn btn-info" id="googleLogin">
+                <img
+              src="https://icongr.am/devicon/google-original.svg?size=20&color=currentColor"
+              alt=""
+            />Google
+              </button>
+              <button type="button" class="btn btn-primary" id="facebookLogin">
+                <img
+              src="https://icongr.am/devicon/facebook-original.svg?size=20&color=currentColor"
+              alt=""
+            />Facebook
+              </button>
+            </div>
+          </form>
         </div>
-        <form id="login-form">
-          <div class="modal-H-Body">
-            <div class="H-Body-item H-item-input">
-              <img src="./imgs/user.svg" alt="" />
-              <input
-                type="text"
-                id="login-email"
-                class="form-control mb-3"
-                placeholder="nombre@gmail.com"
-                required
-              />
-            </div>
-            <div class="H-Body-item H-item-input">
-              <img src="./imgs/pas.svg" alt="" />
-              <input
-                type="password"
-                id="login-password"
-                class="form-control mb-3"
-                placeholder="Al menos 8 caractéres"
-                required
-              />
-            </div>
-            <div class="H-Body-item">
-              <h4>¿Olvidaste tu contraseña?</h4>
-            </div>
-            <div class="H-Body-item">
-              <button type="submit" class="">Ingresar</button>
-            </div>
-            <div class="H-Body-item">
-              <span id="create-span"
-                >¿No tienes una cuenta? <strong>Crea una cuenta.</strong>
-              </span>
-            </div>
+        <div id="H-logout" class="modal-Home">
+          <div class="modal-H-Header">
+            <span id="hideModalBtn2" class="close">&times;</span>
+            <h2>Crear cuenta</h2>
+            <h3>Registra playas de estacionamiento.</h3>
           </div>
-          <div class="separator">o</div>
-          <div class="modal-H-Footer">
-            <button type="button" class="btn btn-info" id="googleLogin">
-              <img
-                src="https://icongr.am/devicon/google-original.svg?size=20&color=currentColor"
-                alt=""
-              />Google
-            </button>
-            <button type="button" class="btn btn-primary" id="facebookLogin">
-              <img
-                src="https://icongr.am/devicon/facebook-original.svg?size=20&color=currentColor"
-                alt=""
-              />Facebook
-            </button>
-          </div>
-        </form>
-      </div>
-      <div id="H-logout" class="modal-Home">
-        <div class="modal-H-Header">
-          <span id="hideModalBtn2" class="close">&times;</span>
-          <h2>Crear cuenta</h2>
-          <h3>Registra playas de estacionamiento.</h3>
+          <form id="signup-form">
+            <div class="modal-H-Body">
+              <div class="H-Body-item H-item-input">
+                <img src="./imgs/user.svg" alt="" />
+                <input
+                  type="text"
+                  id="signup-email"
+                  class="form-control mb-3"
+                  placeholder="nombre@gmail.com"
+                  required
+                />
+              </div>
+              <div class="H-Body-item H-item-input">
+                <img src="./imgs/pas.svg" alt="" />
+                <input
+                  type="password"
+                  id="signup-password"
+                  class="form-control mb-3"
+                  placeholder="Al menos 8 caractéres"
+                  required
+                />
+              </div>
+              <div class="H-Body-item">
+                <h4>¿Olvidaste tu contraseña?</h4>
+              </div>
+              <div class="H-Body-item">
+                <button type="submit" class="">Crear</button>
+              </div>
+              <div class="H-Body-item">
+                <span id="login-span">¿Ya tienes una cuenta? <strong>Iniciar sesión.</strong> </span>
+              </div>
+            </div>            
+          </form>
         </div>
-        <form id="signup-form">
-          <div class="modal-H-Body">
-            <div class="H-Body-item H-item-input">
-              <img src="./imgs/user.svg" alt="" />
-              <input
-                type="text"
-                id="signup-email"
-                class="form-control mb-3"
-                placeholder="nombre@gmail.com"
-                required
-              />
-            </div>
-            <div class="H-Body-item H-item-input">
-              <img src="./imgs/pas.svg" alt="" />
-              <input
-                type="password"
-                id="signup-password"
-                class="form-control mb-3"
-                placeholder="Al menos 8 caractéres"
-                required
-              />
-            </div>
-            <div class="H-Body-item">
-              <h4>¿Olvidaste tu contraseña?</h4>
-            </div>
-            <div class="H-Body-item">
-              <button type="submit" class="">Crear</button>
-            </div>
-            <div class="H-Body-item">
-              <span id="login-span"
-                >¿Ya tienes una cuenta? <strong>Iniciar sesión.</strong>
-              </span>
-            </div>
-          </div>
-        </form>
-      </div>
     </div>
 
     <section>
@@ -150,29 +146,13 @@
             </select>
           </div>
         </div>
-        <button
-          id="startButton"
-          type="button"
-          class="btn-micro"
-          title="Búsqueda por voz"
-        >
+        <button type="button" class="btn-micro" title="Búsqueda por voz">
           <img
             src="https://icongr.am/jam/mic-alt.svg?size=20&color=222222"
             alt=""
+            class="icon-micro"
           />
         </button>
-        <div id="modal_container3" class="modal-container3">
-          <div class="modal3">
-          <span id="close3" class="close3">&times;</span>
-            <h3 id="result"></h3>                      
-            <div class="pulse">
-              <img src="https://icongr.am/jam/mic-alt.svg?size=25&color=ffffff" alt=""/>
-            </div>
-            
-            <div id="distance"></div>  
-          </div>
-        </div>
-        
         <div class="logged-out">
           <button id="showModalBtn" class="btn-success">Iniciar Sesión</button>
         </div>
@@ -205,9 +185,142 @@
           </div>
         </div>
       </div>
-      <div id="additional-info" class="c-explorar-list"></div>
+      <div id="info-container" class="c-explorar-list">
+        <div class="splide">
+          <div class="splide__track">
+            <ul class="splide__list">
+              <li class="splide__slide">
+                <img
+                  id="ubicacion-Image"
+                  src=""
+                  alt="Image 1"
+                  class="list-item-img"
+                  loading="lazy"
+                />
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="c-explorar-list-title">
+          <h1 id="ubicacion-nombre"></h1>
+          <span>
+            4,7 -
+            <img
+              src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+              alt=""
+            />
+            <img
+              src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+              alt=""
+            />
+            <img
+              src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+              alt=""
+            />
+            <img
+              src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+              alt=""
+            />
+            <img
+              src="https://icongr.am/entypo/star.svg?size=15&color=ffc107"
+              alt=""
+            />
+            (11.116)</span
+          >
+          <span>Playa de estacionamiento</span>
+        </div>
+        <div class="c-explorar-list-import">
+          <div class="content-precio">
+            <span class="content-precio-title">Tarifa</span>
+            <div class="content-precio-det">
+              <img
+                src="https://icongr.am/jam/pin-alt-f.svg?size=20&color=fb3447"
+                alt=""
+              />
+              <h2>
+                <span
+                  id="ubicacion-precio"
+                  class="content-precio-det-text"
+                ></span>
+                x hora
+              </h2>
+            </div>
+          </div>
+          <div class="content-precio">
+            <span class="content-precio-title">Disponibles</span>
+            <div class="content-precio-det">
+              <img
+                src="https://icongr.am/jam/car-f.svg?size=20&color=fb3447"
+                alt=""
+              />
+              <h2>
+                <span
+                  id="ubicacion-espacio"
+                  class="content-precio-det-text"
+                ></span>
+                espacio(s)
+              </h2>
+            </div>
+          </div>
+          <div class="content-precio">
+            <span class="content-precio-title">Tipo de estacionamiento</span>
+            <div class="content-precio-det">
+              <img
+                src="https://icongr.am/jam/home-f.svg?size=18&color=fb3447"
+                alt=""
+              />
+              <h2>
+                <span id="ubicacion-tipo" class="content-precio-det-text"
+                  >2</span
+                >
+              </h2>
+            </div>
+          </div>
+        </div>
+        <div class="c-explorar-list-detall">
+          <div class="c-explorar-list-detall-item">
+            <img
+              src="https://icongr.am/jam/map-marker-f.svg?size=22&color=14bbf0"
+              alt=""
+            />
+            <h3 id="ubicacion-direccion"></h3>
+          </div>
+          <div class="c-explorar-list-detall-item">
+            <img
+              src="https://icongr.am/jam/chronometer-f.svg?size=25&color=14bbf0"
+              alt=""
+            />
+            <h3 id="ubicacion-horario"></h3>
+          </div>
+          <div class="c-explorar-list-detall-item">
+            <img
+              src="https://icongr.am/jam/viber.svg?size=22&color=14bbf0"
+              alt=""
+            />
+            <h3 id="ubicacion-numcontact"></h3>
+          </div>
+          <div class="c-explorar-list-detall-item">
+            <img
+              src="https://icongr.am/jam/clipboard-f.svg?size=22&color=14bbf0"
+              alt=""
+            />
+            <h3 id="ubicacion-descripcion"></h3>
+          </div>
+        </div>
+        <div class="c-explorar-list-btn">
+          <button class="btn-rese">
+            <img
+              src="https://icongr.am/jam/write-f.svg?size=15&color=14bbf0"
+              alt=""
+            />
+            Escribir una reseña
+          </button>
+        </div>
+      </div>
       <div id="map" class="map"></div>
-      <div class="posts"></div>
+      <div class="posts">
+
+      </div>
     </section>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmn7dgBjGCRulPapD4gPqSE6XQAQ7iCTg&callback=iniciarMapa"></script>
     <script

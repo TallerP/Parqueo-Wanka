@@ -607,20 +607,3 @@ function eliminarParqueo(parqueoIDToUpdate) {
       console.error("Error al eliminar el parqueo:", error);
     });
 }
-
-var cantespaciosInput = document.getElementById('cantespacios');
-var disponibilidadDiv = document.getElementById('disponibilidad');
-
-cantespaciosInput.addEventListener('input', function () {
-  var espaciosDisponibles = parseInt(cantespaciosInput.value);
-  if (espaciosDisponibles > 0) {
-    disponibilidadDiv.textContent = 'ACTIVO';
-    disponibilidadDiv.classList.remove('inactivo');
-    disponibilidadDiv.classList.add('activo');
-  } else {
-    disponibilidadDiv.textContent = 'INACTIVO';
-    disponibilidadDiv.classList.remove('activo');
-    disponibilidadDiv.classList.add('inactivo');
-  }
-});
-
