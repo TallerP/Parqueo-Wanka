@@ -675,6 +675,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // Llama a la función realizarAcciones() con el texto capturado por voz
       realizarAcciones(cleanedTranscript);
       realizarAcciones2(cleanedTranscript);
+      realizarAcciones3(cleanedTranscript);
       verificarPalabrasClave(cleanedTranscript);
     };
 
@@ -864,8 +865,23 @@ function realizarAcciones2(texto) {
   console.log("No se encontró una acción específica para el texto capturado");
 }
 
+function realizarAcciones3(texto) {
+  // Convertir el texto a minúsculas para facilitar la comparación
+  const textoLowerCase = texto.toLowerCase();
+
+  // Verificar si el texto contiene la palabra clave "muestra la lista"
+  if (textoLowerCase.includes("ayuda")) {
+    decirEnVozAlta("Para interactuar con el sistema, puedes utilizar dos comandos principales. Si quieres seleccionar un parqueo específico, simplemente di 'estacionamiento' seguido del nombre del parqueo que deseas. Por ejemplo, puedes decir 'estacionamiento San Carlos' o 'estacionamiento Rosales y Si deseas ver la lista de parqueos, antes puedes seleccionar un filtro específico, como tipo de estacionamiento y rango. Por ejemplo, puedes seleccionar 'filtrar por tipo de estacionamiento' o 'filtrar por rango'. y por ultimo Luego, cuando digas 'lista de parqueos', el sistema te proporcionará la lista de parqueos disponibles según el filtro seleccionado previamente");
+
+    return; // Detener la ejecución del resto del código en esta función
+  }
+
+  // Si no se encontró una coincidencia específica, puedes realizar otras acciones o respuestas genéricas aquí
+  console.log("No se encontró una acción específica para el texto capturado");
+}
+
 function verificarPalabrasClave(texto) {
-  const palabrasClave = ["estacionamiento", "lista de parqueos"];
+  const palabrasClave = ["estacionamiento", "lista de parqueos", "ayuda"];
 
   const textoLowerCase = texto.toLowerCase();
 
@@ -875,7 +891,7 @@ function verificarPalabrasClave(texto) {
     }
   }
 
-  decirEnVozAlta("P");
+  decirEnVozAlta("Para interactuar con el sistema debe decir los comandos, estacionamiento, lista de parqueos y ayuda");
 }
 
 function crearR(latitud, longitud) {
