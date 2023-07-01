@@ -568,20 +568,26 @@ function filterMarkers() {
               longitud: coord.lng(),
               nombre: ubicacion.nombre,
               precio: ubicacion.precio,
+              direccion: ubicacion.direccion,
+              numcontact:ubicacion.celular,
+              ubicacionHorario:ubicacion.horario,
+              descripcion:ubicacion.descripcion,
+              tipo: ubicacion.tipo,
               espacio: ubicacion.cantespacios,
+              imagen:ubicacion.imagenURL
             });
             markerData = markers.filter(
               (marker) =>
                 marker.latitud &&
                 marker.longitud &&
                 marker.nombre &&
-                marker.precio &&
-                marker.espacio
+                marker.precio
             );
           }
         }
       }
     });
+    console.log(markerData);
   });
 
   rangoSelector.addEventListener("change", function () {
@@ -590,8 +596,6 @@ function filterMarkers() {
 
     updateRangeCircle(ubicacionActual, radioEnMetros);
   });
-
-  console.log(markerData);
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -756,17 +760,23 @@ function realizarAcciones(texto) {
       );
 
       if (estacionamientosFiltrados.length > 0) {
-        console.log(estacionamientosFiltrados);
+
         // Obtener la latitud y longitud del primer estacionamiento encontrado
         const estacionamiento = estacionamientosFiltrados[0];
         const nombre = estacionamiento.nombre;
         const latitud = estacionamiento.latitud;
         const longitud = estacionamiento.longitud;
         const precio = estacionamiento.precio;
+        const direccion = estacionamiento.direccion;
+        const numcontact = estacionamiento.numcontact;
+        const ubicacionHorario = estacionamiento.ubicacionHorario;
+        const descripcion = estacionamiento.descripcion;
+        const tipo = estacionamiento.tipo;
         const espacio = estacionamiento.espacio;
+        const imagen = estacionamiento.imagen;
         const disponibilidad = estacionamiento.disponibilidad;
 
-        console.log(nombre);
+        console.log(estacionamiento);
         
         if (disponibilidad === false) {
           console.log(
@@ -784,9 +794,13 @@ function realizarAcciones(texto) {
           showAdditionalInfo(
             nombre,
             precio,
-        
+            direccion,
+            numcontact,
+            ubicacionHorario,
+            descripcion,
+            tipo,
             espacio,
-            
+            imagen
           );
           // Calcular la distancia entre la ubicación actual y el estacionamiento
           const distancia = calcularDistancia(
