@@ -16,13 +16,14 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /*//////////////////////////////////////////////////////////////////
-[ SLIDERJS ]*/
-
-/*//////////////////////////////////////////////////////////////////
 [ INICIALIZACIÓN DEL MAPA]*/
 
 let ubicacionActual = new google.maps.LatLng(0, 0); // Asigna las coordenadas iniciales deseadas
-var map;
+var map = new google.maps.Map(document.getElementById('map'), {
+  center: {lat: -34.397, lng: 150.644},
+  zoom: 8
+});
+
 var marker;
 var destinoMarker = null;
 var directionsDisplay;
@@ -373,6 +374,7 @@ const updateMarkers = () => {
 [ CREAR RUTA ]*/
 
 function crearRuta(destino) {
+  console.log(destino);
   if (ubicacionActual && destino) {
     const request = {
       origin: ubicacionActual,
@@ -399,7 +401,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const tipoSelector = document.getElementById("tipo");
   tipoSelector.addEventListener("change", (event) => {
     lastTipoSeleccionado = event.target.value;
-    filterMarkers(lastTipoSeleccionado); 
+    filterMarkers(lastTipoSeleccionado);
   });
 });
 
@@ -666,6 +668,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // Llama a la función realizarAcciones() con el texto capturado por voz
       realizarAcciones(cleanedTranscript);
       realizarAcciones2(cleanedTranscript);
+      verificarPalabrasClave(cleanedTranscript);
     };
 
     // Evento que se dispara cuando se hace clic en el botón de inicio
@@ -753,15 +756,18 @@ function realizarAcciones(texto) {
       );
 
       if (estacionamientosFiltrados.length > 0) {
-        console.log("Estacionamiento encontrado en la base de datos");
+        console.log(estacionamientosFiltrados);
         // Obtener la latitud y longitud del primer estacionamiento encontrado
         const estacionamiento = estacionamientosFiltrados[0];
+        const nombre = estacionamiento.nombre;
         const latitud = estacionamiento.latitud;
         const longitud = estacionamiento.longitud;
         const precio = estacionamiento.precio;
         const espacio = estacionamiento.espacio;
         const disponibilidad = estacionamiento.disponibilidad;
 
+        console.log(nombre);
+        
         if (disponibilidad === false) {
           console.log(
             "Estacionamiento encontrado, pero no hay espacios disponibles Por favor, selecciona otro."
@@ -775,7 +781,13 @@ function realizarAcciones(texto) {
           );
           // Generar la ruta hacia el estacionamiento utilizando la latitud y longitud
           crearR(latitud, longitud);
-
+          showAdditionalInfo(
+            nombre,
+            precio,
+        
+            espacio,
+            
+          );
           // Calcular la distancia entre la ubicación actual y el estacionamiento
           const distancia = calcularDistancia(
             marker.getPosition().lat(),
@@ -811,7 +823,7 @@ function realizarAcciones2(texto) {
   const textoLowerCase = texto.toLowerCase();
 
   // Verificar si el texto contiene la palabra clave "muestra la lista"
-  if (textoLowerCase.includes("muestra la lista")) {
+  if (textoLowerCase.includes("lista de parqueos")) {
     for (const elemento in markerData) {
       const nombreDato = markerData[elemento].nombre; // Suponiendo que cada dato en markerData tiene una propiedad "nombre"
       decirEnVozAlta(nombreDato); // Llamar a la función de síntesis de voz con el nombre actual
@@ -822,6 +834,25 @@ function realizarAcciones2(texto) {
 
   // Si no se encontró una coincidencia específica, puedes realizar otras acciones o respuestas genéricas aquí
   console.log("No se encontró una acción específica para el texto capturado");
+}
+
+function verificarPalabrasClave(texto) {
+  const palabrasClave = ["estacionamiento", "lista de parqueos"];
+
+  const textoLowerCase = texto.toLowerCase();
+
+  for (const palabra of palabrasClave) {
+    if (textoLowerCase.includes(palabra)) {
+      return;
+    }
+  }
+
+  decirEnVozAlta(
+    "Para interactuar con el sistema, puedes utilizar dos comandos principales. Si quieres seleccionar un parqueo específico, simplemente di 'estacionamiento' seguido del nombre del parqueo que deseas. Por ejemplo, puedes decir 'estacionamiento San Carlos' o 'estacionamiento Rosales'.\n\n" +
+    "Si deseas ver la lista de parqueos, antes puedes seleccionar un filtro específico, como tipo de estacionamiento y rango. Por ejemplo, puedes seleccionar 'filtrar por tipo de estacionamiento' o 'filtrar por rango'. "+
+    "Luego, cuando digas 'lista de parqueos', el sistema te proporcionará la lista de parqueos disponibles según el filtro seleccionado previamente."
+  );
+  
 }
 
 function crearR(latitud, longitud) {
@@ -889,4 +920,3 @@ function decirEnVozAlta(texto) {
   const utterance = new SpeechSynthesisUtterance(texto);
   speechSynthesis.speak(utterance);
 }
-
