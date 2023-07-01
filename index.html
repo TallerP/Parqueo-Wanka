@@ -1,229 +1,180 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Parqueo Wanka</title>
-    <!-- Toastify CSS -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
-    />
-    <link rel="stylesheet" href="./main.css" />
-    <!-- Estilos CSS de SplideJS -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/@splidejs/splide@3.0.9/dist/css/splide.min.css"
-    />
-    <link rel="icon" type="image/jpg" href="imgs/favicon.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300&display=swap"
-      rel="stylesheet"
-    />
-    <script src="https://unpkg.com/rxjs@^7/dist/bundles/rxjs.umd.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-database.js"></script>
-  </head>
 
-  <body>
-    <div class="modal hidden">
-      <div id="H-login" class="modal-Home">
-        <div class="modal-H-Header">
-          <span id="hideModalBtn" class="close">&times;</span>
-          <h2>Iniciar sesión</h2>
-          <h3>Registra playas de estacionamiento.</h3>
-        </div>
-        <form id="login-form">
-          <div class="modal-H-Body">
-            <div class="H-Body-item H-item-input">
-              <img src="./imgs/user.svg" alt="" />
-              <input
-                type="text"
-                id="login-email"
-                class="form-control mb-3"
-                placeholder="nombre@gmail.com"
-                required
-              />
-            </div>
-            <div class="H-Body-item H-item-input">
-              <img src="./imgs/pas.svg" alt="" />
-              <input
-                type="password"
-                id="login-password"
-                class="form-control mb-3"
-                placeholder="Al menos 8 caractéres"
-                required
-              />
-            </div>
-            <div class="H-Body-item">
-              <h4>¿Olvidaste tu contraseña?</h4>
-            </div>
-            <div class="H-Body-item">
-              <button type="submit" class="">Ingresar</button>
-            </div>
-            <div class="H-Body-item">
-              <span id="create-span"
-                >¿No tienes una cuenta? <strong>Crea una cuenta.</strong>
-              </span>
-            </div>
-          </div>
-          <div class="separator">o</div>
-          <div class="modal-H-Footer">
-            <button type="button" class="btn btn-info" id="googleLogin">
-              <img
-                src="https://icongr.am/devicon/google-original.svg?size=20&color=currentColor"
-                alt=""
-              />Google
-            </button>
-            <button type="button" class="btn btn-primary" id="facebookLogin">
-              <img
-                src="https://icongr.am/devicon/facebook-original.svg?size=20&color=currentColor"
-                alt=""
-              />Facebook
-            </button>
-          </div>
-        </form>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parqueo Wanka</title>
+  <!-- Toastify CSS -->
+  <link rel="stylesheet" type="text/css" href="gstatic/cdn.jsdelivr.net_npm_toastify-js_src_toastify.min.css" />
+  <link rel="stylesheet" href="./main.css" />
+  <!-- Estilos CSS de SplideJS -->
+  <link rel="stylesheet" href="gstatic/unpkg.com_@splidejs_splide@3.0.9_dist_css_splide.min.css" />
+  <link rel="icon" type="image/jpg" href="imgs/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300&display=swap" rel="stylesheet" />
+  <script src="gstatic/unpkg.com_rxjs@7.8.1_dist_bundles_rxjs.umd.min.js"></script>
+  <script src="gstatic/gstatic.com_firebasejs_8.4.3_firebase-app.js"></script>
+  <script src="gstatic/gstatic.com_firebasejs_8.4.3_firebase-database.js"></script>
+</head>
+
+<body>
+  <div class="modal hidden">
+    <div id="H-login" class="modal-Home">
+      <div class="modal-H-Header">
+        <span id="hideModalBtn" class="close">&times;</span>
+        <h2>Iniciar sesión</h2>
+        <h3>Registra playas de estacionamiento.</h3>
       </div>
-      <div id="H-logout" class="modal-Home">
-        <div class="modal-H-Header">
-          <span id="hideModalBtn2" class="close">&times;</span>
-          <h2>Crear cuenta</h2>
-          <h3>Registra playas de estacionamiento.</h3>
-        </div>
-        <form id="signup-form">
-          <div class="modal-H-Body">
-            <div class="H-Body-item H-item-input">
-              <img src="./imgs/user.svg" alt="" />
-              <input
-                type="text"
-                id="signup-email"
-                class="form-control mb-3"
-                placeholder="nombre@gmail.com"
-                required
-              />
-            </div>
-            <div class="H-Body-item H-item-input">
-              <img src="./imgs/pas.svg" alt="" />
-              <input
-                type="password"
-                id="signup-password"
-                class="form-control mb-3"
-                placeholder="Al menos 8 caractéres"
-                required
-              />
-            </div>
-            <div class="H-Body-item">
-              <h4>¿Olvidaste tu contraseña?</h4>
-            </div>
-            <div class="H-Body-item">
-              <button type="submit" class="">Crear</button>
-            </div>
-            <div class="H-Body-item">
-              <span id="login-span"
-                >¿Ya tienes una cuenta? <strong>Iniciar sesión.</strong>
-              </span>
-            </div>
+      <form id="login-form">
+        <div class="modal-H-Body">
+          <div class="H-Body-item H-item-input">
+            <img src="./imgs/user.svg" alt="" />
+            <input type="text" id="login-email" class="form-control mb-3" placeholder="nombre@gmail.com" required />
           </div>
-        </form>
+          <div class="H-Body-item H-item-input">
+            <img src="./imgs/pas.svg" alt="" />
+            <input type="password" id="login-password" class="form-control mb-3" placeholder="Al menos 8 caractéres"
+              required />
+          </div>
+          <div class="H-Body-item">
+            <h4>¿Olvidaste tu contraseña?</h4>
+          </div>
+          <div class="H-Body-item">
+            <button type="submit" class="">Ingresar</button>
+          </div>
+          <div class="H-Body-item">
+            <span id="create-span">¿No tienes una cuenta? <strong>Crea una cuenta.</strong>
+            </span>
+          </div>
+        </div>
+        <div class="separator">o</div>
+        <div class="modal-H-Footer">
+          <button type="button" class="btn btn-info" id="googleLogin">
+            <img src="https://icongr.am/devicon/google-original.svg?size=20&color=currentColor" alt="" />Google
+          </button>
+          <button type="button" class="btn btn-primary" id="facebookLogin">
+            <img src="https://icongr.am/devicon/facebook-original.svg?size=20&color=currentColor" alt="" />Facebook
+          </button>
+        </div>
+      </form>
+    </div>
+    <div id="H-logout" class="modal-Home">
+      <div class="modal-H-Header">
+        <span id="hideModalBtn2" class="close">&times;</span>
+        <h2>Crear cuenta</h2>
+        <h3>Registra playas de estacionamiento.</h3>
+      </div>
+      <form id="signup-form">
+        <div class="modal-H-Body">
+          <div class="H-Body-item H-item-input">
+            <img src="./imgs/user.svg" alt="" />
+            <input type="text" id="signup-email" class="form-control mb-3" placeholder="nombre@gmail.com" required />
+          </div>
+          <div class="H-Body-item H-item-input">
+            <img src="./imgs/pas.svg" alt="" />
+            <input type="password" id="signup-password" class="form-control mb-3" placeholder="Al menos 8 caractéres"
+              required />
+          </div>
+          <div class="H-Body-item">
+            <h4>¿Olvidaste tu contraseña?</h4>
+          </div>
+          <div class="H-Body-item">
+            <button type="submit" class="">Crear</button>
+          </div>
+          <div class="H-Body-item">
+            <span id="login-span">¿Ya tienes una cuenta? <strong>Iniciar sesión.</strong>
+            </span>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <section>
+    <div class="c-explorar">
+      <div class="c-explorar-filter">
+        <div class="custom-select">
+          <select id="tipo">
+            <option value="todos">Todos</option>
+            <option value="techado">Techado</option>
+            <option value="sin-techo">Sin Techo</option>
+            <option value="subterraneo">Subterráneo</option>
+          </select>
+        </div>
+        <div>
+          <select id="rango">
+            <option value="2">2 km</option>
+            <option value="4">4 km</option>
+            <option value="8">8 km</option>
+          </select>
+        </div>
+      </div>
+      <button id="startButton" type="button" class="btn-micro" title="Búsqueda por voz">
+        <img src="https://icongr.am/jam/mic-alt.svg?size=20&color=222222" alt="" />
+      </button>
+      <div id="modal_container3" class="modal-container3">
+        <div class="modal3">
+          <span id="close3" class="close3">&times;</span>
+          <h3 id="result"></h3>
+          <div class="pulse">
+            <img src="https://icongr.am/jam/mic-alt.svg?size=25&color=ffffff" alt="" />
+          </div>
+
+          <div id="distance"></div>
+          <div id="timer">4</div>
+        </div>
+      </div>
+
+      <div class="logged-out">
+        <button id="showModalBtn" class="btn-success">Iniciar Sesión</button>
+      </div>
+      <div class="logged-in">
+        <div class="dropdown">
+          <button class="dropdown-button">
+            <img src="https://icongr.am/jam/menu.svg?size=32&color=000000" alt="" />
+          </button>
+          <ul class="dropdown-menu" id="navbarNavAltMarkup">
+            <li>
+              <a class="menu-item" href="actualizardatos.html">
+                <img src="https://icongr.am/material/home-map-marker.svg?size=20&color=4f4f4f" alt="" />Parqueos
+              </a>
+            </li>
+            <li>
+              <a id="logout" class="menu-item" href="">
+                <img src="https://icongr.am/material/logout.svg?size=20&color=4f4f4f" alt="" />Cerrar sesión
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
-
-    <section>
-      <div class="c-explorar">
-        <div class="c-explorar-filter">
-          <div class="custom-select">
-            <select id="tipo">
-              <option value="todos">Todos</option>
-              <option value="techado">Techado</option>
-              <option value="sin-techo">Sin Techo</option>
-              <option value="subterraneo">Subterráneo</option>
-            </select>
-          </div>
-          <div>
-            <select id="rango">
-              <option value="2">2 km</option>
-              <option value="4">4 km</option>
-              <option value="8">8 km</option>
-            </select>
-          </div>
-        </div>
-        <button
-          id="startButton"
-          type="button"
-          class="btn-micro"
-          title="Búsqueda por voz"
-        >
-          <img
-            src="https://icongr.am/jam/mic-alt.svg?size=20&color=222222"
-            alt=""
-          />
-        </button>
-        <div id="modal_container3" class="modal-container3">
-          <div class="modal3">
-            <span id="close3" class="close3">&times;</span>
-            <h3 id="result"></h3>
-            <div class="pulse">
-              <img
-                src="https://icongr.am/jam/mic-alt.svg?size=25&color=ffffff"
-                alt=""
-              />
-            </div>
-
-            <div id="distance"></div>
-          </div>
-        </div>
-
-        <div class="logged-out">
-          <button id="showModalBtn" class="btn-success">Iniciar Sesión</button>
-        </div>
-        <div class="logged-in">
-          <div class="dropdown">
-            <button class="dropdown-button">
-              <img
-                src="https://icongr.am/jam/menu.svg?size=32&color=000000"
-                alt=""
-              />
-            </button>
-            <ul class="dropdown-menu" id="navbarNavAltMarkup">
-              <li>
-                <a class="menu-item" href="actualizardatos.html">
-                  <img
-                    src="https://icongr.am/material/home-map-marker.svg?size=20&color=4f4f4f"
-                    alt=""
-                  />Parqueos
-                </a>
-              </li>
-              <li>
-                <a id="logout" class="menu-item" href="">
-                  <img
-                    src="https://icongr.am/material/logout.svg?size=20&color=4f4f4f"
-                    alt=""
-                  />Cerrar sesión
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
+    <div id="additional-container" class="c-explorar-list">
+      <div class="info-header">
+        <h2></h2>
+        <button id="list-clo" class="list-close">&times;</button>
       </div>
-      <div id="additional-info" class="c-explorar-list">
-        <div class="info-header">
-          <h2></h2>
-          <button id="list-clo" class="list-close">&times;</button>
-        </div>
+      <div id="additional-info" class="info-content">
       </div>
-      <div id="map" class="map"></div>
-      <div class="posts"></div>
-    </section>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmn7dgBjGCRulPapD4gPqSE6XQAQ7iCTg&callback=iniciarMapa"></script>
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/toastify-js"
-    ></script>
-    <script src="./main.js" type="module"></script>
-    <script src="./app/content.js" type="module"></script>
-    <script src="https://unpkg.com/@splidejs/splide@3.0.9/dist/js/splide.min.js"></script>
-  </body>
+    </div>
+    <div id="map" class="map"></div>
+    <div class="posts"></div>
+  </section>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmn7dgBjGCRulPapD4gPqSE6XQAQ7iCTg&callback=iniciarMapa"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script src="./main.js" type="module"></script>
+  <script src="./app/content.js" type="module"></script>
+  <script src="https://unpkg.com/@splidejs/splide@3.0.9/dist/js/splide.min.js"></script>
+  <script>
+    setTimeout(function () {
+      var synth = window.speechSynthesis;
+      var utterance = new SpeechSynthesisUtterance(
+        "Hola Bienvenido a Parqueo Huanka, recuerda siempre colocarte el cinturón de seguridad y usar las luces direccionales, Para interactuar con el sistema, puedes utilizar dos comandos principales. Si quieres seleccionar un parqueo específico, simplemente di 'estacionamiento' seguido del nombre del parqueo que deseas. Por ejemplo, puedes decir 'estacionamiento San Carlos' o 'estacionamiento Rosales y Si deseas ver la lista de parqueos, antes puedes seleccionar un filtro específico, como tipo de estacionamiento y rango. Por ejemplo, puedes seleccionar 'filtrar por tipo de estacionamiento' o 'filtrar por rango'. y por ultimo Luego, cuando digas 'lista de parqueos', el sistema te proporcionará la lista de parqueos disponibles según el filtro seleccionado previamente");
+      synth.speak(utterance);
+    }, 3000);
+  </script>
+</body>
+
 </html>

@@ -170,7 +170,7 @@ function buildContent(property) {
   return content;
 }
 
-var additionalInfoDiv; // Declarar la variable en un alcance más amplio
+
 
 function showAdditionalInfo(
   nombre,
@@ -183,11 +183,9 @@ function showAdditionalInfo(
   espacio,
   imagenURL
 ) {
-  var additionalInfoDiv = document.getElementById("additional-info");
-  additionalInfoDiv.insertAdjacentHTML(
-    "beforeend",
-    `
-        <div class="info-content">
+  const additionalInfoDiv = document.getElementById("additional-info");
+  additionalInfoDiv.innerHTML =`
+        <div >
           <div class="spli">
           <img
           id="ubicacion-Image"
@@ -310,20 +308,20 @@ function showAdditionalInfo(
           </div>
         </div>
   
-        `
-  );
-  additionalInfoDiv.style.display = "block";
+        `;
+        const additionalInfoCont = document.getElementById("additional-container");
+        additionalInfoCont.style.display = "block";
 }
 
 function clearAdditionalInfo() {
-  additionalInfoDiv = document.getElementById("additional-info");
-  additionalInfoDiv.style.display = "none";
+  const additionalInfoDiv = document.getElementById("additional-info");
+  additionalInfoDiv.innerHTML = "";
+
+  const additionalInfoCont = document.getElementById("additional-container");
+  additionalInfoCont.style.display = "none";
 }
 
-
-
 document.addEventListener("DOMContentLoaded", function() {
-  additionalInfoDiv = document.getElementById("additional-info");
   const closeButton = document.getElementById("list-clo");
   closeButton.addEventListener("click", function() {
     clearAdditionalInfo();
@@ -587,6 +585,7 @@ function filterMarkers() {
               tipo: ubicacion.tipo,
               espacio: ubicacion.cantespacios,
               imagen: ubicacion.imagenURL,
+              disponibilidad: ubicacion.disponibilidad,
             });
             markerData = markers.filter(
               (marker) =>
@@ -646,14 +645,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-  var listClose = document.getElementById("list-clo");
-  if (listClose) {
-    listClose.addEventListener("click", function () {
-      additionalInfoDiv.style.display = "none";
-    });
-  }
-});
 
 //MICROFONO
 document.addEventListener("DOMContentLoaded", function () {
@@ -691,19 +682,33 @@ document.addEventListener("DOMContentLoaded", function () {
     function toggleCapture() {
       if (isCapturing) {
         recognition.stop();
-        clearTimeout(timeout); // Limpiar el temporizador
-        modal_container.classList.remove("show"); // Ocultar el modal
+        clearTimeout(timeout);
+        modal_container.classList.remove("show");
         isCapturing = false;
       } else {
         resultDiv.textContent = "Escuchando...";
         recognition.start();
         timeout = setTimeout(function () {
           recognition.stop();
-          modal_container.classList.remove("show"); // Ocultar el modal
+          modal_container.classList.remove("show");
           isCapturing = false;
-        }, 5000);
-        modal_container.classList.add("show"); // Mostrar el modal
+        }, 4000);
+        modal_container.classList.add("show");
         isCapturing = true;
+
+        // Iniciar el temporizador cuando se abre el modal
+        let tiempoTotal = 4; // Tiempo en segundos
+        const timerDiv = document.getElementById("timer");
+
+        // Actualizar el temporizador cada segundo
+        const timerInterval = setInterval(function () {
+          timerDiv.textContent = tiempoTotal;
+          tiempoTotal--;
+
+          if (tiempoTotal < 0) {
+            clearInterval(timerInterval);
+          }
+        }, 1000);
       }
     }
 
@@ -717,13 +722,13 @@ document.addEventListener("DOMContentLoaded", function () {
     close.addEventListener("click", () => {
       modal_container.classList.remove("show");
       recognition.stop();
-      clearTimeout(timeout); // Limpiar el temporizador
+      clearTimeout(timeout);
       isCapturing = false;
     });
 
     // Evento que se dispara cuando la captura de voz se detiene
     recognition.onend = function () {
-      clearTimeout(timeout); // Limpiar el temporizador
+      clearTimeout(timeout);
     };
   } else {
     // El navegador no soporta la API de reconocimiento de voz
@@ -764,7 +769,7 @@ function realizarAcciones(texto) {
         .slice(indexEstacionamiento + 1)
         .join(" ")
         .toLowerCase();
-      console.log(nombreEstacionamiento);
+      
 
       // Filtrar los estacionamientos en markerData por el nombre
       const estacionamientosFiltrados = markerData.filter(
@@ -922,9 +927,9 @@ function calcularDistancia(latitud1, longitud1, latitud2, longitud2) {
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(toRadian(latitud1)) *
-      Math.cos(toRadian(latitud2)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
+    Math.cos(toRadian(latitud2)) *
+    Math.sin(dLon / 2) *
+    Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const distancia = radioTierra * c;
   return distancia;
