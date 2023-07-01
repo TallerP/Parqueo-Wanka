@@ -19,9 +19,9 @@ document.addEventListener("DOMContentLoaded", () => {
 [ INICIALIZACIÓN DEL MAPA]*/
 
 let ubicacionActual = new google.maps.LatLng(0, 0); // Asigna las coordenadas iniciales deseadas
-var map = new google.maps.Map(document.getElementById('map'), {
-  center: {lat: -34.397, lng: 150.644},
-  zoom: 8
+var map = new google.maps.Map(document.getElementById("map"), {
+  center: { lat: -34.397, lng: 150.644 },
+  zoom: 8,
 });
 
 var marker;
@@ -170,6 +170,8 @@ function buildContent(property) {
   return content;
 }
 
+var additionalInfoDiv; // Declarar la variable en un alcance más amplio
+
 function showAdditionalInfo(
   nombre,
   precio,
@@ -181,12 +183,10 @@ function showAdditionalInfo(
   espacio,
   imagenURL
 ) {
-  const additionalInfoDiv = document.getElementById("additional-info");
-  additionalInfoDiv.innerHTML = `
-         <div class="info-header">
-         <h2 >${nombre}</h2>
-          <span id="list-clo" class="list-close">&times;</span>
-        </div>
+  var additionalInfoDiv = document.getElementById("additional-info");
+  additionalInfoDiv.insertAdjacentHTML(
+    "beforeend",
+    `
         <div class="info-content">
           <div class="spli">
           <img
@@ -310,15 +310,27 @@ function showAdditionalInfo(
           </div>
         </div>
   
-  `;
+        `
+  );
   additionalInfoDiv.style.display = "block";
 }
 
 function clearAdditionalInfo() {
-  const additionalInfoDiv = document.getElementById("additional-info");
-  additionalInfoDiv.innerHTML = "";
+  additionalInfoDiv = document.getElementById("additional-info");
   additionalInfoDiv.style.display = "none";
 }
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  additionalInfoDiv = document.getElementById("additional-info");
+  const closeButton = document.getElementById("list-clo");
+  closeButton.addEventListener("click", function() {
+    clearAdditionalInfo();
+  });
+});
+
+
 
 const updateMarkers = () => {
   fetch(firebaseURL)
@@ -569,12 +581,12 @@ function filterMarkers() {
               nombre: ubicacion.nombre,
               precio: ubicacion.precio,
               direccion: ubicacion.direccion,
-              numcontact:ubicacion.celular,
-              ubicacionHorario:ubicacion.horario,
-              descripcion:ubicacion.descripcion,
+              numcontact: ubicacion.celular,
+              ubicacionHorario: ubicacion.horario,
+              descripcion: ubicacion.descripcion,
               tipo: ubicacion.tipo,
               espacio: ubicacion.cantespacios,
-              imagen:ubicacion.imagenURL
+              imagen: ubicacion.imagenURL,
             });
             markerData = markers.filter(
               (marker) =>
@@ -760,7 +772,6 @@ function realizarAcciones(texto) {
       );
 
       if (estacionamientosFiltrados.length > 0) {
-
         // Obtener la latitud y longitud del primer estacionamiento encontrado
         const estacionamiento = estacionamientosFiltrados[0];
         const nombre = estacionamiento.nombre;
@@ -776,8 +787,6 @@ function realizarAcciones(texto) {
         const imagen = estacionamiento.imagen;
         const disponibilidad = estacionamiento.disponibilidad;
 
-        console.log(estacionamiento);
-        
         if (disponibilidad === false) {
           console.log(
             "Estacionamiento encontrado, pero no hay espacios disponibles Por favor, selecciona otro."
@@ -861,12 +870,7 @@ function verificarPalabrasClave(texto) {
     }
   }
 
-  decirEnVozAlta(
-    "Para interactuar con el sistema, puedes utilizar dos comandos principales. Si quieres seleccionar un parqueo específico, simplemente di 'estacionamiento' seguido del nombre del parqueo que deseas. Por ejemplo, puedes decir 'estacionamiento San Carlos' o 'estacionamiento Rosales'.\n\n" +
-    "Si deseas ver la lista de parqueos, antes puedes seleccionar un filtro específico, como tipo de estacionamiento y rango. Por ejemplo, puedes seleccionar 'filtrar por tipo de estacionamiento' o 'filtrar por rango'. "+
-    "Luego, cuando digas 'lista de parqueos', el sistema te proporcionará la lista de parqueos disponibles según el filtro seleccionado previamente."
-  );
-  
+  decirEnVozAlta("P");
 }
 
 function crearR(latitud, longitud) {
