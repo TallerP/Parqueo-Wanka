@@ -1492,59 +1492,18 @@ input[type="number"].input:required:invalid {
   border: none;
 }
 
-@media (max-width: 850px) {
-  .c-explorar {
-    padding: 2vh 5vw 0 5vw;
-  }
 
-  .c-explorar-filter {
-    flex-direction: column;
-  }
 
-  .c-explorar-list {
-    height: 100vh;
-    width: 100%;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 9;
-    box-shadow: none;
-    border-radius: 0;
-  }
-  .info-header {
-    height: 8vh;
-  }
-
-  .info-content {
-    padding-top: 8vh;
-  }
-  h1 {
-    font-size: 1.1rem;
-  }
-
-  .modal-div {
-    width: 95%;
-  }
-
-  .modal-header {
-    padding: 2rem 2rem 1rem 2rem;
-  }
-
-  .modal-content {
-    padding: 0 2rem;
-  }
-
-  .modal-Home {
-    max-width: 330px;
-    padding: 3rem 2rem;
-  }
-  .modal-H-Footer button {
-    padding: 1rem;
-  }
+.custom-select {
+  display: flex;
+  flex-direction: column;
+  background-color:  #eeeff3;
 }
 
-
-
+.custom-select label{
+  font-size: clamp(6px, 8vw, 12px);
+  line-height: 1.2rem;
+}
 
 .modal-container3 {
   display: flex;
@@ -1617,11 +1576,72 @@ input[type="number"].input:required:invalid {
   place-items: center;
 }
 
+
+
 @keyframes pulse-animation {
   0% {
     box-shadow: 0 0 0 0px rgba(255, 0, 0, 0.2);
   }
   100% {
     box-shadow: 0 0 0 20px rgba(255, 0, 0, 0);
+  }
+}
+
+@media (max-width: 850px) {
+  .c-explorar {
+    padding: 2vh 5vw 0 5vw;
+  }
+
+  .c-explorar-filter {
+    flex-direction: column;
+  }
+
+  .c-explorar-list {
+    height: 100vh;
+    width: 100%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 9;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .custom-select label{
+    font-size: clamp(5px, 8vw, 10px);
+    line-height: 1.2rem;
+  }
+
+  .info-header {
+    height: 8vh;
+  }
+
+  .info-content {
+    padding-top: 8vh;
+  }
+  h1 {
+    font-size: 1.1rem;
+  }
+  .userName {
+    font-size: clamp(6px, 8vw, 12px);
+  }
+  .modal-div {
+    width: 95%;
+  }
+
+  .modal-header {
+    padding: 2rem 2rem 1rem 2rem;
+  }
+
+  .modal-content {
+    padding: 0 2rem;
+  }
+
+  .modal-Home {
+    max-width: 330px;
+    padding: 3rem 2rem;
+  }
+  .modal-H-Footer button {
+    padding: 1rem;
   }
 }

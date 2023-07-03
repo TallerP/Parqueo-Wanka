@@ -9,6 +9,8 @@ logout.addEventListener("click", async (e) => {
     await signOut(auth);
     // Eliminar el valor del userID del localStorage
     localStorage.removeItem("userID");
+    localStorage.removeItem("uidID");
+    localStorage.removeItem("userEmail");
   } catch (error) {
     console.log(error);
   }

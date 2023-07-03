@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
 /*//////////////////////////////////////////////////////////////////
 [ INICIALIZACIÓN DEL MAPA]*/
 
+
+
 let ubicacionActual = new google.maps.LatLng(0, 0); // Asigna las coordenadas iniciales deseadas
 var map = new google.maps.Map(document.getElementById("map"), {
   center: { lat: -12.047584535894167, lng: -75.19913860560352 },
@@ -959,3 +961,4 @@ function decirEnVozAlta(texto) {
   const utterance = new SpeechSynthesisUtterance(texto);
   speechSynthesis.speak(utterance);
 }
+

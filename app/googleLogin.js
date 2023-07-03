@@ -1,6 +1,5 @@
-import { GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js"
+import { GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js";
 import { auth } from "./firebase.js";
-import { showMessage } from "./showMessage.js";
 
 const googleButton = document.querySelector("#googleLogin");
 
@@ -9,17 +8,14 @@ googleButton.addEventListener("click", async (e) => {
 
   const provider = new GoogleAuthProvider();
   try {
-    const credentials = await signInWithPopup(auth, provider)
-    console.log(credentials);
-    console.log("google sign in");
-    
-    // Close the login modal
-    const modalInstance = bootstrap.Modal.getInstance(googleButton.closest('.modal'));
-    modalInstance.hide();
+    const credentials = await signInWithPopup(auth, provider);
+    const uidID = credentials.user.uid;
+    const uidEmail = credentials.user.email;
+    localStorage.setItem("uidID", uidID);
+    localStorage.setItem("userEmail", uidEmail);
 
-    // show welcome message
-    showMessage("Welcome " + credentials.user.displayName);
-    window.close();
+    // Redireccionar a la página de destino
+    window.location.href = "./actualizardatos.html";
   } catch (error) {
     console.log(error);
   }

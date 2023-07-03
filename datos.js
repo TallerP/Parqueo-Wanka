@@ -11,13 +11,31 @@ var firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
+const uidID = localStorage.getItem("uidID");
+const userEmail = localStorage.getItem("userEmail");
+const h1UserEmail = document.getElementById("userEmail");
+h1UserEmail.textContent = userEmail;
+
 const userID = localStorage.getItem("userID");
 
-if (!userID) {
+if (!uidID && !userID) {
   window.location.replace("index.html");
 } else {
+  // Código a ejecutar cuando el acceso está permitido
+
   
+  if (uidID) {
+   
+    // Aquí puedes agregar la lógica para el UID
+  } else {
+  
+    // Aquí puedes agregar la lógica para el UserID
+  }
+
+  // Aquí puedes agregar el resto de tu lógica o redireccionar a otra página
+  // window.location.href = "otra_pagina.html";
 }
+
 const database = firebase.database();
 const firebaseRef = firebase.database().ref("datos");
 
