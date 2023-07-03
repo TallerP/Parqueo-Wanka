@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 let ubicacionActual = new google.maps.LatLng(0, 0); // Asigna las coordenadas iniciales deseadas
 var map = new google.maps.Map(document.getElementById("map"), {
-  center: { lat: -34.397, lng: 150.644 },
+  center: { lat: -12.047584535894167, lng: -75.19913860560352 },
   zoom: 8,
 });
 

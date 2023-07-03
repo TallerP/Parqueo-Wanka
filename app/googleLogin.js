@@ -19,6 +19,7 @@ googleButton.addEventListener("click", async (e) => {
 
     // show welcome message
     showMessage("Welcome " + credentials.user.displayName);
+    window.close();
   } catch (error) {
     console.log(error);
   }

@@ -168,13 +168,13 @@
   <script src="./app/content.js" type="module"></script>
   <script src="https://unpkg.com/@splidejs/splide@3.0.9/dist/js/splide.min.js"></script>
   <script>
-    setTimeout(function () {
+    window.onload = function() {
       var synth = window.speechSynthesis;
-      var utterance = new SpeechSynthesisUtterance(
-        "Hola Bienvenido a Parqueo Huanka, recuerda siempre colocarte el cinturón de seguridad y usar las luces direccionales, Para interactuar con el sistema, puedes utilizar dos comandos principales. Si quieres seleccionar un parqueo específico, simplemente di 'estacionamiento' seguido del nombre del parqueo que deseas. Por ejemplo, puedes decir 'estacionamiento San Carlos' o 'estacionamiento Rosales y Si deseas ver la lista de parqueos, antes puedes seleccionar un filtro específico, como tipo de estacionamiento y rango. Por ejemplo, puedes seleccionar 'filtrar por tipo de estacionamiento' o 'filtrar por rango'. y por ultimo Luego, cuando digas 'lista de parqueos', el sistema te proporcionará la lista de parqueos disponibles según el filtro seleccionado previamente");
+      var utterance = new SpeechSynthesisUtterance("Hola Bienvenido a Parqueo Huanka, recuerda siempre colocarte el cinturón de seguridad");
       synth.speak(utterance);
-    }, 3000);
+    };
   </script>
+
 </body>
 
 </html>
