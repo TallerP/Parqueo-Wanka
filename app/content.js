@@ -678,6 +678,7 @@ document.addEventListener("DOMContentLoaded", function () {
       realizarAcciones(cleanedTranscript);
       realizarAcciones2(cleanedTranscript);
       realizarAcciones3(cleanedTranscript);
+      realizarAcciones4(cleanedTranscript);
       verificarPalabrasClave(cleanedTranscript);
     };
 
@@ -845,6 +846,8 @@ function realizarAcciones(texto) {
     }
   }
 
+  
+
   // Si no se encontró una coincidencia específica, puedes realizar otras acciones o respuestas genéricas aquí
   console.log("No se encontró una acción específica para el texto capturado");
 }
@@ -882,8 +885,49 @@ function realizarAcciones3(texto) {
   console.log("No se encontró una acción específica para el texto capturado");
 }
 
+function realizarAcciones4(texto) {
+  const textoLowerCase = texto.toLowerCase();
+
+  if (textoLowerCase.includes("cercano")) {
+    // Obtener la ubicación actual del usuario (puedes usar la API de geolocalización)
+    navigator.geolocation.getCurrentPosition(function (position) {
+      const userLat = position.coords.latitude;
+      const userLng = position.coords.longitude;
+
+      // Calcular la distancia entre la ubicación actual y todos los estacionamientos
+      const distances = markerData.map(function (estacionamiento) {
+        const estacionamientoLat = estacionamiento.latitud;
+        const estacionamientoLng = estacionamiento.longitud;
+        const distancia = calcularDistancia(userLat, userLng, estacionamientoLat, estacionamientoLng);
+        return { nombre: estacionamiento.nombre, distancia, latitud: estacionamientoLat, longitud: estacionamientoLng };
+      });
+
+      // Encontrar el estacionamiento más cercano
+      const estacionamientoCercano = distances.reduce(function (prev, current) {
+        return prev.distancia < current.distancia ? prev : current;
+      });
+
+      // Mostrar información sobre el estacionamiento más cercano
+      const nombre = estacionamientoCercano.nombre;
+      const distancia = estacionamientoCercano.distancia;
+      decirEnVozAlta(`El estacionamiento más cercano es ${nombre} a ${distancia.toFixed(2)} kilómetros.`);
+
+      // Llama a la función crearR() para mostrar la ruta al estacionamiento más cercano
+      crearR(estacionamientoCercano.latitud, estacionamientoCercano.longitud);
+    }, function(error) {
+      // Manejar errores, por ejemplo, si el usuario no permite la geolocalización
+      console.error("Error al obtener la ubicación: " + error.message);
+    });
+  } else {
+    // Si no se encontró una coincidencia específica, puedes realizar otras acciones o respuestas genéricas aquí
+    console.log("No se encontró una acción específica para el texto capturado");
+  }
+}
+
+
+
 function verificarPalabrasClave(texto) {
-  const palabrasClave = ["estacionamiento", "lista de parqueos", "ayuda"];
+  const palabrasClave = ["estacionamiento", "lista de parqueos", "ayuda", "cercano"];
 
   const textoLowerCase = texto.toLowerCase();
 

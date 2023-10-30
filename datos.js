@@ -17,7 +17,6 @@ const h1UserEmail = document.getElementById("userEmail");
 h1UserEmail.textContent = userEmail;
 
 const userID = localStorage.getItem("userID");
-
 if (!uidID && !userID) {
   window.location.replace("index.html");
 } else {
