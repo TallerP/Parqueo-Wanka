@@ -4,7 +4,7 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/9.10.0/firebase
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDtpOfIff-7_ZKPcKzojiW8Q4lldvV8iwc",
+  apiKey: "AIzaSyAACgASJolknXX9JC1kBXqUZTbyvML8r5c",
   authDomain: "tallerproyectos2023-d32b7.firebaseapp.com",
   databaseURL: "https://tallerproyectos2023-d32b7-default-rtdb.firebaseio.com",
   projectId: "tallerproyectos2023-d32b7",

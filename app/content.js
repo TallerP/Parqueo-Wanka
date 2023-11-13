@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const firebaseConfig = {
-    apiKey: "AIzaSyDtpOfIff-7_ZKPcKzojiW8Q4lldvV8iwc",
+    apiKey: "AIzaSyAACgASJolknXX9JC1kBXqUZTbyvML8r5c",
     authDomain: "tallerproyectos2023-d32b7.firebaseapp.com",
     databaseURL:
       "https://tallerproyectos2023-d32b7-default-rtdb.firebaseio.com",
@@ -761,7 +761,7 @@ function realizarAcciones(texto) {
   }
 
   // Verificar si el texto contiene la palabra clave "estacionamiento" y el nombre de un estacionamiento específico
-  if (textoLowerCase.includes("estacionamiento")) {
+  if (textoLowerCase.includes("estacionamiento") || textoLowerCase.includes("llevame al estacionamiento")) {
     const palabras = textoLowerCase.split(" ");
     const indexEstacionamiento = palabras.indexOf("estacionamiento");
     if (
@@ -857,10 +857,11 @@ function realizarAcciones2(texto) {
   const textoLowerCase = texto.toLowerCase();
 
   // Verificar si el texto contiene la palabra clave "muestra la lista"
-  if (textoLowerCase.includes("lista de parqueos")) {
+  if (textoLowerCase.includes("lista de parqueos")|| textoLowerCase.includes("brindame la lista")|| textoLowerCase.includes("la lista de parqueos")|| textoLowerCase.includes("dame la lista de parqueos")) {
     for (const elemento in markerData) {
       const nombreDato = markerData[elemento].nombre; // Suponiendo que cada dato en markerData tiene una propiedad "nombre"
-      decirEnVozAlta(nombreDato); // Llamar a la función de síntesis de voz con el nombre actual
+      const mensaje = `Estacionamiento ${nombreDato}`; // Construir el mensaje con "Estacionamiento" + nombreDato
+      decirEnVozAlta(mensaje); // Llamar a la función de síntesis de voz con el mensaje actual
     }
 
     return; // Detener la ejecución del resto del código en esta función
@@ -888,36 +889,56 @@ function realizarAcciones3(texto) {
 function realizarAcciones4(texto) {
   const textoLowerCase = texto.toLowerCase();
 
-  if (textoLowerCase.includes("cercano")) {
+  if (textoLowerCase.includes("cercano") || textoLowerCase.includes("también llévame al más cercano") || textoLowerCase.includes("también llévame al más cerca") || textoLowerCase.includes("el que esté más cerca")) {
     // Obtener la ubicación actual del usuario (puedes usar la API de geolocalización)
-    navigator.geolocation.getCurrentPosition(function (position) {
-      const userLat = position.coords.latitude;
-      const userLng = position.coords.longitude;
+    navigator.geolocation.getCurrentPosition(
+      function (position) {
+        const userLat = position.coords.latitude;
+        const userLng = position.coords.longitude;
 
-      // Calcular la distancia entre la ubicación actual y todos los estacionamientos
-      const distances = markerData.map(function (estacionamiento) {
-        const estacionamientoLat = estacionamiento.latitud;
-        const estacionamientoLng = estacionamiento.longitud;
-        const distancia = calcularDistancia(userLat, userLng, estacionamientoLat, estacionamientoLng);
-        return { nombre: estacionamiento.nombre, distancia, latitud: estacionamientoLat, longitud: estacionamientoLng };
-      });
+        // Calcular la distancia entre la ubicación actual y todos los estacionamientos
+        const distances = markerData.map(function (estacionamiento) {
+          const estacionamientoLat = estacionamiento.latitud;
+          const estacionamientoLng = estacionamiento.longitud;
+          const distancia = calcularDistancia(userLat, userLng, estacionamientoLat, estacionamientoLng);
+          return {
+            nombre: estacionamiento.nombre,
+            distancia,
+            latitud: estacionamientoLat,
+            longitud: estacionamientoLng,
+            disponibilidad: estacionamiento.disponibilidad || false, // Asegurarse de manejar la disponibilidad
+          };
+        });
 
-      // Encontrar el estacionamiento más cercano
-      const estacionamientoCercano = distances.reduce(function (prev, current) {
-        return prev.distancia < current.distancia ? prev : current;
-      });
+        // Filtrar estacionamientos cercanos con disponibilidad
+        const estacionamientosConDisponibilidad = distances.filter(function (estacionamiento) {
+          return estacionamiento.distancia < 5 && estacionamiento.disponibilidad; // Ajusta el rango y condiciones según tus necesidades
+        });
 
-      // Mostrar información sobre el estacionamiento más cercano
-      const nombre = estacionamientoCercano.nombre;
-      const distancia = estacionamientoCercano.distancia;
-      decirEnVozAlta(`El estacionamiento más cercano es ${nombre} a ${distancia.toFixed(2)} kilómetros.`);
+        if (estacionamientosConDisponibilidad.length > 0) {
+          // Ordenar estacionamientos por distancia ascendente
+          estacionamientosConDisponibilidad.sort((a, b) => a.distancia - b.distancia);
 
-      // Llama a la función crearR() para mostrar la ruta al estacionamiento más cercano
-      crearR(estacionamientoCercano.latitud, estacionamientoCercano.longitud);
-    }, function(error) {
-      // Manejar errores, por ejemplo, si el usuario no permite la geolocalización
-      console.error("Error al obtener la ubicación: " + error.message);
-    });
+          // Tomar el estacionamiento más cercano con disponibilidad
+          const estacionamientoCercano = estacionamientosConDisponibilidad[0];
+
+          // Mostrar información sobre el estacionamiento más cercano con disponibilidad
+          const nombre = estacionamientoCercano.nombre;
+          const distancia = estacionamientoCercano.distancia;
+          decirEnVozAlta(`El estacionamiento más cercano con disponibilidad es Estacionamiento ${nombre} la distancia de donde estamos es ${distancia.toFixed(2)} kilómetros.`);
+
+          // Llama a la función crearR() para mostrar la ruta al estacionamiento más cercano
+          crearR(estacionamientoCercano.latitud, estacionamientoCercano.longitud);
+        } else {
+          console.log("No hay estacionamientos cercanos con disponibilidad.");
+          // Puedes realizar otras acciones si no hay estacionamientos con disponibilidad
+        }
+      },
+      function (error) {
+        // Manejar errores, por ejemplo, si el usuario no permite la geolocalización
+        console.error("Error al obtener la ubicación: " + error.message);
+      }
+    );
   } else {
     // Si no se encontró una coincidencia específica, puedes realizar otras acciones o respuestas genéricas aquí
     console.log("No se encontró una acción específica para el texto capturado");
@@ -926,8 +947,14 @@ function realizarAcciones4(texto) {
 
 
 
+
+
+
+
+
+
 function verificarPalabrasClave(texto) {
-  const palabrasClave = ["estacionamiento", "lista de parqueos", "ayuda", "cercano"];
+  const palabrasClave = ["estacionamiento", "lista de parqueos", "ayuda", "cercano", "cerca"];
 
   const textoLowerCase = texto.toLowerCase();
 
